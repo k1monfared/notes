@@ -1,22 +1,53 @@
-- George Shakan
-    - Mathematician and data scientist
-    - links:
-        - blog: https://gshakan.wordpress.com/
-        - youtube: https://www.youtube.com/@georgeshakan
-            - interviews researchers and tech people about machine learning and data science
--  John D. Cook
-    - Mathematician
-    - runs several twitter accounts that post random facts in different topics of math and science. the links to all of the is on his website.
-    - links:
-        - blog: https://www.johndcook.com/blog/
-        - twitter: https://twitter.com/johndcook
-- Terence Tao
-    - Mathematician
-    - Probably the most notable mathematician of our era.
-    - links:
-        blog: https://terrytao.wordpress.com/
-- Bruce Schneier
-    - Digital security expert
-    - posts about most recent security risks for software (and hardware) and talks about a lot of interesting topics that are relevant to the security as a whole.
-    - links:
-        - blog: https://www.schneier.com/
+Math
+    - Terence Tao
+        - Mathematician
+        - Probably the most notable mathematician of our era.
+        - links:
+            blog: https://terrytao.wordpress.com/
+    - John D. Cook
+        - Mathematician
+        - runs several twitter accounts that post random facts in different topics of math and science. the links to all of the is on his website.
+        - links:
+            - blog: https://www.johndcook.com/blog/
+            - twitter: https://twitter.com/johndcook
+    - George Shakan
+        - Mathematician and data scientist
+        - links:
+            - blog: https://gshakan.wordpress.com/
+            - youtube: https://www.youtube.com/@georgeshakan
+                - interviews researchers and tech people about machine learning and data science
+    - Grant Sanderson
+        - math education
+        - links:
+            - website: https://www.3blue1brown.com
+            - youtube: https://www.youtube.com/3blue1brown
+Tech
+    - Bruce Schneier
+        - Digital security expert
+        - posts about most recent security risks for software (and hardware) and talks about a lot of interesting topics that are relevant to the security as a whole.
+        - links:
+            - blog: https://www.schneier.com/
+DS/ML/AI/etc
+    - Vicky Boykis
+        - Machine learning and software engineering
+        - links:
+            - blog: https://vickiboykis.com/
+    - Chip Huyen
+        - MLops and systems design
+        - books:
+            - Designing Machine Learning Systems
+        - links:
+            - website: https://huyenchip.com/
+    - Renee Teate
+        - Data science and sql
+        - books: SQL for Data Scientists
+        - podcast: Becoming a Data Scientist
+        - links:
+            - twitter: https://twitter.com/BecomingDataSci
+Sciences:
+    - Andrew Huberman
+        - neuroscientist
+        - podcasts: hubermanlab
+        links:
+            - website: https://hubermanlab.com/
+            - youtube: https://www.youtube.com/@hubermanlab
