@@ -3,6 +3,11 @@
     - Camera & Photo Products
     - Computers & Accessories
     - Cell Phones & Accessories
+        - Ulefone
+            - makes very cheap high end rugged phones, waterproof, shock proof, dust proof. I've used several of their products and I'm generally happy.
+            - unfortunately most of the models' cameras are not great.
+            - some models have huge batteries that can last for up to a week of normal use.
+            - screen of one of the phones I had (power armor 14+) did crack at some point. 
 - Home & Hardware
     - Appliances
     - Kitchen & Dining
@@ -13,16 +18,27 @@
         - Woodworking
 - Software
     - Apps
+        - cross-platfrom and/or web-based
+            - privacy
+                - email alias: create email aliases and forward to a designated email address:
+                    - https://app.addy.io
+                    - proton pass
         - PC
             - Linux
+                - Entertainment/Music/Video
+                    - FreeTube:
+                        - UI for youtube, no login, allows subscribing to channels, no recommendations etc.
             - Mac
             - Windows
         - Phone
             - Android
                 - Entertainment/Music/Video
-                    - Youtube app
-                        - It runs only in foreground, it has advertisement, it is designed in a way to keep you on the
+                    - Youtube official app
+                        - It runs only in foreground, it has advertisement, it is designed in a way to keep you on the app as long as possible. highly discouraged.
+                    - New Pipe
+                        - free open source youtube player, allows download, allows background streaming, allows popup, can subscribe to channels, bookmarks and playlists.
             - iOS
+                -
     - Games
 - Arts, Crafts, Entertainment
     - play
@@ -37,7 +53,9 @@
         - Magazine
 - Automotive
     - Accessories
-        - Phone holder
+        - Phone holder/stand
+            - Nulaxy desk stand: https://nulaxy.com/products/nulaxy-a4-cell-phone-stand/
+            - Aniope Gravity Phone Holder for Car: https://ainope.com/collections/stand-mount-for-car/products/gravity-phone-holder-for-car
 - Clothing
     - clothes
     - Shoes
