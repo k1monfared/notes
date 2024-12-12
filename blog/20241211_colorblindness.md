@@ -4,7 +4,7 @@ One of the most enlightening conversations I've had recently started with my fri
 
 Here’s an example of what the Ishihara test looks like:
 
-![Ishihara Test Sample](/files/20241211/colorblind_1.png)
+![Ishihara Test Sample](files/20241211/colorblind_1.png)
 
 Many people have some degree of colorblindness without realizing it. Often, it’s mild or affects colors they don’t use frequently. The fascinating part of this experience, however, isn't just the test itself. It’s the realization of how differently we all perceive the world.
 
