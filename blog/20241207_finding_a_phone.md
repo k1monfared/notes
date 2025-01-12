@@ -5,15 +5,11 @@ Finding a phone
 
 For years, I’ve been particular about the cellphones I use. It’s not just about having a phone—it’s about finding one that genuinely solves my problems without forcing me into unnecessary ecosystems or gimmicks. Here's a look at how my relationship with cellphones evolved over time, from the early days of indestructible feature phones to my current obsession with rugged, no-nonsense devices.  
 
----
-
 ## **The First Phone: Simplicity that Worked**  
 
 My first cellphone was a **Sony Ericsson J100**. It was a no-frills device, but it did what it needed to do: it was reliable, durable, and hardy. I used it without complaints, and it never let me down.  
 
 For a while, I didn’t even own a phone. Back then, I didn’t feel the need for one. That changed with the release of the **Motorola Droid**, one of the first Android smartphones widely available in the U.S. I bought it on day one, and it quickly became a centerpiece of my life.  
-
----
 
 ## **The Rise and Fall of Smartphones in My Life**  
 
@@ -22,8 +18,6 @@ The Droid ushered in a new era for me. I explored every feature it offered and e
 But the honeymoon phase didn’t last. Over time, I became disillusioned with smartphones. They weren’t solving problems for me; they were creating new ones. Notifications, endless customization, and attention-stealing apps made me feel more like a consumer than a user.  
 
 So, I made a drastic decision: I switched to a **dial-pad phone**.  
-
----
 
 ## **Experimenting with Solutions**  
 
@@ -36,8 +30,6 @@ After a break from smartphones, I slowly ventured back into the market, testing 
 But no matter what I tried, the result was the same: these phones were not built for people like me. They were built to sell features I didn’t need, push ads I didn’t want, and lock me into ecosystems I avoided.  
 
 This realization shifted my focus. I started looking for phones that prioritized **functionality over flashiness**.  
-
----
 
 ## **Redefining My Needs**  
 
@@ -55,8 +47,6 @@ I didn’t care about:
 
 The tech industry’s obsession with connectivity frustrated me. Companies like Apple and Google deliberately limited options for offline use, removing SD card slots and offering minimal onboard storage to push cloud services. I didn’t want that. I wanted to take my phone to the mountains, listen to music, read, and take notes without worrying about connectivity.  
 
----
-
 ## **Discovering Ulefone: A Rugged Solution**  
 
 This search led me to **Ulefone**, a small Chinese company specializing in rugged phones. These devices were a revelation. Ulefone phones weren’t trying to compete with the likes of Apple or Samsung. Instead, they focused on solving real problems for people who needed tough, reliable devices.  
@@ -69,8 +59,6 @@ Here’s what I loved about Ulefone:
 
 I’ve put these phones through hell. I’ve dropped them countless times, taken them swimming, and generally abused them in ways that would destroy most devices. Yet they’ve held up remarkably well. This summer, I dived a bit too deep into a lake with my current Ulefone, and while it started acting up, it still works.  
 
----
-
 ## **Why This Matters**  
 
 For me, phones are tools, not status symbols. I don’t want a device that decides what’s important for me or forces me to conform to its limitations. I want a phone that fits into my life, solves my problems, and respects my choices.  
@@ -79,13 +67,11 @@ The big players in the industry—Apple, Google, Samsung—don’t cater to peop
 
 If there’s one thing I’ve learned, it’s that you don’t have to settle for what the market says you need. With a bit of searching, you can find tools that work for you—not against you.  
 
----
-
 ## **Final Thought**  
 
 My journey with cellphones has been about rejecting trends and seeking solutions. While the world chases megapixels and AI gimmicks, I’ll be here with my rugged, reliable phone, ready for whatever life throws at me.  
 
---
+---
 
 But just as black Friday was approaching I got fooled by a deal from my network provider and ordered a latest version of google pixel, people had generally good things to say about it, and I was thinking to maybe go back to the always connected life for a while to see what I was missing, but while I was waiting for the phone to arrive I was getting anxious that I knew I'm paying a hefty amount of money to first lock myself in for a couple of years and then have to pay the remaining amount to buy the phone while I knew I am not going to enjoy it because they are going to limit my choices as much as they can. Fortunately, I hadn't paid for anything yet and when the phone arrived they started to bring up some extra charges for random things which I declined and got back on the market to see what else is there to explore. I got a couple of recommendations from friends but that wasn't enough. So I went searching. Recently LLM models are getting better, so I asked openAI's O1 model to give me a list of phones from smaller companies that have the features I want, 5G, e-sim, SD card, good battery, water proof, and decent camera. It gave me a bunch of them with generally wrong specs, but the model names where correct. So, I searched for them and found specs on all of them in gsmarena.com. It got hard to compare them, so again I asked gpt-4o-mini to to write some python code that when I provide a list of links, scrapes the phone specs from those websites and put them in a table that I can then use to compare.
 
@@ -385,3 +371,11 @@ OK, only fairphone 4 and Moto G Power have 5g, esim, and sdcard slot. Their came
 It's interesting, I wanted to compare motorola edge 40 but it didn't show up. it seems like it doesn't have sd card slot!
 
 The BeautifulSoup approach is not great, it misses a lot of details, pandas has this `read_html` functionality which reads very well from this website. I also need to manage how many requests I'm sending to the webpage and change the proxy so that it doesn't block me. Will do that next.
+
+
+---
+
+### Update 2025-01-05
+I've tried the [TCL 50 XE NXTPAPER](https://www.gsmarena.com/tcl_50_xe_nxtpaper-13302.php) for a couple of weeks. It is pretty weak in terms of performance. It got pretty hot while on a video call to the point it was uncomfortable. And worst of all, the screen wasn't at all readable in direct light, even lamp light. It definitely is less glossy, but that not only it doesn't make it easier to read the screen, it makes it much much worse. I compared it in various conditions with my old phone that has a simple screen, and also with other phones that have no claim of more readability. It is almost impossible to see the content of the screen when there is direct light shining on it. With regular screens you can turn the screen slightly and it will be resolved, with this phone, even that is not possible! The camera is so so, nothing exciting, nothing particularly bad. Also, the paper color and ink color modes are good ideas, but not best implemented, there's lots of restrictions and not much customizable. Even going to dark mode, or changing the background in those modes seems to need tricks! If they continue improving it, it might become a good option. Initially, they had advertised it so that I thought the ink color mode is actually e-ink screen under a regular screen that when activated the regular screen turns off and the e-ink will be used, but that's not the case, it is just a blakc and while mode. So, I've returned it.
+
+Next I'm going to try a motorolla [Motorola G85](https://www.gsmarena.com/motorola_moto_g85-13144.php). I wanted a [G75](https://www.gsmarena.com/motorola_moto_g75-13372.php) model since it is more waterproof (IP68), but I couldn't find it in any stores. G85 only has a water repellent design, but still similar in other aspects. Motorla generally is not supposed to have good camera, so I'm not going to expect much there.
