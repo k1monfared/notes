@@ -9,3 +9,15 @@ The other day Natan told me that his father has suggested to instead of looking 
 Unfortunately there aren't much data about the noise each tool makes. It also depends on what material you're working with, and also on the setup and maintenance of them. But I've got to start somewhere.
 
 First, there's this [video](https://www.youtube.com/watch?v=r5ec6hsEnL4) that talks about the lack of such data, and their initial try to collect some. The data is not very helpful though, but it is a starting point.
+
+## list of random woodworking tools:
+- Dust Collected some random youtuber suggested: https://www.harveywoodworking.com/products/gyro-air-g700-dust-processor
+- apparently the quietest saw around with the saw break: https://www.sawstop.com/product/professional-cabinet-saw-pcs175-pfa30/
+- list of some quiet(?) saws:
+    - https://sawreviewed.com/sawing-through-the-noise-finding-the-quietest-saws-on-the-market/
+    - https://saw.coach/quiet-table-saw/
+- Sound barriers: https://echobarrier.com/noise-reduction-barriers
+  - this one has a seller in Vancouver
+- KATools sanding stars: https://katools.com/merlin2/sanding-stars/
+- The Little Terrier dremel bit: https://www.kaizenbonsai.com/products/the-little-terrier-dhtm-the-ultimate-power-carving-tool-for-hobby-rotary-machines
+- 
