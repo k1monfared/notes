@@ -137,7 +137,7 @@ So, I've been looking for a house for almost a year now. It's been way longer th
         <br><br>Sunday 9am, from N to JCL: Good morning, L, J and C, Please see the attached offer on [...]. The dates have adjusted to meet your client’s preference. This is my client’s best an final offer. Thank you, N
         <br><br>Sunday 1pm, from L to N: I just realized that this Offer has expired. Why on earth would you send a completely new Offer on a Sunday morning with less than 2 hours for the Sellers to respond?  That seems very unprofessional to me, and certainly not in the best interest of your Clients. ~L. Unlicensed Assistant to J-C
         <br><br>Sunday 1pm, from N to L: Hello L, I informed C last night that we would be submitting an offer first thing in the morning. I sent the offer, a touch base and text messages first thing in the morning. The offer you sent us last night was submitted at 9:15 PM and open till 11 PM. The offer we sent you this morning was sent at 9:15 AM and open till 11 AM. You are free to accept the new offer and extend the time for signing. Cheer, N
-        <br><br>Sunday 1pm, from L to N: The Offer we sent to you last night was already fully signed, so much less response time required from your Clients. It just bothers me as a member of the Public, who has been working in real Estate Admin positions in Victoria for over 37 years, to see a Realtor not doing their best for their Clients. Your turn around time was not reasonable. L
+        <br><br>Sunday 1pm, from L to N: The Offer we sent to you last night was already fully signed, so much less response time required from your Clients. It just bothers me as a member of the Public, who has been working in real Estate Admin positions in V. for over 37 years, to see a Realtor not doing their best for their Clients. Your turn around time was not reasonable. L
         <br><br>Sunday 1:30pm, from N to L: Hello L, Professional and to your client’s interest service would have been to work with our excellent Full Price offer on Friday night / Saturday morning. Instead your team stalled and ended up with a 2nd and 3rd offers your clients are not interested in. The offer you have from us is exactly as my client wants it presented. The timeline was tight because even with 3 realtors your team has shown that they are not able work with us in a timely manner. Instead of spending time lobbing insults how about getting the job done? All the best, N
     </td>
   </tr>
@@ -167,6 +167,10 @@ So, I've been looking for a house for almost a year now. It's been way longer th
   </tr>
 </table>
 
-There was this other house that I was interested in about 7 months ago. I wrote an offer at a price I was comfortable with and which I thought that house is worth. He again pushed me multiple times to go 5-10% more which I didn't. The house was just sold for 5% more than my price, but keep in mind it took 7 months. In this case I couldn't really afford it at that price.
+Final thoughts:
 
-I had to dig a bit and figured out the seller is a marketing and sales person who teaches car dealerships how to sell cars. Interpret that however you wish.
+- There was this other house that I was interested in about 7 months ago. I wrote an offer at a price I was comfortable with and which I thought that house is worth. He again pushed me multiple times to go 5-10% more which I didn't. The house was just sold for 5% more than my price, but keep in mind it took 7 months. In this case I couldn't really afford it at that price.
+
+- I had to dig a bit and figured out the seller is a marketing and sales person who teaches car dealerships how to sell cars. Interpret that however you wish.
+
+- I feel like the
