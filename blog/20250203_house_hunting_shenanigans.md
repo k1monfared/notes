@@ -168,3 +168,5 @@ So, I've been looking for a house for almost a year now. It's been way longer th
 </table>
 
 There was this other house that I was interested in about 7 months ago. I wrote an offer at a price I was comfortable with and which I thought that house is worth. He again pushed me multiple times to go 5-10% more which I didn't. The house was just sold for 5% more than my price, but keep in mind it took 7 months. In this case I couldn't really afford it at that price.
+
+I had to dig a bit and figured out the seller is a marketing and sales person who teaches car dealerships how to sell cars. Interpret that however you wish.
