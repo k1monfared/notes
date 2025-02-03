@@ -1,7 +1,12 @@
 # House Hunting Shenanigans
 [This is not a typical blog post, hence the weird format, likely not good for reading on the phone. It is a representations of events happening and my thoughts on them.]
 
-So, I've been looking for a house for almost a year now. It's been way longer than I expected and the market has been weird, to say the least. But just for the context, there are a lot of houses that come to the market and stay for a loooooong time and there are some that are gone in usually 1-2 days. I've just had one of the most informative experiences of my life in the past two days. Here is what happend, and how I think about it. N is my realtor.
+So, I've been looking for a house for almost a year now. It's been way longer than I expected and the market has been weird, to say the least. But just for the context, there are a lot of houses that come to the market and stay for a loooooong time and there are some that are gone in usually 1-2 days. I've just had one of the most informative experiences of my life in the past two days. Here is what happend, and how I think about it.
+
+- N is my realtor
+- J is the seller's realtor
+- C is J's partner
+- L is J and C's assistant
 
 <table style="width:100%;">
   <tr>
