@@ -165,6 +165,33 @@ So, I've been looking for a house for almost a year now. It's been way longer th
     <td>Feels like there are a million levers that realtors have to push you to increase the price, even when everything is pointing the other way, which makes sense. They want the deal to close and as a buyer I have more chance of doing that if I increase the price, hence the push. But I don't want to pay extra 5-10% for a house just because others (maybe) are willing to do so. And it takes energy to distill all information and remove noise that influences my decision in the heat of back and forth in negotiations.</td>
     <td></td>
   </tr>
+  <tr>
+      <td>
+          one week later
+      </td>
+      <td>
+          N says he thinks the house had an offer of 5K above asking price. I said I think it is below the asking price. We bet if it is the asking price or higher, I'll buy him a coffee, if it is 10K below asking price or lower, he'll buy me a coffee.
+      </td>
+      <td>
+          I think N still believes in those seller's realtors way too much.
+      </td>
+      <td>
+      </td>
+  </tr>
+  <tr>
+      <td>
+          two weeks later
+      </td>
+      <td>
+          the house is sold for 10K below the asking price.
+      </td>
+      <td>
+          They were not only stupid but also had a very huge ego.
+      </td>
+      <td>
+          N is going to buy me a coffee! Also the first one that I put an offer on is gone for waaaaay higher than the asking price.
+      </td>
+  </tr>
 </table>
 
 Final thoughts:
