@@ -1,0 +1,27 @@
+# We Must Know, We Will Know
+
+There are people who view everyone around them through a single lens of accomplishment. In professional circles, it's salary or publication count. In religious communities, it might be how many children you have. In business, it's revenue. There's something deeply unsettling about these people who reduce everyone to numbers.
+
+I understand that systems need shortcuts. Universities can't have deep conversations with every applicant, so they use GPAs. Companies need to make hiring decisions quickly. These institutions have real constraints that force crude measurements. But here's the problem: they shouldn't pretend that what they're measuring is what actually matters. They should constantly remind themselves and everyone else that they "can't measure what matters" - they're measuring proxies like GPA or test scores, but they should be working to make those proxies get closer to what they really care about.
+
+Some medical schools are trying to do this right. UC Davis asks "how will this applicant strengthen California's physician workforce?" instead of just looking at MCAT scores. They're measuring what actually matters for their goal - addressing doctor shortages - not just what's easy to quantify. But most institutions forget this distinction. They start treating the proxy as the real thing.
+
+The real problem comes when people import this systems thinking into their personal lives, where they don't have to make these trade-offs. When someone at a dinner party immediately sorts everyone by job title or income, there's no practical constraint forcing this. They're choosing to see less of the world when they could see more.
+
+Here's what really bothers me: this isn't actually a survival tool. I don't see this measuring behavior mostly in immigrants or poor people who genuinely need to climb ladders. It's prevalent among people who are already comfortable, already accomplished. There's a class element too - I've noticed that garbage collectors don't immediately ask people about their jobs. Engineers do. People who've benefited from professional hierarchies are more likely to use those hierarchies to sort others.
+
+The measuring isn't necessary for success either. I know plenty of accomplished people who aren't walking measuring sticks. They've succeeded without constantly evaluating everyone around them. This suggests the measuring serves a different function entirely - it's not about getting what they need, it's about keeping others below them. It's a gating mechanism disguised as objectivity.
+
+When an immigrant is trying to establish themselves, what do they actually need? Someone to care for them when they're sick, or a higher salary? Real support systems, or corporate ladder climbing? The measuring mindset tricks us into optimizing for the wrong things even when we think we're being practical. Even their successful friendships become unstable - built on shifting power dynamics rather than genuine human connection.
+
+There's an even more painful version: people who think they're enlightened because they use "better" metrics. They measure intellectual curiosity instead of money, creativity instead of status, authenticity instead of achievement. But they're still measuring, still creating hierarchies, still gatekeeping. They just think their gates are more virtuous. They look down on people who care about money while doing the exact same thing with different numbers.
+
+This becomes a self-fulfilling prophecy. When everyone measures the same things, those things become important not because they matter inherently, but because everyone's measuring them. The football analogy applies here: a team of the world's best individual players often can't compete with a cohesive national team. The "best" people by conventional metrics don't necessarily create the best communities, companies, or friendships.
+
+I enjoy being around people who don't immediately ask what I do for work, where I'm from, or who my family is. They see me as a person first. We talk about what matters to us in the moment. Our jobs and backgrounds emerge naturally, if at all. There's no evaluation happening, just two people interacting.
+
+But here's the deeper question: why do we need these "practical shortcuts" at all? We spend decades creating and refining measurement systems, only to realize they don't work. Then we move to different metrics - declaring that money doesn't matter, now it's about family size, or experiences, or impact. We keep switching the measuring tool instead of questioning whether we need to measure at all.
+
+What if we spent those same decades actually getting to know people? Really building relationships based on who they are, not what they produce? Maybe it would take 5-10 years to develop a handful of deep friendships, but wouldn't that be more practical than 40 years of networking based on job titles, only to end up successful but alone?
+
+What we've created is a world where people use the appearance of objectivity to hide what's really just tribal exclusion and status protection. The metrics give us permission to dismiss people while feeling rational about it. Meanwhile, real connection - the thing that actually sustains us - doesn't require complex evaluation systems. It just requires dropping the apparatus and paying attention to who someone actually is.
