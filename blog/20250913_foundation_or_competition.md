@@ -111,3 +111,35 @@ The same pressure applies to personal decisions. Social media amplifies what get
 But markets aren't always good at recognizing fundamental value, especially early on. Building something genuinely useful often requires making trade-offs that look risky or unglamorous compared to following the crowd.
 
 The people and companies that get this right usually have strong convictions about what problem they're actually trying to solve, and they're willing to stick with that even when it means saying no to things that might make them look more competitive in the moment.
+
+## But What About Survival?
+
+Here's where things get complicated. Sometimes you hear arguments like: "We need to chase the shiny stuff just to survive this recession, then we'll focus on fundamentals later." Or: "I need to optimize my dating profile to get confidence from matches before I can work on deeper compatibility." Or: "The government needs to keep people happy with popular policies until the economy recovers."
+
+Is this sound reasoning or self-deception?
+
+I think in most cases, it's the latter. The "temporary" competitive strategy has a way of becoming permanent. Companies that say they'll focus on fundamentals "after this quarter" often find that quarter never ends. People who think they'll find confidence through more dates usually end up performing forever, getting better at the initial attraction game but never developing skills for genuine relationships.
+
+But this raises uncomfortable questions: What if your company really is about to go bankrupt? What if your government really does face civil unrest? What if you really do need some wins to build momentum?
+
+My sense is that if you're in genuine crisis, you should probably acknowledge it fully rather than half-measures. A company that's truly failing might be better off declaring bankruptcy quickly and starting fresh with a solution to the real problem, rather than limping along doing work that destroys its fundamental assets. But is that always realistic? What about the people who depend on that company?
+
+For individuals, I suspect the confidence you get from optimizing for metrics (matches, likes, resume keywords) isn't transferable to the fundamental challenges. You become good at the wrong game. But what if someone genuinely can't function without some external validation first?
+
+And for countries - they can't just "start over" like companies can. Citizens have immediate needs that can't wait for long-term solutions.
+
+## Questions Worth Asking
+
+Instead of having firm answers, maybe the better approach is asking the right questions:
+
+- Are you actually in imminent danger, or just uncomfortable with slower progress?
+- Does this competitive approach give you resources to invest in fundamentals later, or make you more dependent on continuing the same pattern?
+- What skills are you developing while chasing these competitive metrics? Are they the skills you need for the underlying problem?
+- Is there a specific timeline and exit strategy for this "temporary" approach?
+- What would happen if you just... didn't compete on these terms?
+
+The last question might be the most important. Sometimes the answer is "catastrophic failure." But often it's "slower growth" or "looking less impressive" or "feeling uncertain" - which might be acceptable trade-offs for working on what actually matters.
+
+The pattern seems to be that the skills you develop while chasing competitive metrics often aren't transferable to solving fundamental problems. Whether it's companies learning to generate revenue at any cost, people learning to perform for validation, or governments learning to manage public opinion - these become their own self-reinforcing cycles.
+
+But maybe I'm being too harsh. What do you think? When is tactical compromise justified, and when is it just avoiding the harder work?
