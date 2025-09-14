@@ -130,8 +130,6 @@ And for countries - they can't just "start over" like companies can. Citizens ha
 
 ## Questions Worth Asking
 
-Instead of having firm answers, maybe the better approach is asking the right questions:
-
 - Are you actually in imminent danger, or just uncomfortable with slower progress?
 - Does this competitive approach give you resources to invest in fundamentals later, or make you more dependent on continuing the same pattern?
 - What skills are you developing while chasing these competitive metrics? Are they the skills you need for the underlying problem?
