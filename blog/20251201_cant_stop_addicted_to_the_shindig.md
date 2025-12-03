@@ -383,7 +383,7 @@ What DOES change is your **strategic decision-making**. Here's how:
 If your opponent is ahead and close to winning, you need to take MORE risk:
 - They're at 12/13 on column 7? You can't afford conservative play
 - You need to roll aggressively even on mediocre combinations
-- Adjust the heuristic: `Keep rolling if: (P_success × Q) > α × (P_bust × unsaved_progress)`
+- Adjust the heuristic: `Keep rolling if: (P_success × Q) > \alpha × (P_bust × unsaved progress)`
 - Where α < 1 when you're behind (accept more risk)
 - Where α > 1 when you're ahead (be more cautious)
 
