@@ -93,7 +93,7 @@ $$P(\text{can make a 2}) = 1 - \frac{625}{1296} - \frac{500}{1296} = \frac{171}{
 
 #### Computing P(can make a 7)
 
-To make a 7, I need one of these pairs: (1,6), (2,5), or (3,4). I'll use inclusion-exclusion.
+To make a 7, I need one of these pairs: (1,6), (2,5), or (3,4). The intuition: I want to count rolls with at least one of these complementary pairs, but I need to be careful not to double-count rolls that contain multiple pairs. I'll use inclusion-exclusion.
 
 Let A = "I can make pair (1,6)" = "I have at least one 1 AND at least one 6"
 Let B = "I can make pair (2,5)" = "I have at least one 2 AND at least one 5"
@@ -171,6 +171,8 @@ Column 7 is slightly faster, even though it's 4× longer. Let me check all of th
 
 Columns 2 and 12 require the most rolls. Columns 6, 7, and 8 are all close to each other around 20 rolls.
 
+![Expected Rolls per Column](files/20251201/expected_rolls_per_column.png)
+
 ### But Wait - Three Columns at Once
 
 Here's the thing though: you don't play Can't Stop one column at a time. You have THREE active columns, and you bust if you can't hit ANY of them.
@@ -225,7 +227,13 @@ Let me analyze all possible combinations and show you the best and worst (see [c
 
 **What's "Clean"?** Remember the forced-move rule? A "clean" move is one where you only hit columns you actually want. Even the best combination {6,7,8} only has 39.8% clean moves - the rest of the time you're forced onto unwanted columns.
 
-The full results are in [column_combinations_all.csv](files/20251201/column_combinations_all.csv).
+Here's the complete picture - all 165 combinations ranked by success rate:
+
+![All 165 Combinations Ranked](files/20251201/all_165_combinations_ranked.png)
+
+The distribution reveals some interesting patterns: 37 combinations are "excellent" (≥85% success rate), mostly centered around columns 5-9. The median combination still succeeds 79.6% of the time, but the worst combinations drop dramatically to just 43.8% - you're more likely to bust than succeed!
+
+The full detailed results are in [column_combinations_all.csv](files/20251201/column_combinations_all.csv).
 
 ## When Should You Stop Rolling?
 
@@ -283,7 +291,9 @@ The forced-move rule is a balancing mechanism. It prevents {6,7,8} from being co
 
 Should you continue your current columns or switch to new ones? This depends on progress already made: if columns are nearly complete (e.g., 10/11 steps), continuing makes sense. But with minimal progress (2-3 steps), switching to a better combination might be faster.
 
-The mathematics favor continuation in most cases: wasting accumulated progress hurts more than the marginal benefit of a slightly better combination. However, the forced-move rule gradually contaminates good combinations over time, sometimes forcing strategic switches. A full analysis would require simulating "always continue" vs "switch when X" strategies across different board states—an interesting avenue for future work.
+The mathematics favor continuation in most cases: wasting accumulated progress hurts more than the marginal benefit of a slightly better combination. However, the forced-move rule gradually contaminates good combinations over time, sometimes forcing strategic switches.
+
+**Note:** I haven't fully analyzed this aspect quantitatively. A complete treatment would require simulating "always continue" vs "switch when X" strategies across different board states and comparing their win rates. This is an interesting open question for future work, but for now I'm focusing on the stopping decision given a fixed set of active columns.
 
 ## Strategy Performance
 
@@ -342,6 +352,8 @@ Full results: [single_player_results.txt](files/20251201/single_player_results.t
 
 The fastest strategies complete in about 13 turns, while being too conservative (Heuristic with α=0.3) takes 108 turns on average!
 
+![Single-Player Performance](files/20251201/single_player_performance.png)
+
 ### Head-to-Head Tournament Results
 
 Now the real test: 25 strategies, each playing 2,500 games against every other strategy. Here are the overall win rates (wins against all opponents, with 95% confidence intervals calculated using the normal approximation to the binomial distribution):
@@ -366,6 +378,8 @@ Now the real test: 25 strategies, each playing 2,500 games against every other s
 | 25 | Greedy | 0.1% (±0.02%) | 30/60,000 |
 
 Full results: [analysis_results_25strategies_2500games.txt](files/20251201/analysis_results_25strategies_2500games.txt)
+
+![Strategy Tournament Rankings](files/20251201/strategy_tournament_rankings.png)
 
 ### The Champion: GreedyUntil1Col
 
@@ -393,6 +407,8 @@ Full results: [analysis_results_25strategies_2500games.txt](files/20251201/analy
 
 Here's the complete head-to-head win-rate matrix (row vs column, percentage shown is row's win rate):
 
+![Tournament Heatmap](files/20251201/tournament_heatmap_full.png)
+
 [Download full CSV](files/20251201/tournament_results_full.csv)
 
 | Strategy | vs Greedy | vs Cons(3) | vs Heur(1.0) | vs GreedyImp2 | vs GreedyU1Col |
@@ -412,17 +428,39 @@ Here's the complete head-to-head win-rate matrix (row vs column, percentage show
 
 (Full 25×25 matrix available in CSV)
 
-### Key Findings
+### Wait, Why Doesn't the Fastest Strategy Win?
 
-**1. Simple threshold strategies dominate** - The top strategies all use simple rules (complete 1 column, stop after 5 steps, stop at 1/3 progress). Meanwhile, mathematically-optimized strategies like ExpectedValueMaximizer (56.8%) and FiftyPercentSurvival (66.7%) perform significantly worse.
+Something weird is going on here. Look at the single-player speed tests: GreedyImproved2 finishes in 13.2 turns on average - the fastest by far. But it only gets second place in the tournament. Meanwhile, GreedyUntil1Col wins the whole thing despite taking 16.3 turns - that's ninth place in the speed rankings!
 
-**2. Greedy is catastrophic** - 30 wins in 60,000 games (0.1%). Always rolling until bust is strictly dominated by any strategy that banks progress.
+![Speed vs Win Rate Analysis](files/20251201/speed_vs_winrate_analysis.png)
 
-**3. Too conservative is also terrible** - Conservative(1) achieves only 16.3% win rate and takes 108 turns on average to complete 3 columns. Stopping too early means making almost no progress per turn.
+Here's what's happening: single-player speed tests measure "how fast can you finish when you're alone." But Can't Stop isn't a solo speed run - it's a race against an opponent.
 
-**4. The variance-optimization trade-off** - ExpectedValueMaximizer optimizes EV but has high variance. GreedyUntil1Col guarantees exactly 1 column completion per successful turn, minimizing variance while maximizing tempo. In a short game (8-12 turns typical), consistency beats optimization.
+Think about it like this. Say you have two runners:
+- Runner A averages 13 minutes but ranges from 8–20 minutes (super inconsistent)
+- Runner B averages 16 minutes but always finishes between 14–18 minutes (rock solid)
 
-**5. OpponentAware underperforms** - The three OpponentAware variants all performed worse than simple threshold strategies. The likely culprit: the implementation only tracks completed columns, ignoring partial progress. A better implementation would estimate "turns until opponent wins" using their current positions.
+In repeated races head-to-head, Runner B wins more often because consistency matters more than raw average speed.
+
+That's exactly what's happening with GreedyUntil1Col. It guarantees exactly 1 column completion per successful turn. No wasted turns banking partial progress. It's the tortoise beating the hare, except the tortoise has done the math.
+
+The aggressive strategies? Sure, they complete fast WHEN they succeed. But they bust more often. In single-player, you can retry forever, and those busts just get averaged in. In a tournament, one bust = instant loss. Game over.
+
+The numbers bear this out: there's a -0.77 correlation between speed and win rate (faster usually wins more), but the outliers tell the real story. Our champion is 3.1 turns slower than the fastest strategy, yet wins 3.5 percentage points more games. That's the power of consistency in competitive play.
+
+### What Actually Works (And What Doesn't)
+
+So what did we learn from 750,000 simulated games?
+
+**Simple beats sophisticated.** The top strategies all use dead-simple rules: complete 1 column, stop after 5 steps, stop at 1/3 progress. Meanwhile, the "smart" strategies trying to optimize expected value? ExpectedValueMaximizer gets 56.8%, FiftyPercentSurvival gets 66.7%. They're getting crushed by strategies you could explain to a 10-year-old.
+
+**Never going full greedy.** The pure Greedy strategy (never stop voluntarily) won 30 games out of 60,000. That's 0.1%. It loses to literally everything else. Always rolling until bust is a spectacular way to lose at Can't Stop.
+
+**But also, don't be too scared.** Conservative(1) - the strategy that stops after making ANY progress - wins only 16.3% of games and takes 108 turns on average. If you're stopping after every single successful roll, you're basically not playing the game.
+
+**The EV trap.** Expected Value Maximizer sounds smart, right? Optimize expected value on every decision! But it has high variance - sometimes you complete 3 columns fast, sometimes 0. GreedyUntil1Col guarantees exactly 1 column per turn. In a game that typically lasts 8–12 turns, consistency beats optimization every time.
+
+**Being "opponent aware" didn't help.** I tried three variants that adjusted risk based on whether you're ahead or behind. All three performed worse than simple threshold strategies. The problem? They only looked at completed columns, not partial progress. A better implementation might track "estimated turns until opponent wins" - but that's a problem for future me.
 
 ## Game Design: Is It Balanced?
 
@@ -562,6 +600,7 @@ All analysis code and simulation results are available:
 **Strategy analysis:**
 - [stopping_heuristic.py](files/20251201/stopping_heuristic.py) - Mathematical stopping rule
 - [cant_stop_analysis_extended.py](files/20251201/cant_stop_analysis_extended.py) - Full tournament simulator with 25 strategies
+- [analyze_speed_vs_winrate.py](files/20251201/analyze_speed_vs_winrate.py) - Speed vs tournament performance comparison
 
 **Game design:**
 - [cant_stop_optimization.py](files/20251201/cant_stop_optimization.py) - Optimal board designs
