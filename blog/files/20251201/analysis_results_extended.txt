@@ -1,0 +1,54 @@
+Extended Can't Stop Strategy Analysis
+================================================================================
+
+Extended Strategy Comparison (200 games each):
+================================================================================
+[10/136] Completed...
+[20/136] Completed...
+[30/136] Completed...
+[40/136] Completed...
+[50/136] Completed...
+[60/136] Completed...
+[70/136] Completed...
+[80/136] Completed...
+[90/136] Completed...
+[100/136] Completed...
+[110/136] Completed...
+[120/136] Completed...
+[130/136] Completed...
+
+================================================================================
+
+Overall Performance (total wins against all opponents):
+--------------------------------------------------------------------------------
+ 1. GreedyImproved2           2643/3200 games (82.6%)
+ 2. GreedyImproved1           2573/3200 games (80.4%)
+ 3. AdaptiveThreshold         2484/3200 games (77.6%)
+ 4. Conservative(4)           2431/3200 games (76.0%)
+ 5. Conservative(3)           2263/3200 games (70.7%)
+ 6. Heuristic(1.0)            2113/3200 games (66.0%)
+ 7. Random(0.3)               1894/3200 games (59.2%)
+ 8. OppAware(0.7,1,1.5)       1804/3200 games (56.4%)
+ 9. OppAware(0.5,1,2)         1630/3200 games (50.9%)
+10. Heuristic(1.5)            1596/3200 games (49.9%)
+11. OppAware(0.3,1,2)         1508/3200 games (47.1%)
+12. Heuristic(0.5)            1326/3200 games (41.4%)
+13. Heuristic(2.0)            1092/3200 games (34.1%)
+14. Conservative(2)            785/3200 games (24.5%)
+15. Conservative(1)            597/3200 games (18.7%)
+16. Heuristic(0.3)             461/3200 games (14.4%)
+17. Greedy                       0/3200 games (0.0%)
+
+================================================================================
+
+Key Matchups:
+--------------------------------------------------------------------------------
+Conservative(3)           vs Heuristic(1.0)            : 59.0% win rate
+GreedyImproved1           vs Conservative(2)           : 100.0% win rate
+GreedyImproved2           vs Conservative(3)           : 77.0% win rate
+AdaptiveThreshold         vs Heuristic(1.0)            : 63.5% win rate
+OppAware(0.5,1,2)         vs Heuristic(1.0)            : 31.0% win rate
+Random(0.3)               vs Conservative(2)           : 96.5% win rate
+
+================================================================================
+Analysis complete!
