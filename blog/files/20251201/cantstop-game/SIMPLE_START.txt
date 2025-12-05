@@ -1,0 +1,55 @@
+========================================
+   CAN'T STOP GAME - SIMPLE START
+========================================
+
+✓ Python 3.12.7 detected and working!
+
+STEP 1: Open Terminal 1 and run:
+-------------------------------
+cd /home/k1/public/notes/blog/files/20251201/cantstop-game/backend
+python3 main.py
+
+You should see:
+  "Uvicorn running on http://0.0.0.0:8000"
+
+KEEP THIS TERMINAL OPEN!
+
+
+STEP 2: Open Terminal 2 and run:
+-------------------------------
+cd /home/k1/public/notes/blog/files/20251201/cantstop-game/frontend
+npm install
+npm run dev
+
+You should see:
+  "Local: http://localhost:3000/"
+
+KEEP THIS TERMINAL OPEN!
+
+
+STEP 3: Open your browser
+-------------------------------
+Go to: http://localhost:3000
+
+You should see the purple Can't Stop game!
+Click "Roll Dice" to play!
+
+
+TO STOP:
+--------
+Press Ctrl+C in both terminal windows
+
+
+TROUBLESHOOTING:
+---------------
+If backend shows "module not found":
+  cd /home/k1/public/notes/blog/files/20251201/cantstop-game/backend
+  python3 -m pip install fastapi uvicorn pydantic
+  python3 main.py
+
+If frontend shows "command not found: npm":
+  You need to install Node.js first
+  Check: node --version
+  If nothing, install Node.js 18+
+
+========================================

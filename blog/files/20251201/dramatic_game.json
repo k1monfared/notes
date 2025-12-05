@@ -7,28 +7,28 @@
       "turn_number": 1,
       "current_player": "GreedyUntil1Col",
       "roll": [
-        1,
-        1,
-        1,
+        2,
+        2,
+        2,
         6
       ],
       "available_pairings": [
         [
-          2,
-          7
+          4,
+          8
         ],
         [
-          2,
-          7
+          4,
+          8
         ],
         [
-          7,
-          2
+          8,
+          4
         ]
       ],
       "chosen_pairing": [
-        2,
-        7
+        4,
+        8
       ],
       "player1_permanent": {
         "2": 0,
@@ -57,44 +57,49 @@
         "12": 0
       },
       "player1_temporary": {
-        "2": 1,
-        "7": 1
+        "4": 1,
+        "8": 1
       },
       "player2_temporary": {},
-      "player1_active_columns": [
-        2,
-        7
-      ],
-      "player2_active_columns": [],
       "busted": false,
       "stopped": false,
-      "decision_reasoning": "Chose (2, 7). No column complete yet, continuing...",
-      "ev_calculation": null
+      "decision_reasoning": "Chose (4, 8). 2 unsaved steps, continuing...",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        8,
+        4
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [],
+      "player2_completed": []
     },
     {
       "turn_number": 2,
       "current_player": "GreedyUntil1Col",
       "roll": [
         2,
-        3,
-        6,
+        2,
+        5,
         6
       ],
       "available_pairings": [
         [
-          5,
-          12
+          4,
+          11
+        ],
+        [
+          7,
+          8
         ],
         [
           8,
-          9
-        ],
-        [
-          8,
-          9
+          7
         ]
       ],
-      "chosen_pairing": null,
+      "chosen_pairing": [
+        4,
+        11
+      ],
       "player1_permanent": {
         "2": 0,
         "3": 0,
@@ -122,19 +127,23 @@
         "12": 0
       },
       "player1_temporary": {
-        "2": 1,
-        "7": 1
+        "4": 2,
+        "8": 1,
+        "11": 1
       },
       "player2_temporary": {},
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "Have 4 unsaved steps. Stopping to secure progress.",
+      "ev_calculation": null,
       "player1_active_columns": [
-        2,
-        7
+        8,
+        11,
+        4
       ],
       "player2_active_columns": [],
-      "busted": true,
-      "stopped": false,
-      "decision_reasoning": "\ud83d\udca5 BUST! No valid moves from [2, 3, 6, 6]. Lost 2 steps.",
-      "ev_calculation": null
+      "player1_completed": [],
+      "player2_completed": []
     },
     {
       "turn_number": 3,
@@ -142,176 +151,38 @@
       "roll": [
         1,
         2,
-        2,
-        6
-      ],
-      "available_pairings": [
-        [
-          3,
-          8
-        ],
-        [
-          3,
-          8
-        ],
-        [
-          7,
-          4
-        ]
-      ],
-      "chosen_pairing": [
-        3,
-        8
-      ],
-      "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player1_temporary": {},
-      "player2_temporary": {
-        "3": 1,
-        "8": 1
-      },
-      "player1_active_columns": [],
-      "player2_active_columns": [
-        8,
-        3
-      ],
-      "busted": false,
-      "stopped": false,
-      "decision_reasoning": "Chose (3, 8). EV = 1.19 > 0. Math says ROLL!",
-      "ev_calculation": 1.19
-    },
-    {
-      "turn_number": 4,
-      "current_player": "ExpectedValueMax",
-      "roll": [
-        3,
-        4,
-        4,
-        6
-      ],
-      "available_pairings": [
-        [
-          7,
-          10
-        ],
-        [
-          7,
-          10
-        ],
-        [
-          9,
-          8
-        ]
-      ],
-      "chosen_pairing": [
-        9,
-        8
-      ],
-      "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player1_temporary": {},
-      "player2_temporary": {
-        "3": 1,
-        "8": 2,
-        "9": 1
-      },
-      "player1_active_columns": [],
-      "player2_active_columns": [
-        8,
-        9,
-        3
-      ],
-      "busted": false,
-      "stopped": false,
-      "decision_reasoning": "Chose (9, 8). EV = 0.89 > 0. Math says ROLL!",
-      "ev_calculation": 0.8899999999999999
-    },
-    {
-      "turn_number": 5,
-      "current_player": "ExpectedValueMax",
-      "roll": [
-        1,
-        3,
         4,
         5
       ],
       "available_pairings": [
         [
-          4,
+          3,
           9
         ],
         [
           5,
-          8
+          7
         ],
         [
           6,
-          7
+          6
         ]
       ],
       "chosen_pairing": [
-        4,
+        3,
         9
       ],
       "player1_permanent": {
         "2": 0,
         "3": 0,
-        "4": 0,
+        "4": 2,
         "5": 0,
         "6": 0,
         "7": 0,
-        "8": 0,
+        "8": 1,
         "9": 0,
         "10": 0,
-        "11": 0,
+        "11": 1,
         "12": 0
       },
       "player2_permanent": {
@@ -330,234 +201,23 @@
       "player1_temporary": {},
       "player2_temporary": {
         "3": 1,
-        "8": 2,
-        "9": 2,
-        "4": 1
+        "9": 1
       },
-      "player1_active_columns": [],
-      "player2_active_columns": [
-        8,
-        9,
-        3,
-        4
-      ],
       "busted": false,
       "stopped": false,
-      "decision_reasoning": "Chose (4, 9). EV = 0.59 > 0. Math says ROLL!",
-      "ev_calculation": 0.5899999999999999
+      "decision_reasoning": "Chose (3, 9). EV = 0.97 > 0. Math says ROLL!",
+      "ev_calculation": 0.9749999999999999,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        9,
+        3
+      ],
+      "player1_completed": [],
+      "player2_completed": []
     },
     {
-      "turn_number": 6,
+      "turn_number": 4,
       "current_player": "ExpectedValueMax",
-      "roll": [
-        1,
-        3,
-        4,
-        4
-      ],
-      "available_pairings": [
-        [
-          4,
-          8
-        ],
-        [
-          5,
-          7
-        ],
-        [
-          5,
-          7
-        ]
-      ],
-      "chosen_pairing": [
-        4,
-        8
-      ],
-      "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player1_temporary": {},
-      "player2_temporary": {
-        "3": 1,
-        "8": 3,
-        "9": 2,
-        "4": 2
-      },
-      "player1_active_columns": [],
-      "player2_active_columns": [
-        8,
-        9,
-        3,
-        4
-      ],
-      "busted": false,
-      "stopped": false,
-      "decision_reasoning": "Chose (4, 8). EV = 0.29 > 0. Math says ROLL!",
-      "ev_calculation": 0.2899999999999998
-    },
-    {
-      "turn_number": 7,
-      "current_player": "ExpectedValueMax",
-      "roll": [
-        1,
-        1,
-        5,
-        6
-      ],
-      "available_pairings": [
-        [
-          2,
-          11
-        ],
-        [
-          6,
-          7
-        ],
-        [
-          7,
-          6
-        ]
-      ],
-      "chosen_pairing": null,
-      "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player1_temporary": {},
-      "player2_temporary": {
-        "3": 1,
-        "8": 3,
-        "9": 2,
-        "4": 2
-      },
-      "player1_active_columns": [],
-      "player2_active_columns": [
-        8,
-        9,
-        3,
-        4
-      ],
-      "busted": true,
-      "stopped": false,
-      "decision_reasoning": "\ud83d\udca5 BUST! No valid moves from [1, 1, 5, 6]. Lost 8 steps.",
-      "ev_calculation": null
-    },
-    {
-      "turn_number": 8,
-      "current_player": "GreedyUntil1Col",
-      "roll": [
-        2,
-        3,
-        4,
-        6
-      ],
-      "available_pairings": [
-        [
-          5,
-          10
-        ],
-        [
-          6,
-          9
-        ],
-        [
-          8,
-          7
-        ]
-      ],
-      "chosen_pairing": [
-        5,
-        10
-      ],
-      "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player1_temporary": {
-        "5": 1,
-        "10": 1
-      },
-      "player2_temporary": {},
-      "player1_active_columns": [
-        10,
-        5
-      ],
-      "player2_active_columns": [],
-      "busted": false,
-      "stopped": false,
-      "decision_reasoning": "Chose (5, 10). No column complete yet, continuing...",
-      "ev_calculation": null
-    },
-    {
-      "turn_number": 9,
-      "current_player": "GreedyUntil1Col",
       "roll": [
         4,
         5,
@@ -579,20 +239,92 @@
         ]
       ],
       "chosen_pairing": [
-        10,
+        9,
+        11
+      ],
+      "player1_permanent": {
+        "2": 0,
+        "3": 0,
+        "4": 2,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 1,
+        "9": 0,
+        "10": 0,
+        "11": 1,
+        "12": 0
+      },
+      "player2_permanent": {
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "3": 1,
+        "9": 2,
+        "11": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (9, 11). EV = 0.12 > 0. Math says ROLL!",
+      "ev_calculation": 0.125,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        11,
+        9,
+        3
+      ],
+      "player1_completed": [],
+      "player2_completed": []
+    },
+    {
+      "turn_number": 5,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        3,
+        5,
+        5,
+        6
+      ],
+      "available_pairings": [
+        [
+          8,
+          11
+        ],
+        [
+          8,
+          11
+        ],
+        [
+          9,
+          10
+        ]
+      ],
+      "chosen_pairing": [
+        9,
         10
       ],
       "player1_permanent": {
         "2": 0,
         "3": 0,
-        "4": 0,
+        "4": 2,
         "5": 0,
         "6": 0,
         "7": 0,
-        "8": 0,
+        "8": 1,
         "9": 0,
         "10": 0,
-        "11": 0,
+        "11": 1,
         "12": 0
       },
       "player2_permanent": {
@@ -608,90 +340,377 @@
         "11": 0,
         "12": 0
       },
-      "player1_temporary": {
-        "5": 1,
-        "10": 3
+      "player1_temporary": {},
+      "player2_temporary": {
+        "3": 1,
+        "9": 3,
+        "11": 1
       },
-      "player2_temporary": {},
-      "player1_active_columns": [
-        10,
-        5
-      ],
-      "player2_active_columns": [],
       "busted": false,
-      "stopped": false,
-      "decision_reasoning": "Chose (10, 10). No column complete yet, continuing...",
-      "ev_calculation": null
+      "stopped": true,
+      "decision_reasoning": "EV = -0.12 \u2264 0. Math says STOP (5 unsaved steps).",
+      "ev_calculation": -0.125,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        11,
+        9,
+        3
+      ],
+      "player1_completed": [],
+      "player2_completed": []
     },
     {
-      "turn_number": 10,
+      "turn_number": 6,
       "current_player": "GreedyUntil1Col",
       "roll": [
         1,
-        4,
-        4,
-        5
+        1,
+        3,
+        6
       ],
       "available_pairings": [
         [
-          5,
+          2,
           9
         ],
         [
-          5,
-          9
+          4,
+          7
         ],
         [
-          6,
-          8
+          7,
+          4
         ]
       ],
       "chosen_pairing": [
-        5,
+        2,
         9
       ],
       "player1_permanent": {
         "2": 0,
         "3": 0,
-        "4": 0,
+        "4": 2,
         "5": 0,
         "6": 0,
         "7": 0,
-        "8": 0,
+        "8": 1,
         "9": 0,
         "10": 0,
-        "11": 0,
+        "11": 1,
         "12": 0
       },
       "player2_permanent": {
         "2": 0,
-        "3": 0,
+        "3": 1,
         "4": 0,
         "5": 0,
         "6": 0,
         "7": 0,
         "8": 0,
-        "9": 0,
+        "9": 3,
         "10": 0,
-        "11": 0,
+        "11": 1,
         "12": 0
       },
       "player1_temporary": {
-        "5": 2,
-        "10": 3,
+        "2": 1,
         "9": 1
       },
       "player2_temporary": {},
-      "player1_active_columns": [
-        9,
-        10,
-        5
-      ],
-      "player2_active_columns": [],
       "busted": false,
       "stopped": false,
-      "decision_reasoning": "Chose (5, 9). No column complete yet, continuing...",
-      "ev_calculation": null
+      "decision_reasoning": "Chose (2, 9). 2 unsaved steps, continuing...",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        9,
+        2
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [],
+      "player2_completed": []
+    },
+    {
+      "turn_number": 7,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "available_pairings": [
+        [
+          3,
+          9
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          7,
+          5
+        ]
+      ],
+      "chosen_pairing": [
+        3,
+        9
+      ],
+      "player1_permanent": {
+        "2": 0,
+        "3": 0,
+        "4": 2,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 1,
+        "9": 0,
+        "10": 0,
+        "11": 1,
+        "12": 0
+      },
+      "player2_permanent": {
+        "2": 0,
+        "3": 1,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 0,
+        "11": 1,
+        "12": 0
+      },
+      "player1_temporary": {
+        "2": 1,
+        "9": 2,
+        "3": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "Have 4 unsaved steps. Stopping to secure progress.",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        9,
+        2,
+        3
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [],
+      "player2_completed": []
+    },
+    {
+      "turn_number": 8,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "available_pairings": [
+        [
+          3,
+          10
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          7,
+          6
+        ]
+      ],
+      "chosen_pairing": [
+        3,
+        10
+      ],
+      "player1_permanent": {
+        "2": 1,
+        "3": 1,
+        "4": 2,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 1,
+        "9": 2,
+        "10": 0,
+        "11": 1,
+        "12": 0
+      },
+      "player2_permanent": {
+        "2": 0,
+        "3": 1,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 0,
+        "11": 1,
+        "12": 0
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "3": 1,
+        "10": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (3, 10). EV = 0.97 > 0. Math says ROLL!",
+      "ev_calculation": 0.9749999999999999,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        10,
+        3
+      ],
+      "player1_completed": [],
+      "player2_completed": []
+    },
+    {
+      "turn_number": 9,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        2,
+        2,
+        4,
+        6
+      ],
+      "available_pairings": [
+        [
+          4,
+          10
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "chosen_pairing": [
+        4,
+        10
+      ],
+      "player1_permanent": {
+        "2": 1,
+        "3": 1,
+        "4": 2,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 1,
+        "9": 2,
+        "10": 0,
+        "11": 1,
+        "12": 0
+      },
+      "player2_permanent": {
+        "2": 0,
+        "3": 1,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 0,
+        "11": 1,
+        "12": 0
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "3": 1,
+        "10": 2,
+        "4": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (4, 10). EV = 0.12 > 0. Math says ROLL!",
+      "ev_calculation": 0.125,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        10,
+        3,
+        4
+      ],
+      "player1_completed": [],
+      "player2_completed": []
+    },
+    {
+      "turn_number": 10,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        1,
+        4,
+        4
+      ],
+      "available_pairings": [
+        [
+          2,
+          8
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          5,
+          5
+        ]
+      ],
+      "chosen_pairing": null,
+      "player1_permanent": {
+        "2": 1,
+        "3": 1,
+        "4": 2,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 1,
+        "9": 2,
+        "10": 0,
+        "11": 1,
+        "12": 0
+      },
+      "player2_permanent": {
+        "2": 0,
+        "3": 1,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 0,
+        "11": 1,
+        "12": 0
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "3": 1,
+        "10": 2,
+        "4": 1
+      },
+      "busted": true,
+      "stopped": false,
+      "decision_reasoning": "\ud83d\udca5 BUST! No valid moves from [1, 1, 4, 4]. Lost 4 steps.",
+      "ev_calculation": null,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        10,
+        3,
+        4
+      ],
+      "player1_completed": [],
+      "player2_completed": []
     },
     {
       "turn_number": 11,
@@ -721,202 +740,333 @@
         12
       ],
       "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
+        "2": 1,
+        "3": 1,
+        "4": 2,
         "5": 0,
         "6": 0,
         "7": 0,
-        "8": 0,
-        "9": 0,
+        "8": 1,
+        "9": 2,
         "10": 0,
-        "11": 0,
+        "11": 1,
         "12": 0
       },
       "player2_permanent": {
         "2": 0,
-        "3": 0,
+        "3": 1,
         "4": 0,
         "5": 0,
         "6": 0,
         "7": 0,
         "8": 0,
-        "9": 0,
+        "9": 3,
         "10": 0,
-        "11": 0,
+        "11": 1,
         "12": 0
       },
       "player1_temporary": {
-        "5": 3,
-        "10": 3,
-        "9": 1,
+        "5": 1,
         "12": 1
       },
       "player2_temporary": {},
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (5, 12). 2 unsaved steps, continuing...",
+      "ev_calculation": null,
       "player1_active_columns": [
-        9,
-        10,
         12,
         5
       ],
       "player2_active_columns": [],
-      "busted": false,
-      "stopped": false,
-      "decision_reasoning": "Chose (5, 12). No column complete yet, continuing...",
-      "ev_calculation": null
+      "player1_completed": [],
+      "player2_completed": []
     },
     {
       "turn_number": 12,
       "current_player": "GreedyUntil1Col",
       "roll": [
-        2,
-        2,
-        3,
+        4,
+        4,
+        4,
         6
       ],
       "available_pairings": [
         [
-          4,
-          9
-        ],
-        [
-          5,
-          8
+          8,
+          10
         ],
         [
           8,
-          5
+          10
+        ],
+        [
+          10,
+          8
         ]
       ],
       "chosen_pairing": [
-        4,
-        9
+        8,
+        10
       ],
       "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
+        "2": 1,
+        "3": 1,
+        "4": 2,
         "5": 0,
         "6": 0,
         "7": 0,
-        "8": 0,
-        "9": 0,
+        "8": 1,
+        "9": 2,
         "10": 0,
-        "11": 0,
+        "11": 1,
         "12": 0
       },
       "player2_permanent": {
         "2": 0,
-        "3": 0,
+        "3": 1,
         "4": 0,
         "5": 0,
         "6": 0,
         "7": 0,
         "8": 0,
-        "9": 0,
+        "9": 3,
         "10": 0,
-        "11": 0,
+        "11": 1,
         "12": 0
       },
       "player1_temporary": {
-        "5": 3,
-        "10": 3,
-        "9": 2,
+        "5": 1,
         "12": 1,
-        "4": 1
+        "8": 1
       },
       "player2_temporary": {},
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "Have 3 unsaved steps. Stopping to secure progress.",
+      "ev_calculation": null,
       "player1_active_columns": [
-        4,
-        5,
-        9,
-        10,
-        12
+        8,
+        12,
+        5
       ],
       "player2_active_columns": [],
-      "busted": false,
-      "stopped": false,
-      "decision_reasoning": "Chose (4, 9). No column complete yet, continuing...",
-      "ev_calculation": null
+      "player1_completed": [],
+      "player2_completed": []
     },
     {
       "turn_number": 13,
-      "current_player": "GreedyUntil1Col",
+      "current_player": "ExpectedValueMax",
       "roll": [
-        1,
+        2,
+        4,
         5,
-        6,
         6
       ],
       "available_pairings": [
         [
           6,
-          12
-        ],
-        [
-          7,
           11
         ],
         [
           7,
-          11
+          10
+        ],
+        [
+          8,
+          9
         ]
       ],
       "chosen_pairing": [
         6,
-        12
+        11
       ],
       "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
+        "2": 1,
+        "3": 1,
+        "4": 2,
+        "5": 1,
         "6": 0,
         "7": 0,
-        "8": 0,
-        "9": 0,
+        "8": 2,
+        "9": 2,
         "10": 0,
-        "11": 0,
-        "12": 0
+        "11": 1,
+        "12": 1
       },
       "player2_permanent": {
         "2": 0,
-        "3": 0,
+        "3": 1,
         "4": 0,
         "5": 0,
         "6": 0,
         "7": 0,
         "8": 0,
-        "9": 0,
+        "9": 3,
         "10": 0,
-        "11": 0,
+        "11": 1,
         "12": 0
       },
-      "player1_temporary": {
-        "5": 3,
-        "10": 3,
-        "9": 2,
-        "12": 2,
-        "4": 1,
-        "6": 1
+      "player1_temporary": {},
+      "player2_temporary": {
+        "6": 1,
+        "11": 1
       },
-      "player2_temporary": {},
-      "player1_active_columns": [
-        4,
-        5,
-        6,
-        9,
-        10,
-        12
-      ],
-      "player2_active_columns": [],
       "busted": false,
       "stopped": false,
-      "decision_reasoning": "Chose (6, 12). No column complete yet, continuing...",
-      "ev_calculation": null
+      "decision_reasoning": "Chose (6, 11). EV = 0.97 > 0. Math says ROLL!",
+      "ev_calculation": 0.9749999999999999,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        11,
+        6
+      ],
+      "player1_completed": [],
+      "player2_completed": []
     },
     {
       "turn_number": 14,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        2,
+        3,
+        5,
+        5
+      ],
+      "available_pairings": [
+        [
+          5,
+          10
+        ],
+        [
+          7,
+          8
+        ],
+        [
+          7,
+          8
+        ]
+      ],
+      "chosen_pairing": [
+        5,
+        10
+      ],
+      "player1_permanent": {
+        "2": 1,
+        "3": 1,
+        "4": 2,
+        "5": 1,
+        "6": 0,
+        "7": 0,
+        "8": 2,
+        "9": 2,
+        "10": 0,
+        "11": 1,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 0,
+        "3": 1,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 0,
+        "11": 1,
+        "12": 0
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "6": 1,
+        "11": 1,
+        "5": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (5, 10). EV = 0.38 > 0. Math says ROLL!",
+      "ev_calculation": 0.375,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        11,
+        5,
+        6
+      ],
+      "player1_completed": [],
+      "player2_completed": []
+    },
+    {
+      "turn_number": 15,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        4,
+        4,
+        6,
+        6
+      ],
+      "available_pairings": [
+        [
+          8,
+          12
+        ],
+        [
+          10,
+          10
+        ],
+        [
+          10,
+          10
+        ]
+      ],
+      "chosen_pairing": null,
+      "player1_permanent": {
+        "2": 1,
+        "3": 1,
+        "4": 2,
+        "5": 1,
+        "6": 0,
+        "7": 0,
+        "8": 2,
+        "9": 2,
+        "10": 0,
+        "11": 1,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 0,
+        "3": 1,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 0,
+        "11": 1,
+        "12": 0
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "6": 1,
+        "11": 1,
+        "5": 1
+      },
+      "busted": true,
+      "stopped": false,
+      "decision_reasoning": "\ud83d\udca5 BUST! No valid moves from [4, 4, 6, 6]. Lost 3 steps.",
+      "ev_calculation": null,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        11,
+        5,
+        6
+      ],
+      "player1_completed": [],
+      "player2_completed": []
+    },
+    {
+      "turn_number": 16,
       "current_player": "GreedyUntil1Col",
       "roll": [
         3,
@@ -939,62 +1089,1339 @@
         ]
       ],
       "chosen_pairing": [
+        9,
+        9
+      ],
+      "player1_permanent": {
+        "2": 1,
+        "3": 1,
+        "4": 2,
+        "5": 1,
+        "6": 0,
+        "7": 0,
+        "8": 2,
+        "9": 2,
+        "10": 0,
+        "11": 1,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 0,
+        "3": 1,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 0,
+        "11": 1,
+        "12": 0
+      },
+      "player1_temporary": {
+        "9": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (9, 9). 1 unsaved steps, continuing...",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        9
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [],
+      "player2_completed": []
+    },
+    {
+      "turn_number": 17,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        1,
+        4,
+        5,
+        6
+      ],
+      "available_pairings": [
+        [
+          5,
+          11
+        ],
+        [
+          6,
+          10
+        ],
+        [
+          7,
+          9
+        ]
+      ],
+      "chosen_pairing": [
+        5,
+        11
+      ],
+      "player1_permanent": {
+        "2": 1,
+        "3": 1,
+        "4": 2,
+        "5": 1,
+        "6": 0,
+        "7": 0,
+        "8": 2,
+        "9": 2,
+        "10": 0,
+        "11": 1,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 0,
+        "3": 1,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 0,
+        "11": 1,
+        "12": 0
+      },
+      "player1_temporary": {
+        "9": 1,
+        "5": 1,
+        "11": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "Have 3 unsaved steps. Stopping to secure progress.",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        9,
+        11,
+        5
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [],
+      "player2_completed": []
+    },
+    {
+      "turn_number": 18,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        1,
+        5,
+        5
+      ],
+      "available_pairings": [
+        [
+          2,
+          10
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          6,
+          6
+        ]
+      ],
+      "chosen_pairing": [
+        2,
+        10
+      ],
+      "player1_permanent": {
+        "2": 1,
+        "3": 1,
+        "4": 2,
+        "5": 2,
+        "6": 0,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 0,
+        "11": 2,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 0,
+        "3": 1,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 0,
+        "11": 1,
+        "12": 0
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "2": 1,
+        "10": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (2, 10). EV = 0.97 > 0. Math says ROLL!",
+      "ev_calculation": 0.9749999999999999,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        2,
+        10
+      ],
+      "player1_completed": [],
+      "player2_completed": []
+    },
+    {
+      "turn_number": 19,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        2,
+        2,
+        6
+      ],
+      "available_pairings": [
+        [
+          3,
+          8
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          7,
+          4
+        ]
+      ],
+      "chosen_pairing": [
+        3,
+        8
+      ],
+      "player1_permanent": {
+        "2": 1,
+        "3": 1,
+        "4": 2,
+        "5": 2,
+        "6": 0,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 0,
+        "11": 2,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 0,
+        "3": 1,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 0,
+        "11": 1,
+        "12": 0
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "2": 1,
+        "10": 1,
+        "3": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (3, 8). EV = 0.38 > 0. Math says ROLL!",
+      "ev_calculation": 0.375,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        3,
+        2,
+        10
+      ],
+      "player1_completed": [],
+      "player2_completed": []
+    },
+    {
+      "turn_number": 20,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        4,
+        4,
+        5,
+        5
+      ],
+      "available_pairings": [
+        [
+          8,
+          10
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          9,
+          9
+        ]
+      ],
+      "chosen_pairing": [
         8,
         10
       ],
       "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
+        "2": 1,
+        "3": 1,
+        "4": 2,
+        "5": 2,
         "6": 0,
         "7": 0,
-        "8": 0,
-        "9": 0,
+        "8": 2,
+        "9": 3,
         "10": 0,
-        "11": 0,
-        "12": 0
+        "11": 2,
+        "12": 1
       },
       "player2_permanent": {
         "2": 0,
-        "3": 0,
+        "3": 1,
         "4": 0,
         "5": 0,
         "6": 0,
         "7": 0,
         "8": 0,
-        "9": 0,
+        "9": 3,
         "10": 0,
-        "11": 0,
+        "11": 1,
+        "12": 0
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "2": 1,
+        "10": 2,
+        "3": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (8, 10). EV = 0.12 > 0. Math says ROLL!",
+      "ev_calculation": 0.125,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        3,
+        2,
+        10
+      ],
+      "player1_completed": [],
+      "player2_completed": []
+    },
+    {
+      "turn_number": 21,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        1,
+        4,
+        6
+      ],
+      "available_pairings": [
+        [
+          2,
+          10
+        ],
+        [
+          5,
+          7
+        ],
+        [
+          7,
+          5
+        ]
+      ],
+      "chosen_pairing": [
+        2,
+        10
+      ],
+      "player1_permanent": {
+        "2": 1,
+        "3": 1,
+        "4": 2,
+        "5": 2,
+        "6": 0,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 0,
+        "11": 2,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 0,
+        "3": 1,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 0,
+        "11": 1,
+        "12": 0
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "2": 2,
+        "10": 3,
+        "3": 1
+      },
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "EV = -0.38 \u2264 0. Math says STOP (6 unsaved steps).",
+      "ev_calculation": -0.375,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        3,
+        2,
+        10
+      ],
+      "player1_completed": [],
+      "player2_completed": []
+    },
+    {
+      "turn_number": 22,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        3,
+        3,
+        5,
+        6
+      ],
+      "available_pairings": [
+        [
+          6,
+          11
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          9,
+          8
+        ]
+      ],
+      "chosen_pairing": [
+        6,
+        11
+      ],
+      "player1_permanent": {
+        "2": 1,
+        "3": 1,
+        "4": 2,
+        "5": 2,
+        "6": 0,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 0,
+        "11": 2,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 2,
+        "3": 2,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 3,
+        "11": 1,
         "12": 0
       },
       "player1_temporary": {
-        "5": 3,
-        "10": 4,
-        "9": 2,
-        "12": 2,
-        "4": 1,
         "6": 1,
-        "8": 1
+        "11": 1
       },
       "player2_temporary": {},
-      "player1_active_columns": [
-        4,
-        5,
-        6,
-        8,
-        9,
-        10,
-        12
-      ],
-      "player2_active_columns": [],
       "busted": false,
       "stopped": false,
-      "decision_reasoning": "Chose (8, 10). No column complete yet, continuing...",
-      "ev_calculation": null
+      "decision_reasoning": "Chose (6, 11). 2 unsaved steps, continuing...",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        11,
+        6
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [],
+      "player2_completed": []
     },
     {
-      "turn_number": 15,
+      "turn_number": 23,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        1,
+        2,
+        4,
+        4
+      ],
+      "available_pairings": [
+        [
+          3,
+          8
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "chosen_pairing": [
+        3,
+        8
+      ],
+      "player1_permanent": {
+        "2": 1,
+        "3": 1,
+        "4": 2,
+        "5": 2,
+        "6": 0,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 0,
+        "11": 2,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 2,
+        "3": 2,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 0
+      },
+      "player1_temporary": {
+        "6": 1,
+        "11": 1,
+        "3": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "Have 3 unsaved steps. Stopping to secure progress.",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        3,
+        11,
+        6
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [],
+      "player2_completed": []
+    },
+    {
+      "turn_number": 24,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "available_pairings": [
+        [
+          3,
+          10
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          7,
+          6
+        ]
+      ],
+      "chosen_pairing": [
+        3,
+        10
+      ],
+      "player1_permanent": {
+        "2": 1,
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "6": 1,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 0,
+        "11": 3,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 2,
+        "3": 2,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 0
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "3": 1,
+        "10": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (3, 10). EV = 0.97 > 0. Math says ROLL!",
+      "ev_calculation": 0.9749999999999999,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        10,
+        3
+      ],
+      "player1_completed": [],
+      "player2_completed": []
+    },
+    {
+      "turn_number": 25,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        4,
+        4,
+        5
+      ],
+      "available_pairings": [
+        [
+          5,
+          9
+        ],
+        [
+          5,
+          9
+        ],
+        [
+          6,
+          8
+        ]
+      ],
+      "chosen_pairing": [
+        5,
+        9
+      ],
+      "player1_permanent": {
+        "2": 1,
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "6": 1,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 0,
+        "11": 3,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 2,
+        "3": 2,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 0
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "3": 1,
+        "10": 1,
+        "5": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (5, 9). EV = 0.38 > 0. Math says ROLL!",
+      "ev_calculation": 0.375,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        10,
+        3,
+        5
+      ],
+      "player1_completed": [],
+      "player2_completed": []
+    },
+    {
+      "turn_number": 26,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        3,
+        5,
+        6
+      ],
+      "available_pairings": [
+        [
+          4,
+          11
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          7,
+          8
+        ]
+      ],
+      "chosen_pairing": null,
+      "player1_permanent": {
+        "2": 1,
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "6": 1,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 0,
+        "11": 3,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 2,
+        "3": 2,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 0
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "3": 1,
+        "10": 1,
+        "5": 1
+      },
+      "busted": true,
+      "stopped": false,
+      "decision_reasoning": "\ud83d\udca5 BUST! No valid moves from [1, 3, 5, 6]. Lost 3 steps.",
+      "ev_calculation": null,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        10,
+        3,
+        5
+      ],
+      "player1_completed": [],
+      "player2_completed": []
+    },
+    {
+      "turn_number": 27,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        2,
+        4,
+        4,
+        6
+      ],
+      "available_pairings": [
+        [
+          6,
+          10
+        ],
+        [
+          6,
+          10
+        ],
+        [
+          8,
+          8
+        ]
+      ],
+      "chosen_pairing": [
+        6,
+        10
+      ],
+      "player1_permanent": {
+        "2": 1,
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "6": 1,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 0,
+        "11": 3,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 2,
+        "3": 2,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 0
+      },
+      "player1_temporary": {
+        "6": 1,
+        "10": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (6, 10). 2 unsaved steps, continuing...",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        10,
+        6
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [],
+      "player2_completed": []
+    },
+    {
+      "turn_number": 28,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        1,
+        1,
+        3,
+        5
+      ],
+      "available_pairings": [
+        [
+          2,
+          8
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "chosen_pairing": [
+        2,
+        8
+      ],
+      "player1_permanent": {
+        "2": 1,
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "6": 1,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 0,
+        "11": 3,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 2,
+        "3": 2,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 0
+      },
+      "player1_temporary": {
+        "6": 1,
+        "10": 1,
+        "2": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "Have 3 unsaved steps. Stopping to secure progress.",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        10,
+        2,
+        6
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [],
+      "player2_completed": []
+    },
+    {
+      "turn_number": 29,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        1,
+        6,
+        6
+      ],
+      "available_pairings": [
+        [
+          2,
+          12
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "chosen_pairing": [
+        2,
+        12
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "6": 2,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 1,
+        "11": 3,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 2,
+        "3": 2,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 0
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "2": 1,
+        "12": 1
+      },
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "\u2713 Reached top of [2]. Stopping to secure!",
+      "ev_calculation": null,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        2,
+        12
+      ],
+      "player1_completed": [],
+      "player2_completed": []
+    },
+    {
+      "turn_number": 30,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        1,
+        5,
+        5,
+        6
+      ],
+      "available_pairings": [
+        [
+          6,
+          11
+        ],
+        [
+          6,
+          11
+        ],
+        [
+          7,
+          10
+        ]
+      ],
+      "chosen_pairing": [
+        6,
+        11
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "6": 2,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 1,
+        "11": 3,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 2,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 1
+      },
+      "player1_temporary": {
+        "6": 1,
+        "11": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (6, 11). 2 unsaved steps, continuing...",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        11,
+        6
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [],
+      "player2_completed": [
+        2
+      ]
+    },
+    {
+      "turn_number": 31,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        1,
+        2,
+        2,
+        3
+      ],
+      "available_pairings": [
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "chosen_pairing": [
+        3,
+        5
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "6": 2,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 1,
+        "11": 3,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 2,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 1
+      },
+      "player1_temporary": {
+        "6": 1,
+        "11": 1,
+        "3": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "Have 3 unsaved steps. Stopping to secure progress.",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        3,
+        11,
+        6
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [],
+      "player2_completed": [
+        2
+      ]
+    },
+    {
+      "turn_number": 32,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        1,
+        3,
+        5
+      ],
+      "available_pairings": [
+        [
+          2,
+          8
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "chosen_pairing": [
+        2,
+        8
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 3,
+        "4": 2,
+        "5": 2,
+        "6": 3,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 2,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 1
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "8": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (2, 8). EV = 1.12 > 0. Math says ROLL!",
+      "ev_calculation": 1.125,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        8
+      ],
+      "player1_completed": [],
+      "player2_completed": [
+        2
+      ]
+    },
+    {
+      "turn_number": 33,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        3,
+        3,
+        3
+      ],
+      "available_pairings": [
+        [
+          4,
+          6
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          4,
+          6
+        ]
+      ],
+      "chosen_pairing": [
+        4,
+        6
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 3,
+        "4": 2,
+        "5": 2,
+        "6": 3,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 2,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 1
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "8": 1,
+        "4": 1,
+        "6": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (4, 6). EV = 0.38 > 0. Math says ROLL!",
+      "ev_calculation": 0.375,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        8,
+        4,
+        6
+      ],
+      "player1_completed": [],
+      "player2_completed": [
+        2
+      ]
+    },
+    {
+      "turn_number": 34,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "available_pairings": [
+        [
+          5,
+          9
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "chosen_pairing": [
+        6,
+        8
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 3,
+        "4": 2,
+        "5": 2,
+        "6": 3,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 2,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 1
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "8": 2,
+        "4": 1,
+        "6": 2
+      },
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "EV = -0.12 \u2264 0. Math says STOP (5 unsaved steps).",
+      "ev_calculation": -0.125,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        8,
+        4,
+        6
+      ],
+      "player1_completed": [],
+      "player2_completed": [
+        2
+      ]
+    },
+    {
+      "turn_number": 35,
       "current_player": "GreedyUntil1Col",
       "roll": [
         2,
@@ -1021,59 +2448,1151 @@
         9
       ],
       "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
+        "2": 2,
+        "3": 3,
+        "4": 2,
+        "5": 2,
+        "6": 3,
         "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
+        "8": 2,
+        "9": 3,
+        "10": 1,
+        "11": 4,
+        "12": 1
       },
       "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
+        "2": 3,
+        "3": 2,
+        "4": 1,
         "5": 0,
-        "6": 0,
+        "6": 2,
         "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
+        "8": 2,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 1
       },
       "player1_temporary": {
-        "5": 3,
-        "10": 4,
+        "4": 1,
+        "9": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (4, 9). 2 unsaved steps, continuing...",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        9,
+        4
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [],
+      "player2_completed": [
+        2
+      ]
+    },
+    {
+      "turn_number": 36,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        3,
+        3,
+        6,
+        6
+      ],
+      "available_pairings": [
+        [
+          6,
+          12
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          9,
+          9
+        ]
+      ],
+      "chosen_pairing": [
+        6,
+        12
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 3,
+        "4": 2,
+        "5": 2,
+        "6": 3,
+        "7": 0,
+        "8": 2,
         "9": 3,
-        "12": 2,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 2,
+        "4": 1,
+        "5": 0,
+        "6": 2,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 1
+      },
+      "player1_temporary": {
+        "4": 1,
+        "9": 1,
+        "6": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "Have 3 unsaved steps. Stopping to secure progress.",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        9,
+        4,
+        6
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [],
+      "player2_completed": [
+        2
+      ]
+    },
+    {
+      "turn_number": 37,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        1,
+        2,
+        4
+      ],
+      "available_pairings": [
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          5,
+          3
+        ]
+      ],
+      "chosen_pairing": [
+        2,
+        6
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 3,
+        "4": 3,
+        "5": 2,
+        "6": 4,
+        "7": 0,
+        "8": 2,
+        "9": 4,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 2,
+        "4": 1,
+        "5": 0,
+        "6": 2,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 1
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "6": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (2, 6). EV = 1.12 > 0. Math says ROLL!",
+      "ev_calculation": 1.125,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        6
+      ],
+      "player1_completed": [],
+      "player2_completed": [
+        2
+      ]
+    },
+    {
+      "turn_number": 38,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        2,
+        2,
+        6,
+        6
+      ],
+      "available_pairings": [
+        [
+          4,
+          12
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          8,
+          8
+        ]
+      ],
+      "chosen_pairing": [
+        4,
+        12
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 3,
+        "4": 3,
+        "5": 2,
+        "6": 4,
+        "7": 0,
+        "8": 2,
+        "9": 4,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 2,
+        "4": 1,
+        "5": 0,
+        "6": 2,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 1
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "6": 1,
+        "4": 1,
+        "12": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (4, 12). EV = 0.38 > 0. Math says ROLL!",
+      "ev_calculation": 0.375,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        4,
+        12,
+        6
+      ],
+      "player1_completed": [],
+      "player2_completed": [
+        2
+      ]
+    },
+    {
+      "turn_number": 39,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        2,
+        2,
+        2,
+        4
+      ],
+      "available_pairings": [
+        [
+          4,
+          6
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "chosen_pairing": [
+        4,
+        6
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 3,
+        "4": 3,
+        "5": 2,
+        "6": 4,
+        "7": 0,
+        "8": 2,
+        "9": 4,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 2,
+        "4": 1,
+        "5": 0,
+        "6": 2,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 1
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "6": 2,
+        "4": 2,
+        "12": 1
+      },
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "EV = -0.12 \u2264 0. Math says STOP (5 unsaved steps).",
+      "ev_calculation": -0.125,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        4,
+        12,
+        6
+      ],
+      "player1_completed": [],
+      "player2_completed": [
+        2
+      ]
+    },
+    {
+      "turn_number": 40,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "available_pairings": [
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          5,
+          5
+        ]
+      ],
+      "chosen_pairing": [
+        4,
+        6
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 3,
+        "4": 3,
+        "5": 2,
+        "6": 4,
+        "7": 0,
+        "8": 2,
+        "9": 4,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 2,
+        "4": 3,
+        "5": 0,
+        "6": 4,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 2
+      },
+      "player1_temporary": {
+        "4": 1,
+        "6": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (4, 6). 2 unsaved steps, continuing...",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        4,
+        6
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [],
+      "player2_completed": [
+        2
+      ]
+    },
+    {
+      "turn_number": 41,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        1,
+        3,
+        3,
+        5
+      ],
+      "available_pairings": [
+        [
+          4,
+          8
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          6,
+          6
+        ]
+      ],
+      "chosen_pairing": [
+        4,
+        8
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 3,
+        "4": 3,
+        "5": 2,
+        "6": 4,
+        "7": 0,
+        "8": 2,
+        "9": 4,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 2,
+        "4": 3,
+        "5": 0,
+        "6": 4,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 2
+      },
+      "player1_temporary": {
         "4": 2,
         "6": 1,
         "8": 1
       },
       "player2_temporary": {},
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "Have 4 unsaved steps. Stopping to secure progress.",
+      "ev_calculation": null,
       "player1_active_columns": [
-        4,
-        5,
-        6,
         8,
-        9,
-        10,
-        12
+        4,
+        6
       ],
       "player2_active_columns": [],
-      "busted": false,
-      "stopped": false,
-      "decision_reasoning": "Chose (4, 9). No column complete yet, continuing...",
-      "ev_calculation": null
+      "player1_completed": [],
+      "player2_completed": [
+        2
+      ]
     },
     {
-      "turn_number": 16,
+      "turn_number": 42,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "available_pairings": [
+        [
+          3,
+          9
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          7,
+          5
+        ]
+      ],
+      "chosen_pairing": [
+        3,
+        9
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 3,
+        "4": 5,
+        "5": 2,
+        "6": 5,
+        "7": 0,
+        "8": 3,
+        "9": 4,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 2,
+        "4": 3,
+        "5": 0,
+        "6": 4,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 2
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "3": 1,
+        "9": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (3, 9). EV = 0.97 > 0. Math says ROLL!",
+      "ev_calculation": 0.9749999999999999,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        9,
+        3
+      ],
+      "player1_completed": [],
+      "player2_completed": [
+        2
+      ]
+    },
+    {
+      "turn_number": 43,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        4,
+        6,
+        6
+      ],
+      "available_pairings": [
+        [
+          5,
+          12
+        ],
+        [
+          7,
+          10
+        ],
+        [
+          7,
+          10
+        ]
+      ],
+      "chosen_pairing": [
+        5,
+        12
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 3,
+        "4": 5,
+        "5": 2,
+        "6": 5,
+        "7": 0,
+        "8": 3,
+        "9": 4,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 2,
+        "4": 3,
+        "5": 0,
+        "6": 4,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 2
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "3": 1,
+        "9": 1,
+        "5": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (5, 12). EV = 0.38 > 0. Math says ROLL!",
+      "ev_calculation": 0.375,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        9,
+        3,
+        5
+      ],
+      "player1_completed": [],
+      "player2_completed": [
+        2
+      ]
+    },
+    {
+      "turn_number": 44,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        3,
+        4,
+        5
+      ],
+      "available_pairings": [
+        [
+          4,
+          9
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      "chosen_pairing": [
+        4,
+        9
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 3,
+        "4": 5,
+        "5": 2,
+        "6": 5,
+        "7": 0,
+        "8": 3,
+        "9": 4,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 2,
+        "4": 3,
+        "5": 0,
+        "6": 4,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 2
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "3": 1,
+        "9": 2,
+        "5": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (4, 9). EV = 0.12 > 0. Math says ROLL!",
+      "ev_calculation": 0.125,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        9,
+        3,
+        5
+      ],
+      "player1_completed": [],
+      "player2_completed": [
+        2
+      ]
+    },
+    {
+      "turn_number": 45,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        2,
+        5,
+        5
+      ],
+      "available_pairings": [
+        [
+          3,
+          10
+        ],
+        [
+          6,
+          7
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      "chosen_pairing": [
+        3,
+        10
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 3,
+        "4": 5,
+        "5": 2,
+        "6": 5,
+        "7": 0,
+        "8": 3,
+        "9": 4,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 2,
+        "4": 3,
+        "5": 0,
+        "6": 4,
+        "7": 0,
+        "8": 2,
+        "9": 3,
+        "10": 3,
+        "11": 1,
+        "12": 2
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "3": 2,
+        "9": 2,
+        "5": 1
+      },
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "EV = -0.12 \u2264 0. Math says STOP (5 unsaved steps).",
+      "ev_calculation": -0.125,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        9,
+        3,
+        5
+      ],
+      "player1_completed": [],
+      "player2_completed": [
+        2
+      ]
+    },
+    {
+      "turn_number": 46,
       "current_player": "GreedyUntil1Col",
+      "roll": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "available_pairings": [
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          7
+        ],
+        [
+          6,
+          5
+        ]
+      ],
+      "chosen_pairing": [
+        3,
+        8
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 3,
+        "4": 5,
+        "5": 2,
+        "6": 5,
+        "7": 0,
+        "8": 3,
+        "9": 4,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 1,
+        "6": 4,
+        "7": 0,
+        "8": 2,
+        "9": 5,
+        "10": 3,
+        "11": 1,
+        "12": 2
+      },
+      "player1_temporary": {
+        "3": 1,
+        "8": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (3, 8). 2 unsaved steps, continuing...",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        8,
+        3
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [],
+      "player2_completed": [
+        2
+      ]
+    },
+    {
+      "turn_number": 47,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        1,
+        1,
+        3,
+        6
+      ],
+      "available_pairings": [
+        [
+          2,
+          9
+        ],
+        [
+          4,
+          7
+        ],
+        [
+          7,
+          4
+        ]
+      ],
+      "chosen_pairing": [
+        4,
+        7
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 3,
+        "4": 5,
+        "5": 2,
+        "6": 5,
+        "7": 0,
+        "8": 3,
+        "9": 4,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 1,
+        "6": 4,
+        "7": 0,
+        "8": 2,
+        "9": 5,
+        "10": 3,
+        "11": 1,
+        "12": 2
+      },
+      "player1_temporary": {
+        "3": 1,
+        "8": 1,
+        "4": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "Have 3 unsaved steps. Stopping to secure progress.",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        8,
+        3,
+        4
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [],
+      "player2_completed": [
+        2
+      ]
+    },
+    {
+      "turn_number": 48,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        4,
+        6,
+        6
+      ],
+      "available_pairings": [
+        [
+          5,
+          12
+        ],
+        [
+          7,
+          10
+        ],
+        [
+          7,
+          10
+        ]
+      ],
+      "chosen_pairing": [
+        5,
+        12
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 4,
+        "4": 6,
+        "5": 2,
+        "6": 5,
+        "7": 0,
+        "8": 4,
+        "9": 4,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 1,
+        "6": 4,
+        "7": 0,
+        "8": 2,
+        "9": 5,
+        "10": 3,
+        "11": 1,
+        "12": 2
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "5": 1,
+        "12": 1
+      },
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "\u2713 Reached top of [12]. Stopping to secure!",
+      "ev_calculation": null,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        12,
+        5
+      ],
+      "player1_completed": [],
+      "player2_completed": [
+        2
+      ]
+    },
+    {
+      "turn_number": 49,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "available_pairings": [
+        [
+          5,
+          9
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "chosen_pairing": [
+        5,
+        9
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 4,
+        "4": 6,
+        "5": 2,
+        "6": 5,
+        "7": 0,
+        "8": 4,
+        "9": 4,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 4,
+        "7": 0,
+        "8": 2,
+        "9": 5,
+        "10": 3,
+        "11": 1,
+        "12": 3
+      },
+      "player1_temporary": {
+        "5": 1,
+        "9": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (5, 9). 2 unsaved steps, continuing...",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        9,
+        5
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 50,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        2,
+        2,
+        4,
+        6
+      ],
+      "available_pairings": [
+        [
+          4,
+          10
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "chosen_pairing": [
+        4,
+        10
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 4,
+        "4": 6,
+        "5": 2,
+        "6": 5,
+        "7": 0,
+        "8": 4,
+        "9": 4,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 4,
+        "7": 0,
+        "8": 2,
+        "9": 5,
+        "10": 3,
+        "11": 1,
+        "12": 3
+      },
+      "player1_temporary": {
+        "5": 1,
+        "9": 1,
+        "4": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "\u2713 Reached top of [4]. Stopping to secure!",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        9,
+        4,
+        5
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 51,
+      "current_player": "ExpectedValueMax",
       "roll": [
         1,
         3,
@@ -1095,72 +3614,300 @@
         ]
       ],
       "chosen_pairing": [
-        4,
-        11
+        6,
+        9
       ],
       "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
+        "2": 2,
+        "3": 4,
+        "4": 7,
+        "5": 3,
+        "6": 5,
         "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
+        "8": 4,
+        "9": 5,
+        "10": 1,
+        "11": 4,
+        "12": 1
       },
       "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player1_temporary": {
-        "5": 3,
-        "10": 4,
-        "9": 3,
-        "12": 2,
+        "2": 3,
+        "3": 4,
         "4": 3,
-        "6": 1,
-        "8": 1,
-        "11": 1
+        "5": 2,
+        "6": 4,
+        "7": 0,
+        "8": 2,
+        "9": 5,
+        "10": 3,
+        "11": 1,
+        "12": 3
       },
-      "player2_temporary": {},
-      "player1_active_columns": [
-        4,
-        5,
-        6,
-        8,
-        9,
-        10,
-        11,
-        12
-      ],
-      "player2_active_columns": [],
+      "player1_temporary": {},
+      "player2_temporary": {
+        "6": 1,
+        "9": 1
+      },
       "busted": false,
       "stopped": false,
-      "decision_reasoning": "Chose (4, 11). No column complete yet, continuing...",
-      "ev_calculation": null
+      "decision_reasoning": "Chose (6, 9). EV = 0.97 > 0. Math says ROLL!",
+      "ev_calculation": 0.9749999999999999,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        9,
+        6
+      ],
+      "player1_completed": [
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
     },
     {
-      "turn_number": 17,
-      "current_player": "GreedyUntil1Col",
+      "turn_number": 52,
+      "current_player": "ExpectedValueMax",
       "roll": [
-        3,
-        4,
+        2,
         5,
-        5
+        5,
+        6
       ],
       "available_pairings": [
+        [
+          7,
+          11
+        ],
+        [
+          7,
+          11
+        ],
+        [
+          8,
+          10
+        ]
+      ],
+      "chosen_pairing": [
+        8,
+        10
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 4,
+        "4": 7,
+        "5": 3,
+        "6": 5,
+        "7": 0,
+        "8": 4,
+        "9": 5,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 4,
+        "7": 0,
+        "8": 2,
+        "9": 5,
+        "10": 3,
+        "11": 1,
+        "12": 3
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "6": 1,
+        "9": 1,
+        "8": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (8, 10). EV = 0.38 > 0. Math says ROLL!",
+      "ev_calculation": 0.375,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        8,
+        9,
+        6
+      ],
+      "player1_completed": [
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 53,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        2,
+        5,
+        6
+      ],
+      "available_pairings": [
+        [
+          3,
+          11
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "chosen_pairing": [
+        6,
+        8
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 4,
+        "4": 7,
+        "5": 3,
+        "6": 5,
+        "7": 0,
+        "8": 4,
+        "9": 5,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 4,
+        "7": 0,
+        "8": 2,
+        "9": 5,
+        "10": 3,
+        "11": 1,
+        "12": 3
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "6": 2,
+        "9": 1,
+        "8": 2
+      },
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "EV = -0.12 \u2264 0. Math says STOP (5 unsaved steps).",
+      "ev_calculation": -0.125,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        8,
+        9,
+        6
+      ],
+      "player1_completed": [
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 54,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "available_pairings": [
+        [
+          3,
+          10
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          7,
+          6
+        ]
+      ],
+      "chosen_pairing": [
+        3,
+        10
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 4,
+        "4": 7,
+        "5": 3,
+        "6": 5,
+        "7": 0,
+        "8": 4,
+        "9": 5,
+        "10": 1,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 6,
+        "7": 0,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 1,
+        "12": 3
+      },
+      "player1_temporary": {
+        "3": 1,
+        "10": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "\u2713 Reached top of [3]. Stopping to secure!",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        10,
+        3
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 55,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        2,
+        4,
+        5,
+        6
+      ],
+      "available_pairings": [
+        [
+          6,
+          11
+        ],
         [
           7,
           10
@@ -1168,74 +3915,216 @@
         [
           8,
           9
+        ]
+      ],
+      "chosen_pairing": [
+        6,
+        11
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 3,
+        "6": 5,
+        "7": 0,
+        "8": 4,
+        "9": 5,
+        "10": 2,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 6,
+        "7": 0,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 1,
+        "12": 3
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "6": 1,
+        "11": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (6, 11). EV = 0.97 > 0. Math says ROLL!",
+      "ev_calculation": 0.9749999999999999,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        11,
+        6
+      ],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 56,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        3,
+        3,
+        5,
+        6
+      ],
+      "available_pairings": [
+        [
+          6,
+          11
         ],
         [
           8,
           9
+        ],
+        [
+          9,
+          8
         ]
       ],
       "chosen_pairing": [
-        7,
-        10
+        6,
+        11
       ],
       "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 3,
+        "6": 5,
         "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
+        "8": 4,
+        "9": 5,
+        "10": 2,
+        "11": 4,
+        "12": 1
       },
       "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player1_temporary": {
-        "5": 3,
-        "10": 5,
-        "9": 3,
-        "12": 2,
+        "2": 3,
+        "3": 4,
         "4": 3,
-        "6": 1,
-        "8": 1,
+        "5": 2,
+        "6": 6,
+        "7": 0,
+        "8": 4,
+        "9": 6,
+        "10": 3,
         "11": 1,
-        "7": 1
+        "12": 3
       },
-      "player2_temporary": {},
-      "player1_active_columns": [
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12
-      ],
-      "player2_active_columns": [],
+      "player1_temporary": {},
+      "player2_temporary": {
+        "6": 2,
+        "11": 2
+      },
       "busted": false,
       "stopped": false,
-      "decision_reasoning": "Chose (7, 10). No column complete yet, continuing...",
-      "ev_calculation": null
+      "decision_reasoning": "Chose (6, 11). EV = 0.67 > 0. Math says ROLL!",
+      "ev_calculation": 0.6749999999999998,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        11,
+        6
+      ],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
     },
     {
-      "turn_number": 18,
-      "current_player": "GreedyUntil1Col",
+      "turn_number": 57,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        3,
+        3,
+        5,
+        6
+      ],
+      "available_pairings": [
+        [
+          6,
+          11
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          9,
+          8
+        ]
+      ],
+      "chosen_pairing": [
+        6,
+        11
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 3,
+        "6": 5,
+        "7": 0,
+        "8": 4,
+        "9": 5,
+        "10": 2,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 6,
+        "7": 0,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 1,
+        "12": 3
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "6": 3,
+        "11": 3
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (6, 11). EV = 0.37 > 0. Math says ROLL!",
+      "ev_calculation": 0.3749999999999998,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        11,
+        6
+      ],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 58,
+      "current_player": "ExpectedValueMax",
       "roll": [
         1,
         1,
@@ -1256,75 +4145,669 @@
           3
         ]
       ],
-      "chosen_pairing": [
-        2,
-        4
-      ],
+      "chosen_pairing": null,
       "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 3,
+        "6": 5,
         "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
+        "8": 4,
+        "9": 5,
+        "10": 2,
+        "11": 4,
+        "12": 1
       },
       "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 6,
         "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player1_temporary": {
-        "5": 3,
-        "10": 5,
-        "9": 3,
-        "12": 2,
-        "4": 4,
-        "6": 1,
-        "8": 1,
+        "8": 4,
+        "9": 6,
+        "10": 3,
         "11": 1,
-        "7": 1,
-        "2": 1
+        "12": 3
       },
-      "player2_temporary": {},
-      "player1_active_columns": [
-        2,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12
-      ],
-      "player2_active_columns": [],
-      "busted": false,
+      "player1_temporary": {},
+      "player2_temporary": {
+        "6": 3,
+        "11": 3
+      },
+      "busted": true,
       "stopped": false,
-      "decision_reasoning": "Chose (2, 4). No column complete yet, continuing...",
-      "ev_calculation": null
+      "decision_reasoning": "\ud83d\udca5 BUST! No valid moves from [1, 1, 2, 2]. Lost 6 steps.",
+      "ev_calculation": null,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        11,
+        6
+      ],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
     },
     {
-      "turn_number": 19,
+      "turn_number": 59,
       "current_player": "GreedyUntil1Col",
+      "roll": [
+        1,
+        1,
+        3,
+        5
+      ],
+      "available_pairings": [
+        [
+          2,
+          8
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "chosen_pairing": [
+        4,
+        6
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 3,
+        "6": 5,
+        "7": 0,
+        "8": 4,
+        "9": 5,
+        "10": 2,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 6,
+        "7": 0,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 1,
+        "12": 3
+      },
+      "player1_temporary": {
+        "6": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (4, 6). 1 unsaved steps, continuing...",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        6
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 60,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "available_pairings": [
+        [
+          3,
+          10
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          7,
+          6
+        ]
+      ],
+      "chosen_pairing": [
+        3,
+        10
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 3,
+        "6": 5,
+        "7": 0,
+        "8": 4,
+        "9": 5,
+        "10": 2,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 6,
+        "7": 0,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 1,
+        "12": 3
+      },
+      "player1_temporary": {
+        "6": 1,
+        "10": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (3, 10). 2 unsaved steps, continuing...",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        10,
+        6
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 61,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        4,
+        4,
+        5,
+        6
+      ],
+      "available_pairings": [
+        [
+          8,
+          11
+        ],
+        [
+          9,
+          10
+        ],
+        [
+          10,
+          9
+        ]
+      ],
+      "chosen_pairing": [
+        8,
+        11
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 3,
+        "6": 5,
+        "7": 0,
+        "8": 4,
+        "9": 5,
+        "10": 2,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 6,
+        "7": 0,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 1,
+        "12": 3
+      },
+      "player1_temporary": {
+        "6": 1,
+        "10": 1,
+        "8": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "Have 3 unsaved steps. Stopping to secure progress.",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        8,
+        10,
+        6
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 62,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        1,
+        5,
+        6
+      ],
+      "available_pairings": [
+        [
+          2,
+          11
+        ],
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          6
+        ]
+      ],
+      "chosen_pairing": [
+        2,
+        11
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 3,
+        "6": 6,
+        "7": 0,
+        "8": 5,
+        "9": 5,
+        "10": 3,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 6,
+        "7": 0,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 1,
+        "12": 3
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "11": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (2, 11). EV = 1.12 > 0. Math says ROLL!",
+      "ev_calculation": 1.125,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        11
+      ],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 63,
+      "current_player": "ExpectedValueMax",
       "roll": [
         2,
         2,
         2,
+        3
+      ],
+      "available_pairings": [
+        [
+          4,
+          5
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          4
+        ]
+      ],
+      "chosen_pairing": [
+        4,
         5
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 3,
+        "6": 6,
+        "7": 0,
+        "8": 5,
+        "9": 5,
+        "10": 3,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 6,
+        "7": 0,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 1,
+        "12": 3
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "11": 1,
+        "5": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (4, 5). EV = 0.97 > 0. Math says ROLL!",
+      "ev_calculation": 0.9749999999999999,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        11,
+        5
+      ],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 64,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        2,
+        2,
+        4,
+        5
+      ],
+      "available_pairings": [
+        [
+          4,
+          9
+        ],
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          6
+        ]
+      ],
+      "chosen_pairing": [
+        6,
+        7
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 3,
+        "6": 6,
+        "7": 0,
+        "8": 5,
+        "9": 5,
+        "10": 3,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 6,
+        "7": 0,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 1,
+        "12": 3
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "11": 1,
+        "5": 1,
+        "6": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (6, 7). EV = 0.38 > 0. Math says ROLL!",
+      "ev_calculation": 0.375,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        11,
+        5,
+        6
+      ],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 65,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        2,
+        2,
+        5,
+        5
+      ],
+      "available_pairings": [
+        [
+          4,
+          10
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "chosen_pairing": null,
+      "player1_permanent": {
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 3,
+        "6": 6,
+        "7": 0,
+        "8": 5,
+        "9": 5,
+        "10": 3,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 6,
+        "7": 0,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 1,
+        "12": 3
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "11": 1,
+        "5": 1,
+        "6": 1
+      },
+      "busted": true,
+      "stopped": false,
+      "decision_reasoning": "\ud83d\udca5 BUST! No valid moves from [2, 2, 5, 5]. Lost 3 steps.",
+      "ev_calculation": null,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        11,
+        5,
+        6
+      ],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 66,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        1,
+        2,
+        2,
+        5
+      ],
+      "available_pairings": [
+        [
+          3,
+          7
+        ],
+        [
+          3,
+          7
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "chosen_pairing": [
+        6,
+        4
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 3,
+        "6": 6,
+        "7": 0,
+        "8": 5,
+        "9": 5,
+        "10": 3,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 6,
+        "7": 0,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 1,
+        "12": 3
+      },
+      "player1_temporary": {
+        "6": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (6, 4). 1 unsaved steps, continuing...",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        6
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 67,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        2,
+        2,
+        3,
+        4
       ],
       "available_pairings": [
         [
@@ -1332,78 +4815,454 @@
           7
         ],
         [
-          4,
+          5,
+          6
+        ],
+        [
+          6,
+          5
+        ]
+      ],
+      "chosen_pairing": [
+        5,
+        6
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 3,
+        "6": 6,
+        "7": 0,
+        "8": 5,
+        "9": 5,
+        "10": 3,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 6,
+        "7": 0,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 1,
+        "12": 3
+      },
+      "player1_temporary": {
+        "6": 2,
+        "5": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "Have 3 unsaved steps. Stopping to secure progress.",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        5,
+        6
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 68,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        1,
+        3,
+        4
+      ],
+      "available_pairings": [
+        [
+          2,
           7
         ],
         [
-          7,
+          4,
+          5
+        ],
+        [
+          5,
           4
         ]
       ],
       "chosen_pairing": [
-        4,
+        2,
         7
       ],
       "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 4,
+        "6": 8,
         "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
+        "8": 5,
+        "9": 5,
+        "10": 3,
+        "11": 4,
+        "12": 1
       },
       "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 6,
         "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player1_temporary": {
-        "5": 3,
-        "10": 5,
-        "9": 3,
-        "12": 2,
-        "4": 5,
-        "6": 1,
-        "8": 1,
+        "8": 4,
+        "9": 6,
+        "10": 3,
         "11": 1,
-        "7": 2,
-        "2": 1
+        "12": 3
       },
-      "player2_temporary": {},
-      "player1_active_columns": [
-        2,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12
-      ],
-      "player2_active_columns": [],
+      "player1_temporary": {},
+      "player2_temporary": {
+        "7": 1
+      },
       "busted": false,
       "stopped": false,
-      "decision_reasoning": "Chose (4, 7). No column complete yet, continuing...",
-      "ev_calculation": null
+      "decision_reasoning": "Chose (2, 7). EV = 1.12 > 0. Math says ROLL!",
+      "ev_calculation": 1.125,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        7
+      ],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
     },
     {
-      "turn_number": 20,
+      "turn_number": 69,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        5,
+        5,
+        6
+      ],
+      "available_pairings": [
+        [
+          6,
+          11
+        ],
+        [
+          6,
+          11
+        ],
+        [
+          7,
+          10
+        ]
+      ],
+      "chosen_pairing": [
+        6,
+        11
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 4,
+        "6": 8,
+        "7": 0,
+        "8": 5,
+        "9": 5,
+        "10": 3,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 6,
+        "7": 0,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 1,
+        "12": 3
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "7": 1,
+        "6": 1,
+        "11": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (6, 11). EV = 0.38 > 0. Math says ROLL!",
+      "ev_calculation": 0.375,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        11,
+        6,
+        7
+      ],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 70,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "available_pairings": [
+        [
+          3,
+          10
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          7,
+          6
+        ]
+      ],
+      "chosen_pairing": [
+        7,
+        6
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 4,
+        "6": 8,
+        "7": 0,
+        "8": 5,
+        "9": 5,
+        "10": 3,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 6,
+        "7": 0,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 1,
+        "12": 3
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "7": 2,
+        "6": 2,
+        "11": 1
+      },
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "EV = -0.12 \u2264 0. Math says STOP (5 unsaved steps).",
+      "ev_calculation": -0.125,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        11,
+        6,
+        7
+      ],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 71,
       "current_player": "GreedyUntil1Col",
+      "roll": [
+        3,
+        4,
+        4,
+        6
+      ],
+      "available_pairings": [
+        [
+          7,
+          10
+        ],
+        [
+          7,
+          10
+        ],
+        [
+          9,
+          8
+        ]
+      ],
+      "chosen_pairing": [
+        9,
+        8
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 4,
+        "6": 8,
+        "7": 0,
+        "8": 5,
+        "9": 5,
+        "10": 3,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 8,
+        "7": 2,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 2,
+        "12": 3
+      },
+      "player1_temporary": {
+        "9": 1,
+        "8": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (9, 8). 2 unsaved steps, continuing...",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        8,
+        9
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 72,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        1,
+        4,
+        5,
+        6
+      ],
+      "available_pairings": [
+        [
+          5,
+          11
+        ],
+        [
+          6,
+          10
+        ],
+        [
+          7,
+          9
+        ]
+      ],
+      "chosen_pairing": [
+        5,
+        11
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 4,
+        "6": 8,
+        "7": 0,
+        "8": 5,
+        "9": 5,
+        "10": 3,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 8,
+        "7": 2,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 2,
+        "12": 3
+      },
+      "player1_temporary": {
+        "9": 1,
+        "8": 1,
+        "5": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "Have 3 unsaved steps. Stopping to secure progress.",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        8,
+        9,
+        5
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 73,
+      "current_player": "ExpectedValueMax",
       "roll": [
         1,
         1,
@@ -1429,152 +5288,58 @@
         6
       ],
       "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 5,
+        "6": 8,
         "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
+        "8": 6,
+        "9": 6,
+        "10": 3,
+        "11": 4,
+        "12": 1
       },
       "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player1_temporary": {
-        "5": 3,
-        "10": 5,
-        "9": 3,
-        "12": 2,
-        "4": 5,
-        "6": 2,
-        "8": 1,
-        "11": 1,
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 8,
         "7": 2,
-        "2": 2
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 2,
+        "12": 3
       },
-      "player2_temporary": {},
-      "player1_active_columns": [
-        2,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12
-      ],
-      "player2_active_columns": [],
+      "player1_temporary": {},
+      "player2_temporary": {
+        "6": 1
+      },
       "busted": false,
       "stopped": false,
-      "decision_reasoning": "Chose (2, 6). No column complete yet, continuing...",
-      "ev_calculation": null
+      "decision_reasoning": "Chose (2, 6). EV = 1.12 > 0. Math says ROLL!",
+      "ev_calculation": 1.125,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        6
+      ],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
     },
     {
-      "turn_number": 21,
-      "current_player": "GreedyUntil1Col",
+      "turn_number": 74,
+      "current_player": "ExpectedValueMax",
       "roll": [
         3,
         3,
-        3,
-        5
-      ],
-      "available_pairings": [
-        [
-          6,
-          8
-        ],
-        [
-          6,
-          8
-        ],
-        [
-          8,
-          6
-        ]
-      ],
-      "chosen_pairing": [
-        6,
-        8
-      ],
-      "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player1_temporary": {
-        "5": 3,
-        "10": 5,
-        "9": 3,
-        "12": 2,
-        "4": 5,
-        "6": 3,
-        "8": 2,
-        "11": 1,
-        "7": 2,
-        "2": 2
-      },
-      "player2_temporary": {},
-      "player1_active_columns": [
-        2,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12
-      ],
-      "player2_active_columns": [],
-      "busted": false,
-      "stopped": false,
-      "decision_reasoning": "Chose (6, 8). No column complete yet, continuing...",
-      "ev_calculation": null
-    },
-    {
-      "turn_number": 22,
-      "current_player": "GreedyUntil1Col",
-      "roll": [
-        2,
-        4,
         5,
         6
       ],
@@ -1584,12 +5349,12 @@
           11
         ],
         [
-          7,
-          10
-        ],
-        [
           8,
           9
+        ],
+        [
+          9,
+          8
         ]
       ],
       "chosen_pairing": [
@@ -1597,323 +5362,360 @@
         11
       ],
       "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 5,
+        "6": 8,
         "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
+        "8": 6,
+        "9": 6,
+        "10": 3,
+        "11": 4,
+        "12": 1
       },
       "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player1_temporary": {
-        "5": 3,
-        "10": 5,
-        "9": 3,
-        "12": 2,
-        "4": 5,
-        "6": 4,
-        "8": 2,
-        "11": 2,
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 8,
         "7": 2,
-        "2": 2
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 2,
+        "12": 3
       },
-      "player2_temporary": {},
-      "player1_active_columns": [
-        2,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12
-      ],
-      "player2_active_columns": [],
+      "player1_temporary": {},
+      "player2_temporary": {
+        "6": 2,
+        "11": 1
+      },
       "busted": false,
       "stopped": false,
-      "decision_reasoning": "Chose (6, 11). No column complete yet, continuing...",
-      "ev_calculation": null
+      "decision_reasoning": "Chose (6, 11). EV = 0.82 > 0. Math says ROLL!",
+      "ev_calculation": 0.8249999999999998,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        11,
+        6
+      ],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
     },
     {
-      "turn_number": 23,
-      "current_player": "GreedyUntil1Col",
+      "turn_number": 75,
+      "current_player": "ExpectedValueMax",
       "roll": [
         1,
         2,
         2,
+        3
+      ],
+      "available_pairings": [
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "chosen_pairing": null,
+      "player1_permanent": {
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 5,
+        "6": 8,
+        "7": 0,
+        "8": 6,
+        "9": 6,
+        "10": 3,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 8,
+        "7": 2,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 2,
+        "12": 3
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "6": 2,
+        "11": 1
+      },
+      "busted": true,
+      "stopped": false,
+      "decision_reasoning": "\ud83d\udca5 BUST! No valid moves from [1, 2, 2, 3]. Lost 3 steps.",
+      "ev_calculation": null,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        11,
+        6
+      ],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 76,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        1,
+        1,
+        4,
+        5
+      ],
+      "available_pairings": [
+        [
+          2,
+          9
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          6,
+          5
+        ]
+      ],
+      "chosen_pairing": [
+        5,
+        6
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 5,
+        "6": 8,
+        "7": 0,
+        "8": 6,
+        "9": 6,
+        "10": 3,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 8,
+        "7": 2,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 2,
+        "12": 3
+      },
+      "player1_temporary": {
+        "5": 1,
+        "6": 1
+      },
+      "player2_temporary": {},
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (5, 6). 2 unsaved steps, continuing...",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        5,
+        6
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 77,
+      "current_player": "GreedyUntil1Col",
+      "roll": [
+        2,
+        4,
+        6,
         6
       ],
       "available_pairings": [
         [
-          3,
-          8
-        ],
-        [
-          3,
-          8
-        ],
-        [
-          7,
-          4
-        ]
-      ],
-      "chosen_pairing": [
-        3,
-        8
-      ],
-      "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player1_temporary": {
-        "5": 3,
-        "10": 5,
-        "9": 3,
-        "12": 2,
-        "4": 5,
-        "6": 4,
-        "8": 3,
-        "11": 2,
-        "7": 2,
-        "2": 2,
-        "3": 1
-      },
-      "player2_temporary": {},
-      "player1_active_columns": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12
-      ],
-      "player2_active_columns": [],
-      "busted": false,
-      "stopped": false,
-      "decision_reasoning": "Chose (3, 8). No column complete yet, continuing...",
-      "ev_calculation": null
-    },
-    {
-      "turn_number": 24,
-      "current_player": "GreedyUntil1Col",
-      "roll": [
-        1,
-        3,
-        3,
-        5
-      ],
-      "available_pairings": [
-        [
-          4,
-          8
-        ],
-        [
-          4,
-          8
-        ],
-        [
           6,
-          6
-        ]
-      ],
-      "chosen_pairing": [
-        4,
-        8
-      ],
-      "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player1_temporary": {
-        "5": 3,
-        "10": 5,
-        "9": 3,
-        "12": 2,
-        "4": 6,
-        "6": 4,
-        "8": 4,
-        "11": 2,
-        "7": 2,
-        "2": 2,
-        "3": 1
-      },
-      "player2_temporary": {},
-      "player1_active_columns": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12
-      ],
-      "player2_active_columns": [],
-      "busted": false,
-      "stopped": false,
-      "decision_reasoning": "Chose (4, 8). No column complete yet, continuing...",
-      "ev_calculation": null
-    },
-    {
-      "turn_number": 25,
-      "current_player": "GreedyUntil1Col",
-      "roll": [
-        3,
-        3,
-        4,
-        5
-      ],
-      "available_pairings": [
-        [
-          6,
-          9
-        ],
-        [
-          7,
-          8
+          12
         ],
         [
           8,
-          7
+          10
+        ],
+        [
+          8,
+          10
         ]
       ],
       "chosen_pairing": [
-        6,
-        9
+        8,
+        10
       ],
       "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 5,
+        "6": 8,
         "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
+        "8": 6,
+        "9": 6,
+        "10": 3,
+        "11": 4,
+        "12": 1
       },
       "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 8,
+        "7": 2,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 2,
+        "12": 3
       },
       "player1_temporary": {
-        "5": 3,
-        "10": 5,
-        "9": 4,
-        "12": 2,
-        "4": 6,
-        "6": 5,
-        "8": 4,
-        "11": 2,
-        "7": 2,
-        "2": 2,
-        "3": 1
+        "5": 1,
+        "6": 1,
+        "8": 1
       },
       "player2_temporary": {},
+      "busted": false,
+      "stopped": true,
+      "decision_reasoning": "Have 3 unsaved steps. Stopping to secure progress.",
+      "ev_calculation": null,
       "player1_active_columns": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
         8,
-        9,
-        10,
-        11,
-        12
+        5,
+        6
       ],
       "player2_active_columns": [],
-      "busted": false,
-      "stopped": false,
-      "decision_reasoning": "Chose (6, 9). No column complete yet, continuing...",
-      "ev_calculation": null
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
     },
     {
-      "turn_number": 26,
-      "current_player": "GreedyUntil1Col",
+      "turn_number": 78,
+      "current_player": "ExpectedValueMax",
+      "roll": [
+        4,
+        5,
+        5,
+        6
+      ],
+      "available_pairings": [
+        [
+          9,
+          11
+        ],
+        [
+          9,
+          11
+        ],
+        [
+          10,
+          10
+        ]
+      ],
+      "chosen_pairing": [
+        9,
+        11
+      ],
+      "player1_permanent": {
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 6,
+        "6": 9,
+        "7": 0,
+        "8": 7,
+        "9": 6,
+        "10": 3,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 8,
+        "7": 2,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 2,
+        "12": 3
+      },
+      "player1_temporary": {},
+      "player2_temporary": {
+        "9": 1,
+        "11": 1
+      },
+      "busted": false,
+      "stopped": false,
+      "decision_reasoning": "Chose (9, 11). EV = 0.97 > 0. Math says ROLL!",
+      "ev_calculation": 0.9749999999999999,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        9,
+        11
+      ],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
+    },
+    {
+      "turn_number": 79,
+      "current_player": "ExpectedValueMax",
       "roll": [
         1,
         1,
@@ -1934,425 +5736,131 @@
           3
         ]
       ],
-      "chosen_pairing": [
-        2,
-        5
-      ],
-      "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player1_temporary": {
-        "5": 4,
-        "10": 5,
-        "9": 4,
-        "12": 2,
-        "4": 6,
-        "6": 5,
-        "8": 4,
-        "11": 2,
-        "7": 2,
-        "2": 3,
-        "3": 1
-      },
-      "player2_temporary": {},
-      "player1_active_columns": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12
-      ],
-      "player2_active_columns": [],
-      "busted": false,
-      "stopped": false,
-      "decision_reasoning": "Chose (2, 5). No column complete yet, continuing...",
-      "ev_calculation": null
-    },
-    {
-      "turn_number": 27,
-      "current_player": "GreedyUntil1Col",
-      "roll": [
-        2,
-        4,
-        6,
-        6
-      ],
-      "available_pairings": [
-        [
-          6,
-          12
-        ],
-        [
-          8,
-          10
-        ],
-        [
-          8,
-          10
-        ]
-      ],
-      "chosen_pairing": [
-        6,
-        12
-      ],
-      "player1_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player1_temporary": {
-        "5": 4,
-        "10": 5,
-        "9": 4,
-        "12": 3,
-        "4": 6,
-        "6": 6,
-        "8": 4,
-        "11": 2,
-        "7": 2,
-        "2": 3,
-        "3": 1
-      },
-      "player2_temporary": {},
-      "player1_active_columns": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12
-      ],
-      "player2_active_columns": [],
-      "busted": false,
-      "stopped": true,
-      "decision_reasoning": "\u2713 Completed [2]. Stopping (GreedyUntil1Col rule).",
-      "ev_calculation": null
-    },
-    {
-      "turn_number": 28,
-      "current_player": "ExpectedValueMax",
-      "roll": [
-        2,
-        4,
-        6,
-        6
-      ],
-      "available_pairings": [
-        [
-          6,
-          12
-        ],
-        [
-          8,
-          10
-        ],
-        [
-          8,
-          10
-        ]
-      ],
-      "chosen_pairing": [
-        6,
-        12
-      ],
-      "player1_permanent": {
-        "2": 3,
-        "3": 1,
-        "4": 6,
-        "5": 4,
-        "6": 6,
-        "7": 2,
-        "8": 4,
-        "9": 4,
-        "10": 5,
-        "11": 2,
-        "12": 3
-      },
-      "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player1_temporary": {},
-      "player2_temporary": {
-        "6": 1,
-        "12": 1
-      },
-      "player1_active_columns": [],
-      "player2_active_columns": [
-        12,
-        6
-      ],
-      "busted": false,
-      "stopped": false,
-      "decision_reasoning": "Chose (6, 12). EV = 1.19 > 0. Math says ROLL!",
-      "ev_calculation": 1.19
-    },
-    {
-      "turn_number": 29,
-      "current_player": "ExpectedValueMax",
-      "roll": [
-        2,
-        3,
-        5,
-        5
-      ],
-      "available_pairings": [
-        [
-          5,
-          10
-        ],
-        [
-          7,
-          8
-        ],
-        [
-          7,
-          8
-        ]
-      ],
       "chosen_pairing": null,
       "player1_permanent": {
-        "2": 3,
-        "3": 1,
-        "4": 6,
-        "5": 4,
-        "6": 6,
-        "7": 2,
-        "8": 4,
-        "9": 4,
-        "10": 5,
-        "11": 2,
-        "12": 3
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 6,
+        "6": 9,
+        "7": 0,
+        "8": 7,
+        "9": 6,
+        "10": 3,
+        "11": 4,
+        "12": 1
       },
       "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
+        "2": 3,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 8,
+        "7": 2,
+        "8": 4,
+        "9": 6,
+        "10": 3,
+        "11": 2,
+        "12": 3
       },
       "player1_temporary": {},
       "player2_temporary": {
-        "6": 1,
-        "12": 1
+        "9": 1,
+        "11": 1
       },
-      "player1_active_columns": [],
-      "player2_active_columns": [
-        12,
-        6
-      ],
       "busted": true,
       "stopped": false,
-      "decision_reasoning": "\ud83d\udca5 BUST! No valid moves from [2, 3, 5, 5]. Lost 2 steps.",
-      "ev_calculation": null
-    },
-    {
-      "turn_number": 30,
-      "current_player": "GreedyUntil1Col",
-      "roll": [
-        2,
-        2,
-        2,
-        6
+      "decision_reasoning": "\ud83d\udca5 BUST! No valid moves from [1, 1, 2, 3]. Lost 2 steps.",
+      "ev_calculation": null,
+      "player1_active_columns": [],
+      "player2_active_columns": [
+        9,
+        11
       ],
-      "available_pairings": [
-        [
-          4,
-          8
-        ],
-        [
-          4,
-          8
-        ],
-        [
-          8,
-          4
-        ]
-      ],
-      "chosen_pairing": [
-        4,
-        8
-      ],
-      "player1_permanent": {
-        "2": 3,
-        "3": 1,
-        "4": 6,
-        "5": 4,
-        "6": 6,
-        "7": 2,
-        "8": 4,
-        "9": 4,
-        "10": 5,
-        "11": 2,
-        "12": 3
-      },
-      "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
-      "player1_temporary": {
-        "4": 1,
-        "8": 1
-      },
-      "player2_temporary": {},
-      "player1_active_columns": [
-        8,
+      "player1_completed": [
+        3,
         4
       ],
-      "player2_active_columns": [],
-      "busted": false,
-      "stopped": false,
-      "decision_reasoning": "Chose (4, 8). No column complete yet, continuing...",
-      "ev_calculation": null
+      "player2_completed": [
+        2,
+        12
+      ]
     },
     {
-      "turn_number": 31,
+      "turn_number": 80,
       "current_player": "GreedyUntil1Col",
       "roll": [
         3,
+        3,
         5,
-        5,
-        5
+        6
       ],
       "available_pairings": [
         [
-          8,
-          10
+          6,
+          11
         ],
         [
           8,
-          10
+          9
         ],
         [
-          8,
-          10
+          9,
+          8
         ]
       ],
       "chosen_pairing": [
-        8,
-        10
+        6,
+        11
       ],
       "player1_permanent": {
+        "2": 2,
+        "3": 5,
+        "4": 7,
+        "5": 6,
+        "6": 9,
+        "7": 0,
+        "8": 7,
+        "9": 6,
+        "10": 3,
+        "11": 4,
+        "12": 1
+      },
+      "player2_permanent": {
         "2": 3,
-        "3": 1,
-        "4": 6,
-        "5": 4,
-        "6": 6,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 8,
         "7": 2,
         "8": 4,
-        "9": 4,
-        "10": 5,
+        "9": 6,
+        "10": 3,
         "11": 2,
         "12": 3
       },
-      "player2_permanent": {
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0
-      },
       "player1_temporary": {
-        "4": 1,
-        "8": 2,
-        "10": 1
+        "6": 1,
+        "11": 1
       },
       "player2_temporary": {},
-      "player1_active_columns": [
-        8,
-        10,
-        4
-      ],
-      "player2_active_columns": [],
       "busted": false,
       "stopped": true,
-      "decision_reasoning": "\u2713 Completed [4]. Stopping (GreedyUntil1Col rule).",
-      "ev_calculation": null
+      "decision_reasoning": "\u2713 Reached top of [11]. Stopping to secure!",
+      "ev_calculation": null,
+      "player1_active_columns": [
+        11,
+        6
+      ],
+      "player2_active_columns": [],
+      "player1_completed": [
+        3,
+        4
+      ],
+      "player2_completed": [
+        2,
+        12
+      ]
     }
   ]
 }

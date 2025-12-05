@@ -1,0 +1,292 @@
+.pairing-selector {
+  background: var(--bg-white);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.pairing-title {
+  text-align: center;
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.pairings-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.pairing-option {
+  position: relative;
+  background: var(--bg-white-solid);
+  border: 3px solid var(--border-light);
+  border-radius: 12px;
+  padding: 1.5rem 1rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.pairing-option:not(.disabled):hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+}
+
+.pairing-option.hovered:not(.disabled) {
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.pairing-option.selected {
+  border-color: var(--selection-color);
+  background: var(--selection-color-light);
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+}
+
+.pairing-option.disabled {
+  background: var(--bg-light);
+  border-color: var(--border-medium);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pairing-option.disabled.hovered {
+  border-color: var(--invalid-color);
+  opacity: 0.7;
+}
+
+.pairing-option.needs-choice {
+  cursor: default !important;
+}
+
+.pairing-option.locked {
+  opacity: 0.6;
+  cursor: not-allowed !important;
+  pointer-events: none;
+}
+
+.pairing-option.chosen {
+  border-color: var(--success-color);
+  background: linear-gradient(135deg, rgba(72, 187, 120, 0.1), rgba(72, 187, 120, 0.2));
+  box-shadow: 0 0 25px rgba(72, 187, 120, 0.5);
+  opacity: 1 !important;
+  pointer-events: all !important;
+  animation: chosen-pulse 2s ease-in-out infinite;
+}
+
+@keyframes chosen-pulse {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(72, 187, 120, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(72, 187, 120, 0.8);
+  }
+}
+
+/* Tooltip styling */
+.pairing-tooltip {
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Clickable sum indicators */
+.sum-badge.clickable-sum {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.sum-badge.clickable-sum:hover {
+  transform: scale(1.1);
+}
+
+.sum-badge.sum-hovered {
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+}
+
+.sum-badge.sum-unplayable {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+}
+
+.pairing-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pairing-sums {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sum-badge {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, var(--neutral-gray), var(--neutral-gray-dark));
+  color: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(100, 116, 139, 0.3);
+  position: relative;
+}
+
+.sum-badge.completed {
+  background: linear-gradient(135deg, var(--neutral-gray), var(--neutral-gray-dark));
+  opacity: 0.5;
+}
+
+.sum-badge.active {
+  background: linear-gradient(135deg, var(--selection-color), var(--selection-color-dark));
+  animation: glow 1.5s ease-in-out infinite;
+}
+
+.sum-badge.unplayable {
+  background: linear-gradient(135deg, var(--error-color), var(--error-color-dark));
+  opacity: 0.7;
+}
+
+.sum-badge.highlight-pair1 {
+  background: linear-gradient(135deg, var(--pair-1-color), var(--pair-1-color-dark));
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
+  animation: glow-green 1.5s ease-in-out infinite;
+}
+
+.sum-badge.highlight-pair2 {
+  background: linear-gradient(135deg, var(--pair-2-color), var(--pair-2-color-dark));
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
+  animation: glow-orange 1.5s ease-in-out infinite;
+}
+
+@keyframes glow-green {
+  0%, 100% {
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.8);
+  }
+}
+
+@keyframes glow-orange {
+  0%, 100% {
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.8);
+  }
+}
+
+.x-mark {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  font-size: 0.9rem;
+  color: white;
+  font-weight: 900;
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(251, 191, 36, 0.6);
+  }
+}
+
+.pairing-plus {
+  font-size: 1.2rem;
+  color: var(--neutral-gray);
+  font-weight: 700;
+}
+
+.pairing-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.detail-badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  background: #dbeafe;
+  color: #1e40af;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.detail-badge.new {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.detail-badge.partial {
+  background: #fef3c7;
+  color: #78350f;
+  font-weight: 700;
+}
+
+.detail-badge.choice-needed {
+  background: linear-gradient(135deg, #a78bfa, #8b5cf6);
+  color: white;
+  font-weight: 700;
+  animation: pulse-choice 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-choice {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.disabled-reason {
+  font-size: 0.85rem;
+  color: var(--error-color-dark);
+  font-weight: 600;
+  text-align: center;
+}
+
+.selection-indicator {
+  position: absolute;
+  inset: -3px;
+  border: 3px solid var(--selection-color);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.selection-hint {
+  text-align: center;
+  color: var(--primary-color);
+  font-weight: 600;
+  padding: 1rem;
+  background: var(--primary-color-light);
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+@media (max-width: 900px) {
+  .pairings-grid {
+    grid-template-columns: 1fr;
+  }
+}

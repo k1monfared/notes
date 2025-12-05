@@ -1,0 +1,92 @@
+/*
+ * Centralized Color Configuration
+ * All theme colors defined in one place for easy customization
+ */
+
+:root {
+  /* Player Colors */
+  --player-1-color: #3b82f6;
+  --player-1-color-dark: #2563eb;
+  --player-1-color-light: #dbeafe;
+
+  --player-2-color: #8b5cf6;  /* Purple - distinct from all other colors */
+  --player-2-color-dark: #7c3aed;
+  --player-2-color-light: #ede9fe;
+
+  /* Dice Pair Colors (used for dice highlights, sum badges, and preview dots) */
+  --pair-1-color: #f59e0b;  /* Orange - always first dice pair */
+  --pair-1-color-dark: #d97706;
+  --pair-1-color-light: #fef3c7;
+
+  --pair-2-color: #10b981;  /* Green - always second dice pair */
+  --pair-2-color-dark: #059669;
+  --pair-2-color-light: #d1fae5;
+
+  /* Invalid/Grey Color (for invalid pairings) */
+  --invalid-color: #9ca3af;
+  --invalid-color-dark: #6b7280;
+  --invalid-color-light: #f3f4f6;
+
+  /* Primary Theme Colors */
+  --primary-color: #667eea;
+  --primary-color-dark: #5568d3;
+  --primary-color-light: #ede9fe;
+
+  /* Selection/Active Colors */
+  --selection-color: #fbbf24;
+  --selection-color-dark: #f59e0b;
+  --selection-color-light: #fef3c7;
+
+  /* Neutral Colors */
+  --neutral-gray: #94a3b8;
+  --neutral-gray-dark: #64748b;
+  --neutral-gray-light: #f1f5f9;
+
+  /* Success/Error */
+  --success-color: #48bb78;
+  --success-color-dark: #38a169;
+  --error-color: #fc8181;
+  --error-color-dark: #dc2626;
+
+  /* Background Colors */
+  --bg-white: rgba(255, 255, 255, 0.95);
+  --bg-white-solid: #ffffff;
+  --bg-light: #f7fafc;
+
+  /* Border Colors */
+  --border-light: #e2e8f0;
+  --border-medium: #cbd5e0;
+  --border-dark: #a0aec0;
+
+  /* Text Colors */
+  --text-dark: #1f2937;
+  --text-medium: #4b5563;
+  --text-light: #6b7280;
+
+  /* Active Column Colors */
+  --active-column-bg: rgba(100, 116, 139, 0.08);
+  --active-column-border: #94a3b8;
+}
+
+/* Dark Mode Color Overrides */
+.dark-mode {
+  --bg-white: rgba(31, 41, 55, 0.95);
+  --bg-white-solid: #1f2937;
+  --bg-light: #111827;
+
+  --border-light: rgba(255, 255, 255, 0.1);
+  --border-medium: rgba(255, 255, 255, 0.2);
+  --border-dark: rgba(255, 255, 255, 0.3);
+
+  --text-dark: #e2e8f0;
+  --text-medium: #cbd5e0;
+  --text-light: #9ca3af;
+
+  --primary-color: #7c3aed;
+  --primary-color-dark: #6d28d9;
+  --primary-color-light: rgba(167, 139, 250, 0.2);
+
+  --neutral-gray: #6b7280;
+  --neutral-gray-dark: #4b5563;
+  --neutral-gray-light: #374151;
+}
