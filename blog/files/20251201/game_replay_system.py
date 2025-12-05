@@ -71,18 +71,37 @@ class CantStopGame:
 
     def can_use_pairing(self, pairing: Tuple[int, int],
                        active_cols: Set[int], completed: Set[int]) -> bool:
-        """Check if a pairing can be used"""
+        """Check if a pairing can be used
+
+        A pairing is valid if at least ONE column can be moved:
+        - Column can be moved if it's already active OR we have room to add it
+        """
         sum1, sum2 = pairing
 
-        # Can't use completed columns
-        if sum1 in completed or sum2 in completed:
-            return False
+        # Check if we can move sum1
+        can_move_sum1 = False
+        if sum1 not in completed:
+            if sum1 in active_cols or len(active_cols) < 3:
+                can_move_sum1 = True
 
-        # If we have active columns, at least one sum must match
-        if active_cols:
-            return sum1 in active_cols or sum2 in active_cols
+        # Check if we can move sum2
+        can_move_sum2 = False
+        if sum2 not in completed:
+            if sum2 in active_cols:
+                can_move_sum2 = True
+            elif len(active_cols) < 3:
+                # Can add sum2 if:
+                # - sum1 == sum2 (same column), OR
+                # - sum1 is already active (not consuming a slot), OR
+                # - We have room for 2 new runners
+                if sum1 == sum2:
+                    can_move_sum2 = can_move_sum1
+                elif sum1 in active_cols:
+                    can_move_sum2 = True
+                elif len(active_cols) < 2:
+                    can_move_sum2 = True
 
-        return True
+        return can_move_sum1 or can_move_sum2
 
     def play_turn(self, player_num: int) -> bool:
         """Play one player's turn. Returns True if game continues."""
@@ -138,12 +157,21 @@ class CantStopGame:
                 active_columns, completed, self.column_length
             )
 
-            # Apply moves
+            # Apply moves - only move columns that can legally be moved
             sum1, sum2 = chosen
-            for col in [sum1, sum2]:
-                if col not in completed:
-                    temp_progress[col] = temp_progress.get(col, 0) + 1
-                    active_columns.add(col)
+            all_completed = completed.union(self.player2_completed if is_player1 else self.player1_completed)
+
+            # Try to move sum1
+            if sum1 not in all_completed:
+                if sum1 in active_columns or len(active_columns) < 3:
+                    temp_progress[sum1] = temp_progress.get(sum1, 0) + 1
+                    active_columns.add(sum1)
+
+            # Try to move sum2 (only if different from sum1)
+            if sum2 != sum1 and sum2 not in all_completed:
+                if sum2 in active_columns or len(active_columns) < 3:
+                    temp_progress[sum2] = temp_progress.get(sum2, 0) + 1
+                    active_columns.add(sum2)
 
             # Record state
             self.history.append(GameState(
@@ -212,26 +240,36 @@ class CantStopGame:
 
 
 class GreedyUntil1ColStrategy:
-    """Rolls until completing at least one column"""
+    """Rolls until completing at least one column, or until 3+ unsaved steps"""
 
     def decide(self, dice, valid_pairings, progress, temp_progress,
                active_columns, completed, column_length):
-        # Choose pairing that makes most progress
+        # Choose pairing that makes most progress toward completion
         best_pairing = valid_pairings[0]
-        best_score = 0
+        best_score = -1
 
         for pairing in valid_pairings:
             score = 0
             for col in pairing:
                 if col not in completed:
-                    score += 1
+                    # Prefer columns we're already working on
+                    current_prog = progress.get(col, 0) + temp_progress.get(col, 0)
+                    remaining = column_length[col] - current_prog
+                    # Score higher for columns closer to completion
+                    score += 10 - remaining
             if score > best_score:
                 best_score = score
                 best_pairing = pairing
 
-        # Check if we've completed any column
+        # Simulate applying the best pairing
+        simulated_temp = dict(temp_progress)
+        for col in best_pairing:
+            if col not in completed:
+                simulated_temp[col] = simulated_temp.get(col, 0) + 1
+
+        # Check if we would complete any column AFTER this move
         completed_this_turn = []
-        for col, steps in temp_progress.items():
+        for col, steps in simulated_temp.items():
             total = progress.get(col, 0) + steps
             if total >= column_length[col] and col not in completed:
                 completed_this_turn.append(col)
@@ -240,7 +278,13 @@ class GreedyUntil1ColStrategy:
             reasoning = f"✓ Completed {completed_this_turn}. Stopping (GreedyUntil1Col rule)."
             return best_pairing, True, reasoning, None
 
-        reasoning = f"Chose {best_pairing}. No column complete yet, continuing..."
+        # Also stop if we have 3+ unsaved steps (risk management)
+        unsaved = sum(simulated_temp.values())
+        if unsaved >= 3:
+            reasoning = f"Have {unsaved} unsaved steps. Stopping to secure progress."
+            return best_pairing, True, reasoning, None
+
+        reasoning = f"Chose {best_pairing}. {unsaved} unsaved steps, continuing..."
         return best_pairing, False, reasoning, None
 
 
@@ -249,22 +293,53 @@ class ExpectedValueMaxStrategy:
 
     def decide(self, dice, valid_pairings, progress, temp_progress,
                active_columns, completed, column_length):
-        # Choose pairing that maximizes immediate progress
+        # Choose pairing that maximizes immediate progress toward completion
         best_pairing = valid_pairings[0]
+        best_score = -1
 
-        # Calculate EV of continuing
-        unsaved_steps = sum(temp_progress.values())
+        for pairing in valid_pairings:
+            score = 0
+            for col in pairing:
+                if col not in completed:
+                    current_prog = progress.get(col, 0) + temp_progress.get(col, 0)
+                    remaining = column_length[col] - current_prog
+                    score += 10 - remaining
+            if score > best_score:
+                best_score = score
+                best_pairing = pairing
 
-        # Simple EV calculation (simplified for demo)
-        # P(success) ~= 0.92 for good columns
-        # Q (expected progress) ~= 1.4
-        # EV = P_success * Q - P_bust * U
+        # Simulate applying the pairing
+        simulated_temp = dict(temp_progress)
+        for col in best_pairing:
+            if col not in completed:
+                simulated_temp[col] = simulated_temp.get(col, 0) + 1
 
-        p_success = 0.85  # Simplified
-        q_value = 1.4
+        unsaved_steps = sum(simulated_temp.values())
+
+        # Calculate EV of continuing vs stopping
+        # Estimate P(success) based on number of active columns and unsaved steps
+        num_active = len(active_columns)
+
+        # With 1-2 active columns, P(success) is high (~85%)
+        # With 3 active columns, P(success) drops (~75%)
+        if num_active <= 2:
+            p_success = 0.85
+        else:
+            p_success = 0.75
+
+        # Expected progress on next roll ~1.5 steps
+        q_value = 1.5
         p_bust = 1 - p_success
 
+        # EV = P(success) * Q - P(bust) * unsaved_steps
         ev = p_success * q_value - p_bust * unsaved_steps
+
+        # Always stop if completing a column
+        for col, steps in simulated_temp.items():
+            total = progress.get(col, 0) + steps
+            if total >= column_length[col] and col not in completed:
+                reasoning = f"✓ Completed column {col}. Stopping to secure."
+                return best_pairing, True, reasoning, ev
 
         if ev <= 0:
             reasoning = f"EV = {ev:.2f} ≤ 0. Math says STOP ({unsaved_steps} unsaved steps)."
@@ -294,43 +369,44 @@ def find_dramatic_game(num_simulations=1000):
 
         winner = game.play_game()
 
-        if winner == "GreedyUntil1Col":
-            # Score based on: EV had lead at some point, big bust, decisive win
+        # Only consider games that finish in reasonable time (< 100 turns)
+        if game.turn_number < 100:
+            # Score based on: dramatic moments (big busts, interesting)
             score = 0
 
-            # Check for EV lead
-            ev_was_ahead = False
-            max_ev_bust_size = 0
+            # Check for big busts and drama
+            max_bust_size = 0
+            total_busts = 0
 
             for state in game.history:
-                if state.current_player == "ExpectedValueMax":
-                    if state.busted and state.player2_temporary:
+                if state.busted:
+                    total_busts += 1
+                    if state.current_player == "ExpectedValueMax" and state.player2_temporary:
                         bust_size = sum(state.player2_temporary.values())
-                        max_ev_bust_size = max(max_ev_bust_size, bust_size)
+                        max_bust_size = max(max_bust_size, bust_size)
+                    elif state.current_player == "GreedyUntil1Col" and state.player1_temporary:
+                        bust_size = sum(state.player1_temporary.values())
+                        max_bust_size = max(max_bust_size, bust_size)
 
-                    # Check if EV was ever ahead
-                    ev_completed = len(game.player2_completed)
-                    greedy_completed = len(game.player1_completed)
-                    if ev_completed > greedy_completed:
-                        ev_was_ahead = True
+            # Score based on drama
+            score = max_bust_size * 10 + total_busts
 
-            score = max_ev_bust_size * 10
-            if ev_was_ahead:
-                score += 50
+            # Prefer shorter games
+            score += (100 - game.turn_number) / 10
 
             # Prefer games with a big turning point
-            if score > best_score:
+            if score > best_score and max_bust_size >= 3:
                 best_score = score
                 best_game = game
-                print(f"  ✓ Found better game! Score: {score}, Bust size: {max_ev_bust_size}")
+                print(f"  ✓ Found better game! Winner: {winner}, Score: {score:.1f}, Turns: {game.turn_number}, Max bust: {max_bust_size}")
 
-    print(f"\n✓ Best game found with score {best_score}")
+    print(f"\n✓ Best game found with score {best_score:.1f}")
     return best_game
 
 
 if __name__ == '__main__':
     # Find and save a dramatic game
-    game = find_dramatic_game(500)
+    game = find_dramatic_game(2000)
 
     if game:
         output_file = Path(__file__).parent / 'dramatic_game.json'
