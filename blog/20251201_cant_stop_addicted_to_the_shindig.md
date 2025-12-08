@@ -28,6 +28,10 @@ The board has columns numbered 2 through 12, with different lengths:
 
 You need to complete three columns to win.
 
+I've implemented a fully interactive web version of the game with a Python/FastAPI backend and React frontend. You can [play it online](https://cantstop-frontend.onrender.com/) and check out the
+  [source code](https://github.com/k1monfared/cantstop-game).
+
+
 **The Forced-Move Rule (Important!)**
 
 Here's a critical rule that shapes the entire strategy: **you must take all available moves**. If you roll the dice and choose a pairing that creates any valid move, you must make ALL legal moves from that pairing, even if you don't want them.
