@@ -1,0 +1,2 @@
+# Ignore log files in blog folder
+blog/**/*.log
