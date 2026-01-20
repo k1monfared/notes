@@ -1851,219 +1851,103 @@
             [x] Memoir of a Snail
             [] Flow (Straume)
     - NYT 2025 top 100
-        [] Parasite
-            - Year: 2019
-            - Director: Bong Joon Ho
-        [] Mulholland Drive
-            - Year: 2001
-            - Director: David Lynch
-        [] There Will Be Blood
-            - Year: 2007
-            - Director: Paul Thomas Anderson
-        [] In the Mood for Love
-            - Year: 2000
-            - Director: Wong Kar Wai
-        [] Moonlight
-            - Year: 2016
-            - Director: Barry Jenkins
-        [] No Country for Old Men
-            - Year: 2007
-            - Director: Joel & Ethan Coen
-        [] Eternal Sunshine of the Spotless Mind
-            - Year: 2004
-            - Director: Michel Gondry
-        [] Get Out
-            - Year: 2017
-            - Director: Jordan Peele
-        [] Spirited Away
-            - Year: 2001
-            - Director: Hayao Miyazaki
-        [] The Social Network
-            - Year: 2010
-            - Director: David Fincher
-        [] Mad Max: Fury Road
-            - Year: 2015
-            - Director: George Miller
-        [] Zone of Interest
-            - Year: 2023
-            - Director: Jonathan Glazer
-        [] Children of Men
-            - Year: 2006
-            - Director: Alfonso Cuaron
-        [] Inglourious Basterds
-            - Year: 2009
-            - Director: Quentin Tarantino
-        [] City of God
-            - Year: 2002
-            - Director: Fernando Meirelles
-        [] Crouching Tiger, Hidden Dragon
-            - Year: 2000
-            - Director: Ang Lee
-        [] Brokeback Mountain
-            - Year: 2005
-        [] Y tu mamá también
-            - Year: 2001
-        [] Zodiac
-            - Year: 2007
-        [] Wolf of Wall Street
-            - Year: 2013
-        [] The Royal Tenenbaums
-            - Year: 2001
-        [] The Grand Budapest Hotel
-            - Year: 2014
-        [] Boyhood
-            - Year: 2014
-        [] Her
-            - Year: 2013
-        [] Phantom Thread
-            - Year: 2017
-        [] Anatomy of a Fall
-            - Year: 2023
-        [] Adaptation
-            - Year: 2002
-        [] The Dark Knight
-            - Year: 2008
-        [] Arrival
-            - Year: 2016
-        [] Lost in Translation
-            - Year: 2003
-        [] The Departed
-            - Year: 2006
-        [] Bridesmaids
-            - Year: 2011
-        [] A Separation
-            - Year: 2011
-        [] WALL-E
-            - Year: 2008
-        [] A Prophet
-            - Year: 2009
-        [] A Serious Man
-            - Year: 2009
-        [] Call Me by Your Name
-            - Year: 2017
-        [] Portrait of a Lady on Fire
-            - Year: 2019
-        [] Lady Bird
-            - Year: 2017
-        [] Yi Yi
-            - Year: 2000
-        [] Amélie
-            - Year: 2001
-        [] The Master
-            - Year: 2012
-        [] Oldboy
-            - Year: 2003
-        [] Once Upon a Time in Hollywood
-            - Year: 2019
-        [] Moneyball
-            - Year: 2011
-        [] Roma
-            - Year: 2018
-        [] Almost Famous
-            - Year: 2000
-        [] The Lives of Others
-            - Year: 2006
-        [] Before Sunset
-            - Year: 2004
-        [] Up
-            - Year: 2009
-        [] 12 Years a Slave
-            - Year: 2013
-        [] The Favourite
-            - Year: 2018
-        [] Borat
-            - Year: 2006
-        [] Pan's Labyrinth
-            - Year: 2006
-        [] Inception
-            - Year: 2010
-        [] Punch-Drunk Love
-            - Year: 2002
-        [] Best in Show
-            - Year: 2000
-        [] Uncut Gems
-            - Year: 2019
-        [] Toni Erdmann
-            - Year: 2016
-        [] Whiplash
-            - Year: 2014
-        [] Kill Bill
-            - Year: 2003
-        [] Memento
-            - Year: 2000
-        [] Little Miss Sunshine
-            - Year: 2006
-        [] Gone Girl
-            - Year: 2014
-        [] Oppenheimer
-            - Year: 2023
-        [] Spotlight
-            - Year: 2015
-        [] TAR
-            - Year: 2022
-        [] The Hurt Locker
-            - Year: 2008
-        [] Under the Skin
-            - Year: 2013
-        [] Let the Right One In
-            - Year: 2008
-        [] Ocean's Eleven
-            - Year: 2001
-        [] Carol
-            - Year: 2015
-        [] Ratatouille
-            - Year: 2007
-        [] The Florida Project
-            - Year: 2017
-        [] Amour
-            - Year: 2012
-        [] O Brother, Where Art Thou?
-            - Year: 2000
-        [] Everything Everywhere All at Once
-            - Year: 2022
-        [] Aftersun
-            - Year: 2022
-        [] Tree of Life
-            - Year: 2011
-        [] Volver
-            - Year: 2006
-        [] Black Swan
-            - Year: 2010
-        [] The Act of Killing
-            - Year: 2012
-        [] Inside Llewyn Davis
-            - Year: 2013
-        [] Melancholia
-            - Year: 2011
-        [] Anchorman
-            - Year: 2004
-        [] Past Lives
-            - Year: 2023
-        [] Lord of the Rings: The Fellowship of the Ring
-            - Year: 2001
-        [] The Gleaners and I
-            - Year: 2000
-        [] Interstellar
-            - Year: 2014
-        [] Frances Ha
-            - Year: 2012
-        [] Fish Tank
-            - Year: 2009
-        [] Gladiator
-            - Year: 2000
-        [] Michael Clayton
-            - Year: 2007
-        [] Minority Report
-            - Year: 2002
-        [] The Worst Person in the World
-            - Year: 2021
-        [] Black Panther
-            - Year: 2018
-        [] Gravity
-            - Year: 2013
-        [] Grizzly Man
-            - Year: 2005
-        [] Memories of Murder
-            - Year: 2003
-        [] Superbad
-            - Year: 2007
+        [] Parasite (2019), Bong Joon Ho
+        [] Mulholland Drive (2001), David Lynch
+        [] There Will Be Blood (2007), Paul Thomas Anderson
+        [] In the Mood for Love (2000), Wong Kar Wai
+        [] Moonlight (2016), Barry Jenkins
+        [] No Country for Old Men (2007), Joel & Ethan Coen
+        [] Eternal Sunshine of the Spotless Mind (2004), Michel Gondry
+        [] Get Out (2017), Jordan Peele
+        [] Spirited Away (2001), Hayao Miyazaki
+        [] The Social Network (2010), David Fincher
+        [] Mad Max: Fury Road (2015), George Miller
+        [] Zone of Interest (2023), Jonathan Glazer
+        [] Children of Men (2006), Alfonso Cuaron
+        [] Inglourious Basterds (2009), Quentin Tarantino
+        [] City of God (2002), Fernando Meirelles
+        [] Crouching Tiger, Hidden Dragon (2000), Ang Lee
+        [] Brokeback Mountain (2005)
+        [] Y tu mamá también (2001)
+        [] Zodiac (2007)
+        [] Wolf of Wall Street (2013)
+        [] The Royal Tenenbaums (2001)
+        [] The Grand Budapest Hotel (2014)
+        [] Boyhood (2014)
+        [] Her (2013)
+        [] Phantom Thread (2017)
+        [] Anatomy of a Fall (2023)
+        [] Adaptation (2002)
+        [] The Dark Knight (2008)
+        [] Arrival (2016)
+        [] Lost in Translation (2003)
+        [] The Departed (2006)
+        [] Bridesmaids (2011)
+        [] A Separation (2011)
+        [] WALL-E (2008)
+        [] A Prophet (2009)
+        [] A Serious Man (2009)
+        [] Call Me by Your Name (2017)
+        [] Portrait of a Lady on Fire (2019)
+        [] Lady Bird (2017)
+        [] Yi Yi (2000)
+        [] Amélie (2001)
+        [] The Master (2012)
+        [] Oldboy (2003)
+        [] Once Upon a Time in Hollywood (2019)
+        [] Moneyball (2011)
+        [] Roma (2018)
+        [] Almost Famous (2000)
+        [] The Lives of Others (2006)
+        [] Before Sunset (2004)
+        [] Up (2009)
+        [] 12 Years a Slave (2013)
+        [] The Favourite (2018)
+        [] Borat (2006)
+        [] Pan's Labyrinth (2006)
+        [] Inception (2010)
+        [] Punch-Drunk Love (2002)
+        [] Best in Show (2000)
+        [] Uncut Gems (2019)
+        [] Toni Erdmann (2016)
+        [] Whiplash (2014)
+        [] Kill Bill (2003)
+        [] Memento (2000)
+        [] Little Miss Sunshine (2006)
+        [] Gone Girl (2014)
+        [] Oppenheimer (2023)
+        [] Spotlight (2015)
+        [] TAR (2022)
+        [] The Hurt Locker (2008)
+        [] Under the Skin (2013)
+        [] Let the Right One In (2008)
+        [] Ocean's Eleven (2001)
+        [] Carol (2015)
+        [] Ratatouille (2007)
+        [] The Florida Project (2017)
+        [] Amour (2012)
+        [] O Brother, Where Art Thou? (2000)
+        [] Everything Everywhere All at Once (2022)
+        [] Aftersun (2022)
+        [] Tree of Life (2011)
+        [] Volver (2006)
+        [] Black Swan (2010)
+        [] The Act of Killing (2012)
+        [] Inside Llewyn Davis (2013)
+        [] Melancholia (2011)
+        [] Anchorman (2004)
+        [] Past Lives (2023)
+        [] Lord of the Rings: The Fellowship of the Ring (2001)
+        [] The Gleaners and I (2000)
+        [] Interstellar (2014)
+        [] Frances Ha (2012)
+        [] Fish Tank (2009)
+        [] Gladiator (2000)
+        [] Michael Clayton (2007)
+        [] Minority Report (2002)
+        [] The Worst Person in the World (2021)
+        [] Black Panther (2018)
+        [] Gravity (2013)
+        [] Grizzly Man (2005)
+        [] Memories of Murder (2003)
+        [] Superbad (2007)
