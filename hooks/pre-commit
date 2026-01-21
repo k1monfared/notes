@@ -1,0 +1,31 @@
+#!/bin/bash
+# Pre-commit hook to enrich new movies with IMDb data
+#
+# When the 'movies' file is staged and contains NEW movie entries,
+# this hook fetches IMDb data for just those new movies before committing.
+# Existing movies without IMDb data are left untouched.
+
+set -e
+
+MOVIES_FILE="movies"
+ENRICH_SCRIPT="/home/k1/public/imdb_helper/scripts/enrich_new_movies.py"
+
+# Check if the movies file is staged for commit
+if ! git diff --cached --name-only | grep -q "^${MOVIES_FILE}$"; then
+    exit 0
+fi
+
+echo "Movies file staged - checking for new entries to enrich..."
+
+# Run the enrich script for new movies only
+if python3 "$ENRICH_SCRIPT" -f "$MOVIES_FILE"; then
+    # Check if the movies file was modified by the enrichment
+    if git diff --name-only | grep -q "^${MOVIES_FILE}$"; then
+        echo "IMDb data added - re-staging movies file..."
+        git add "$MOVIES_FILE"
+    fi
+else
+    echo "Warning: Movie enrichment failed, continuing with commit anyway"
+fi
+
+exit 0
