@@ -1036,7 +1036,7 @@
 - To Watch
     - Festivals:
         - TIFF <= 2025 awards https://www.tiff.net/awards
-            [] Hamnet
+            [x] Hamnet
                 - Year: 2025
                 - IMDB Rating: 8.1/10
                 - Genres: Biography, Drama, History
@@ -1062,35 +1062,50 @@
                 recommender: TIFF, award: People’s Choice Award (first runner-up)
 
             [] Wake Up Dead Man: A Knives Out Mystery
-
-                director: Rian Johnson
-
-                country: not specified
-
-                year: 2025
-
-                recommender: TIFF, award: People’s Choice Award (second runner-up)
-
-            [] No Other Choice
-
-                director: Park Chan-wook
-
-                country: not specified
-
-                year: 2025
-
-                recommender: TIFF, award: International People’s Choice Award
-
-            [] Sentimental Value
-
-                director: Joachim Trier
-
-                country: not specified
-
-                year: 2025
-
-                recommender: TIFF, award: International People’s Choice Award (first runner-up)
-
+                - recommender: TIFF, award: People's Choice Award (second runner-up)
+                - Year: 2025
+                - IMDB Rating: 7.4/10
+                - Genres: Comedy, Crime, Drama
+                - Country: United States
+                - Duration: 144 min
+                - Released: 12 Dec 2025
+                - Director: Rian Johnson
+                - Cast:
+                    - Daniel Craig
+                    - Josh O'Connor
+                    - Glenn Close
+                - Synopsis: Benoit Blanc returns for his most dangerous case yet.
+                - IMDb: https://www.imdb.com/title/tt14364480/
+            [x] No Other Choice
+                - Year: 2025
+                - Recommender: TIFF, award: International People's Choice Award
+                - IMDB Rating: 7.5/10
+                - Genres: Comedy, Crime, Drama
+                - Country: South Korea
+                - Duration: 139 min
+                - Released: N/A
+                - Director: Park Chan-wook
+                - Cast:
+                    - Lee Byung-hun
+                    - Son Ye-jin
+                    - Woo Seung Kim
+                - Synopsis: After being unemployed for several years, a man devises a unique plan to secure a new job: eliminate his competition.
+                - IMDb: https://www.imdb.com/title/tt1527793/
+            [x] Sentimental Value
+                - Recommender: TIFF, award: International People's Choice Award (first runner-up)
+                - Year: 2025
+                - IMDB Rating: 7.9/10
+                - Genres: Drama
+                - Country: Norway, Germany, Denmark, France, Sweden, United Kingdom, Turkey
+                - Duration: 133 min
+                - Released: 20 Aug 2025
+                - Director: Joachim Trier
+                - Cast:
+                    - Renate Reinsve
+                    - Stellan Skarsgård
+                    - Inga Ibsdotter Lilleaas
+                - Synopsis: An intimate exploration of family, memories, and the reconciliatory power of art.
+                - IMDb: https://www.imdb.com/title/tt27714581/
             [] Homebound
 
                 director: Neeraj Ghaywan
@@ -1182,15 +1197,20 @@
                 recommender: TIFF, award: Platform Award (honorable mention)
 
             [] Uiksaringitara (Wrong Husband)
-
-                director: Zacharias Kunuk
-
-                country: not specified (noted as an Inuit/Canadian film in the text, but no explicit single country line is given)
-
-                year: 2025
-
-                recommender: TIFF, award: Best Canadian Feature Film Award
-
+                - recommender: TIFF, award: Best Canadian Feature Film Award
+                - Year: 2025
+                - IMDB Rating: 6.8/10
+                - Genres: Fantasy, Horror
+                - Country: Canada
+                - Duration: 100 min
+                - Released: 16 Feb 2025
+                - Director: Zacharias Kunuk
+                - Cast:
+                    - Haiden Angutimarik
+                    - Theresia Kappianaq
+                    - Leah Panimera
+                - Synopsis: After a mysterious death, Kaujak and Sapa are separated despite being promised to each other at birth. With the help of spirit guides, efforts are made to restore harmony in this Arctic fairy tale set in an Inuit community.
+                - IMDb: https://www.imdb.com/title/tt35449355/
             [] There Are No Words
 
                 director: Min Sook Lee
@@ -1426,16 +1446,21 @@
 
                 recommender: TIFF, award: People’s Choice Award
 
-            [] The King’s Speech
-
-                director: Tom Hooper
-
-                country: United Kingdom / Australia
-
-                year: 2010
-
-                recommender: TIFF, award: People’s Choice Award
-
+            [x] The King's Speech
+                - Year: 2010
+                - IMDB Rating: 8.0/10
+                - Genres: Biography, Drama, History
+                - Country: United States, United Kingdom
+                - Duration: 118 min
+                - Released: 25 Dec 2010
+                - Director: Tom Hooper
+                - Cast:
+                    - Colin Firth
+                    - Geoffrey Rush
+                    - Helena Bonham Carter
+                - Synopsis: The story of King George VI, his unexpected ascension to the throne of the British Empire in 1936, and the speech therapist who helped the unsure monarch overcome his stammer.
+                - IMDb: https://www.imdb.com/title/tt1504320/
+                - recommender: TIFF, award: People's Choice Award
             [] Precious: Based on the Novel "Push" by Sapphire
 
                 director: Lee Daniels
@@ -1444,7 +1469,7 @@
 
                 year: 2009
 
-                recommender: TIFF, award: People’s Choice Award
+                recommender: TIFF, award: People's Choice Award
 
             [] Slumdog Millionaire
 
@@ -1836,7 +1861,7 @@
 
                 recommender: TIFF, award: People’s Choice Documentary Award
 
-            [] I Am Not Your Negro
+            [x] I Am Not Your Negro
 
                 director: Raoul Peck
 
@@ -1846,7 +1871,7 @@
 
                 recommender: TIFF, award: People’s Choice Documentary Award
 
-            [] Winter on Fire: Ukraine’s Fight for Freedom
+            [] Winter on Fire: Ukraine's Fight for Freedom
 
                 director: Evgeny Afineevsky
 
@@ -2216,16 +2241,21 @@
 
                 recommender: TIFF, award: Best Canadian Feature Film
 
-            [] Ceux qui font les révolutions à moitié n'ont fait que se creuser un tombeau
-
-                director: Mathieu Denis, Simon Lavoie
-
-                country: Canada
-
-                year: 2016
-
-                recommender: TIFF, award: Best Canadian Feature Film
-
+            [] Ceux qui font les révolutions à moitié n'ont fait que se creuser un tombeau (Those Who Make Revolution Halfway Only Dig Their Own Graves)
+                - Year: 2016
+                - IMDB Rating: 6.6/10
+                - Genres: Drama
+                - Country: Canada
+                - Duration: 183 min
+                - Released: 03 Feb 2017
+                - Director: Mathieu Denis, Simon Lavoie
+                - Cast:
+                    - Charlotte Aubin
+                    - Laurent Bélanger
+                    - Emmanuelle Lussier Martinez
+                - Synopsis: A group of young people in Québec resolve to form a revolutionary cell together in the aftermath of student protests.
+                - IMDb: https://www.imdb.com/title/tt5869620/
+                - recommender: TIFF, award: Best Canadian Feature Film
             [] Closet Monster
 
                 director: Stephen Dunn
@@ -2247,15 +2277,19 @@
                 recommender: TIFF, award: Best Canadian Feature Film
 
             [] When Jews Were Funny
-
-                director: Alan Zweig
-
-                country: Canada
-
-                year: 2013
-
-                recommender: TIFF, award: Best Canadian Feature Film
-
+                - Year: 2013
+                - IMDB Rating: 6.0/10
+                - Genres: Documentary
+                - Country: Canada
+                - Duration: 89 min
+                - Director: Alan Zweig
+                - Cast:
+                    - Marc Maron
+                    - Gilbert Gottfried
+                    - Rodney Dangerfield
+                - Synopsis: Surveys the history of Jewish comedy.
+                - IMDb: https://www.imdb.com/title/tt2378587/
+                - recommender: TIFF, award: Best Canadian Feature Film
             [] Laurence Anyways
 
                 director: Xavier Dolan
@@ -2406,7 +2440,7 @@
 
                 recommender: TIFF, award: Best Canadian Feature Film
 
-            [] Long Day’s Journey Into The Night
+            [] Long Day's Journey Into The Night
 
                 director: David Wellington
 
@@ -2487,15 +2521,19 @@
                 recommender: TIFF, award: Short Cuts Award for Best International Short Film
 
             [] Are You Scared To Be Yourself Because You Think That You Might Fail?
-
-                director: Bec Pecaut
-
-                country: Canada
-
-                year: 2024
-
-                recommender: TIFF, award: Short Cuts Award for Best Canadian Short Film
-
+                - Year: 2024
+                - IMDB Rating: 8.1/10
+                - Genres: Short
+                - Country: Canada
+                - Duration: 17 min
+                - Director: Bec Pecaut
+                - Cast:
+                    - Lio Mehiel
+                    - Sadie Scott
+                    - Phyllis Ellis
+                - Synopsis: Navigating the aftermath of top surgery, Mad grapples with emotional upheaval at home, supported by their partner and mother.
+                - IMDb: https://www.imdb.com/title/tt33087322/
+                - recommender: TIFF, award: Short Cuts Award for Best Canadian Short Film
             [] Motherland
 
                 director: Jasmin Mozaffari
@@ -2907,15 +2945,20 @@
                 recommender: TIFF, award: NETPAC
 
             [] The Third Wife
-
-                director: Ash Mayfair
-
-                country: Vietnam
-
-                year: 2018
-
-                recommender: TIFF, award: NETPAC
-
+                - Year: 2018
+                - IMDB Rating: 6.6/10
+                - Genres: Drama
+                - Country: Vietnam
+                - Duration: 96 min
+                - Released: 15 May 2019
+                - Director: Ash Mayfair
+                - Cast:
+                    - Hong Chuong Nguyen
+                    - Long Le Vu
+                    - Nu Yên-Khê Tran
+                - Synopsis: In 19th century rural Vietnam, May is ready to become the third wife of a wealthy landowner. Little does she know that her hidden desires will force her to decide between living in safety and being free.
+                - IMDb: https://www.imdb.com/title/tt7692966/
+                - recommender: TIFF, award: NETPAC
             [] The Great Buddha+
 
                 director: Huang Hsin-Yao
@@ -3627,15 +3670,18 @@
                 recommender: TIFF, award: Best Canadian First Feature Film
 
             [] Antiviral
-
-                director: Brandon Cronenberg
-
-                country: Canada
-
-                year: 2012
-
-                recommender: TIFF, award: Best Canadian First Feature Film
-
+                - Year: 2012
+                - IMDB Rating: 5.7/10
+                - Genres: Horror, Mystery, Sci-Fi
+                - Country: Canada, France
+                - Duration: 108 min
+                - Director: Brandon Cronenberg
+                - Cast:
+                    - Caleb Landry Jones
+                    - Lisa Berry
+                    - Sarah Gadon
+                - Synopsis: In a blackly satirical near future, a thriving industry sells celebrity illnesses to their obsessed fans. Employee Syd March's attempts to exploit the system backfire when they involve him in a potentially deadly mystery.
+                - recommender: TIFF, award: Best Canadian First Feature Film
             [] Blackbird
 
                 director: Jason Buxton
@@ -4501,427 +4547,427 @@
                 - country: USA
                 - recommended by: TIFF 2023
         - TIFF 2024
-            - 40 Acres (R.T. Thorne)
-            - A Missing Part (Guillaume Senez)
-            - A Sisters' Tale (Leila Amini)
-            - Aberdeen (Ryan Cooper, Eva Thomas)
-            - Addition (Marcelle Lunam)
-            - Africa, Cradle of Humankind and Modern Civilizations (Bénita Jacques)
-            - All We Imagine as Light (Payal Kapadia)
-            - All of You (William Bridges)
-            - Americano (Deny Gallagher)
-            - An Unfinished Film (Lou Ye)
-            - And Their Children After Them (Ludovic Boukherma, Zoran Boukherma)
-            - Andrea Bocelli: Because I Believe (Cosima Spender)
-            - Anywhere Anytime (Milad Tangshir)
-            - April (Dea Kulumbegashvili)
-            - Arrival (Denis Villeneuve)
-            - Average Joe (Harold Cronk)
-            - Awāra (Raj Kapoor)
-            - Babygirl (Halina Reijn)
-            - Battleground (Gianni Amelio)
-            - Beloved Tropic (Ana Endara)
-            - Better Man (Michael Gracey)
-            - Bird (Andrea Arnold)
-            - Bliss (Hemda) (Shemi Zarhin)
-            - Blue Road - The Edna O'Brien Story (Sinéad O'Shea)
-            - Bona (Lino Brocka)
-            - Bonjour Tristesse (Durga Chew-Bose)
-            - Boong (Lakshmipriya Devi)
-            - Bound in Heaven (Huo Xin)
-            - Bring Them Down (Christopher Andrews)
-            - By the Stream (Hong Sangsoo)
-            - Can I Get A Witness? (Ann Marie Fleming)
-            - Carnival is Over (Fernando Coimbra)
-            - Caught by the Tides (Jia Zhang-Ke)
-            - Cloud (Kiyoshi Kurosawa)
-            - Code 3 (Christopher Leone)
-            - Collective Monologue (Jessica Sarah Rinland)
-            - Conclave (Edward Berger)
-            - Crocodile Tears (Tumpal Tampubolon)
-            - Dahomey (Mati Diop)
-            - Daniela Forever (Nacho Vigalondo)
-            - Daughter's Daughter (Huang Xi)
-            - Dead Mail (Joe DeBoer, Kyle McConaghy)
-            - Dead Talents Society (John Hsu)
-            - Diciannove (Giovanni Tortorici)
-            - Disciples in the Moonlight (Brett Varvel)
-            - Disclaimer (Alfonso Cuarón)
-            - Diva Futura (Giulia Louise Steigerwalt)
-            - Do I Know You From Somewhere? (Arianna Martinez)
-            - Dodgeball: A True Underdog Story (Rawson Marshall Thurber)
-            - Don't Cry, Butterfly (Dương Diệu Linh)
-            - Don't Let's Go to the Dogs Tonight (Embeth Davidtz)
-            - Double Happiness (Mina Shum)
-            - Drama 1882 (Wael Shawky)
-            - Drumline (Charles Stone III)
-            - Dullsville and the Doodleverse (Burnt Toast, Ingi Erlingsson)
-            - Eden (Ron Howard)
-            - Edge of Night (Türker Süer)
-            - Else (Thibault Emin)
-            - Elton John: Never Too Late (R.J. Cutler, David Furnish)
-            - Emilia Pérez (Jacques Audiard)
-            - Endless Journey (Mo Dai)
-            - Ernest Cole: Lost and Found (Raoul Peck)
-            - Escape from the 21st Century (Yang Li)
-            - Essene (Frederick Wiseman)
-            - Faithless (Tomas Alfredson)
-            - Familier som vores (Thomas Vinterberg)
-            - Fanatical: The Catfishing of Tegan and Sara (Erin Lee Carr)
-            - Feeling Better (Valerio Mastandrea)
-            - Flow (Gints Zilbalodis)
-            - Footloose (Herbert Ross)
-            - Forty-Seven Days With Jesus (David M. Gutel, Emilio Palame)
-            - Four Mothers (Darren Thornton)
-            - Freedom Way (Afolabi Olalekan)
-            - Friendship (Andrew DeYoung)
-            - From Ground Zero (Various Directors)
-            - Front Row (Merzak Allouache)
-            - Gattaca (Andrew Niccol)
-            - Ghost (Jerry Zucker)
-            - Ghost of the Dark Path
-            - Ick (Joseph Kahn, Midnight Madness)
-            - Ink Wash (Sarra Tsorakidis, Discovery)
-            - Inquiry Of Shadows (Canadian)
-            - It Doesn't Get Any Better Than This (Rachel Kempf, Nick Toti, Midnight Madness)
-            - Jane Austen Wrecked My Life (Laura Piani, Centrepiece)
-            - Julie Keeps Quiet (Leonardo van Dijl, Centrepiece)
-            - Juna & Sorry Mom (Market Screening)
-            - K-Pops (Anderson.Paak, Special Presentations)
-            - Ka Whawhai Tonu - Struggle Without End (Michael Jonathan, Centrepiece)
-            - Kill the Jockey (Luis Ortega, Centrepiece)
-            - Last Breath (Costa Gavras, Market Screening)
-            - Like Family (Leah Walker, Market Screening)
-            - Linda (Mariana Wainstein, Discovery)
-            - Little Jaffna (Lawrence Valin, Centrepiece)
-            - Living Together (Halima Elkhatabi, TIFF Docs)
-            - Locked (David Yarovesky, Market Screening)
-            - London Calling (Allan Ungar, Market Screening)
-            - Love In The Big City (E.oni, Special Presentations)
-            - Love Never Ends (Yan Han, Market Screening)
-            - Love, Courage and the Battle of Bushy Run (Dave Alan Johnson, Larry A. McLean, Market Screening)
-            - Lázaro at Night (Nicolás Pereda, Wavelengths)
-            - M - Son of the Century (Joe Wright, Primetime)
-            - Marco, The Invented Truth (Aitor Arregi, Jon Garaño, Market Screening)
-            - Masala (Srinivas Krishna, TIFF Classics)
-            - Matador (Giampaolo Manfreda, Market Screening)
-            - Measures for a Funeral (Sofia Bohdanowicz, Centrepiece)
-            - Meat (Dimitris Nakos, Discovery)
-            - Meet the Barbarians (Julie Delpy, Gala Presentations)
-            - Megalopolis (Francis Ford Coppola, Gala Presentations)
-            - Memoir of a Snail (Adam Elliot, Market Screening)
-            - Men of War (Jen Gatien, Billy Corben, TIFF Docs)
-            - Millers in Marriage (Edward Burns, Special Presentations)
-            - Misericordia (Alain Guiraudie, Special Presentations)
-            - Mistress Dispeller (Elizabeth Lo, TIFF Docs)
-            - Monsieur Aznavour (Mehdi Idir, Grand Corps Malade, Market Screening)
-            - Mother Mara (Mirjana Karanovic, Market Screening)
-            - Mother Mother (K'naan Warsame, Discovery)
-            - Mr. K (Tallulah H. Schwab, Platform)
-            - My Fathers' Daughter (Egil Pedersen, Discovery)
-            - My Sunshine (Hiroshi Okuyama, Centrepiece)
-            - Nightbitch (Marielle Heller, Special Presentations)
-            - No Other Land (Various Directors, TIFF Docs)
-            - Noise (Kim Soo-jin, Market Screening)
-            - Nutcrackers (David Gordon Green, Gala Presentations)
-            - Oh, Canada (Paul Schrader, Gala Presentations)
-            - Old Fox (Ya-Chuan Hsiao, Market Screening)
-            - On Becoming a Guinea Fowl (Rungano Nyoni, TIFF Next Wave Selects)
-            - On Falling (Laura Carreira, Discovery)
-            - On Swift Horses (Daniel Minahan, Special Presentations)
-            - Once In A Blue Moon (Andy Lo, Market Screening)
-            - Patrice: The Movie (Ted Passon, TIFF Docs)
-            - Paul Anka: His Way (John Maggio, Special Presentations)
-            - Paying For It (Sook-Yin Lee, Platform)
-            - Pedro Páramo (Rodrigo Prieto, Platform)
-            - Peg O' My Heart (Nick Cheung, Market Screening)
-            - People's Choice Award Winner Screening (Special Events)
-            - Pepe (Nelson Carlo de los Santos Arias, Wavelengths)
-            - Perfumed with Mint (Muhammed Hamdy, Wavelengths)
-            - Piece by Piece (Morgan Neville, Special Presentations)
-            - Pimpinero: Blood and Oil (Andrés Baiz, Centrepiece)
-            - Pitch Perfect (Jason Moore, Festival Street)
-            - Platform Award Winner Screening (Special Events)
-            - Play the Part: Insights from Jia Zhang-Ke and Rafael Manuel (Special Events)
-            - Post Truth (Chengpeng Dong, Market Screening)
-            - Presence (Steven Soderbergh, Centrepiece)
-            - Queer (Luca Guadagnino, Special Presentations)
-            - Quisling - The Final Days (Erik Poppe, Special Presentations)
-            - Ravens (Mark Gill, Market Screening)
-            - Really Happy Someday (J Stevens, Discovery)
-            - Relay (David Mackenzie, Special Presentations)
-            - Rez Ball (Sydney Freeland, TIFF Next Wave Selects)
-            - Rich Flu (Galder Gatztelu-Urrutia, Market Screening)
-            - Riff Raff (Dito Montiel, Special Presentations)
-            - Rita (Paz Vega, Market Screening)
-            - Road Diary: Bruce Springsteen and The E Street Band (Thom Zimny, Gala Presentations)
-            - Russians at War (Anastasia Trofimova, TIFF Docs)
-            - SATURDAY NIGHT (Jason Reitman, Special Presentations)
-            - Saba (Maksud Hossain, Discovery)
-            - Sad Jokes (Fabian Stumm, Discovery)
-            - Santosh (Sandhya Suri, Centrepiece)
-            - Seeds (Kaniehtiio Horn, Discovery)
-            - Seven Days (Ali Samadi Ahadi, Centrepiece)
-            - Sharp Corner (Jason Buxton, Special Presentations)
-            - Shell (Max Minghella, Special Presentations)
-            - Shepherds (Sophie Deraspe, Special Presentations)
-            - Shook (Amar Wala, Discovery)
-            - Sicilian Letters (Antonio Piazza, Fabio Grassadonia, Market Screening)
-            - Skeet (Nik Sexton, Market Screening)
-            - Skeleton Coast (Robert O Peters, Market Screening)
-            - Sketch (Seth Worley, Special Presentations)
-            - So Surreal: Behind the Masks (Neil Diamond, Joanne Robertson, TIFF Docs)
-            - Souleymane’s Story (Boris Lojkine, Centrepiece)
-            - Space Cowboy (Marah Strauch, Bryce Leavitt, TIFF Docs)
-            - Stalkers (Paul Thompson, Market Screening)
-            - Sudan, remember us (Hind Meddeb, TIFF Docs)
-            - Sunshine (Antoinette Jadaone, Centrepiece)
-            - Superboys of Malegaon (Reema Kagti, Gala Presentations)
-            - Sweet Angel Baby (Melanie Oates, TIFF Next Wave Selects)
-            - Takin' Care of Business (Tyler Measom, Gala Presentations)
-            - Tara And Akash: Love Beyond Realms (Srinivas Abrol, Market Screening)
-            - Taste The Revolution (Daniel Klein, Market Screening)
-            - Tata (Lina Vdovîi, Radu Ciorniciuc, TIFF Docs)
-            - Temporary Shelter (Anastasiia Bortuali, TIFF Docs)
-            - The 47 (Marcel Barrena, Market Screening)
-            - The American Backyard (Giuseppe Avati, Market Screening)
-            - The Assessment (Fleur Fortuné, Special Presentations)
-            - The Ballad of Suzanne Césaire (Madeleine Hunt-Ehrlich, Wavelengths)
-            - The Bibi Files (Alexis Bloom, TIFF Docs)
-            - The Brutalist (Brady Corbet, Special Presentations)
-            - The Courageous (Jasmin Gordon, Discovery)
-            - The Cut (Sean Ellis, Special Presentations)
-            - The Damned (Roberto Minervini, Wavelengths)
-            - The Deb (Rebel Wilson, Gala Presentations)
-            - The End (Joshua Oppenheimer, Special Presentations)
-            - The Exiles (Belén Funes, Centrepiece)
-            - The Fire Inside (Rachel Morrison, TIFF Next Wave Selects)
-            - The Freedom of Fierro
+            [] 40 Acres (R.T. Thorne)
+            [] A Missing Part (Guillaume Senez)
+            [] A Sisters' Tale (Leila Amini)
+            [] Aberdeen (Ryan Cooper, Eva Thomas)
+            [] Addition (Marcelle Lunam)
+            [] Africa, Cradle of Humankind and Modern Civilizations (Bénita Jacques)
+            [] All We Imagine as Light (Payal Kapadia)
+            [] All of You (William Bridges)
+            [] Americano (Deny Gallagher)
+            [] An Unfinished Film (Lou Ye)
+            [] And Their Children After Them (Ludovic Boukherma, Zoran Boukherma)
+            [] Andrea Bocelli: Because I Believe (Cosima Spender)
+            [] Anywhere Anytime (Milad Tangshir)
+            [] April (Dea Kulumbegashvili)
+            [] Arrival (Denis Villeneuve)
+            [] Average Joe (Harold Cronk)
+            [] Awāra (Raj Kapoor)
+            [] Babygirl (Halina Reijn)
+            [] Battleground (Gianni Amelio)
+            [] Beloved Tropic (Ana Endara)
+            [] Better Man (Michael Gracey)
+            [] Bird (Andrea Arnold)
+            [] Bliss (Hemda) (Shemi Zarhin)
+            [] Blue Road - The Edna O'Brien Story (Sinéad O'Shea)
+            [] Bona (Lino Brocka)
+            [] Bonjour Tristesse (Durga Chew-Bose)
+            [] Boong (Lakshmipriya Devi)
+            [] Bound in Heaven (Huo Xin)
+            [] Bring Them Down (Christopher Andrews)
+            [] By the Stream (Hong Sangsoo)
+            [] Can I Get A Witness? (Ann Marie Fleming)
+            [] Carnival is Over (Fernando Coimbra)
+            [] Caught by the Tides (Jia Zhang-Ke)
+            [] Cloud (Kiyoshi Kurosawa)
+            [] Code 3 (Christopher Leone)
+            [] Collective Monologue (Jessica Sarah Rinland)
+            [] Conclave (Edward Berger)
+            [] Crocodile Tears (Tumpal Tampubolon)
+            [] Dahomey (Mati Diop)
+            [] Daniela Forever (Nacho Vigalondo)
+            [] Daughter's Daughter (Huang Xi)
+            [] Dead Mail (Joe DeBoer, Kyle McConaghy)
+            [] Dead Talents Society (John Hsu)
+            [] Diciannove (Giovanni Tortorici)
+            [] Disciples in the Moonlight (Brett Varvel)
+            [] Disclaimer (Alfonso Cuarón)
+            [] Diva Futura (Giulia Louise Steigerwalt)
+            [] Do I Know You From Somewhere? (Arianna Martinez)
+            [] Dodgeball: A True Underdog Story (Rawson Marshall Thurber)
+            [] Don't Cry, Butterfly (Dương Diệu Linh)
+            [] Don't Let's Go to the Dogs Tonight (Embeth Davidtz)
+            [] Double Happiness (Mina Shum)
+            [] Drama 1882 (Wael Shawky)
+            [] Drumline (Charles Stone III)
+            [] Dullsville and the Doodleverse (Burnt Toast, Ingi Erlingsson)
+            [] Eden (Ron Howard)
+            [] Edge of Night (Türker Süer)
+            [] Else (Thibault Emin)
+            [] Elton John: Never Too Late (R.J. Cutler, David Furnish)
+            [] Emilia Pérez (Jacques Audiard)
+            [] Endless Journey (Mo Dai)
+            [] Ernest Cole: Lost and Found (Raoul Peck)
+            [] Escape from the 21st Century (Yang Li)
+            [] Essene (Frederick Wiseman)
+            [] Faithless (Tomas Alfredson)
+            [] Familier som vores (Thomas Vinterberg)
+            [] Fanatical: The Catfishing of Tegan and Sara (Erin Lee Carr)
+            [] Feeling Better (Valerio Mastandrea)
+            [] Flow (Gints Zilbalodis)
+            [] Footloose (Herbert Ross)
+            [] Forty-Seven Days With Jesus (David M. Gutel, Emilio Palame)
+            [] Four Mothers (Darren Thornton)
+            [] Freedom Way (Afolabi Olalekan)
+            [] Friendship (Andrew DeYoung)
+            [] From Ground Zero (Various Directors)
+            [] Front Row (Merzak Allouache)
+            [] Gattaca (Andrew Niccol)
+            [] Ghost (Jerry Zucker)
+            [] Ghost of the Dark Path
+            [] Ick (Joseph Kahn, Midnight Madness)
+            [] Ink Wash (Sarra Tsorakidis, Discovery)
+            [] Inquiry Of Shadows (Canadian)
+            [] It Doesn't Get Any Better Than This (Rachel Kempf, Nick Toti, Midnight Madness)
+            [] Jane Austen Wrecked My Life (Laura Piani, Centrepiece)
+            [] Julie Keeps Quiet (Leonardo van Dijl, Centrepiece)
+            [] Juna & Sorry Mom (Market Screening)
+            [] K-Pops (Anderson.Paak, Special Presentations)
+            [] Ka Whawhai Tonu - Struggle Without End (Michael Jonathan, Centrepiece)
+            [] Kill the Jockey (Luis Ortega, Centrepiece)
+            [] Last Breath (Costa Gavras, Market Screening)
+            [] Like Family (Leah Walker, Market Screening)
+            [] Linda (Mariana Wainstein, Discovery)
+            [] Little Jaffna (Lawrence Valin, Centrepiece)
+            [] Living Together (Halima Elkhatabi, TIFF Docs)
+            [] Locked (David Yarovesky, Market Screening)
+            [] London Calling (Allan Ungar, Market Screening)
+            [] Love In The Big City (E.oni, Special Presentations)
+            [] Love Never Ends (Yan Han, Market Screening)
+            [] Love, Courage and the Battle of Bushy Run (Dave Alan Johnson, Larry A. McLean, Market Screening)
+            [] Lázaro at Night (Nicolás Pereda, Wavelengths)
+            [] M - Son of the Century (Joe Wright, Primetime)
+            [] Marco, The Invented Truth (Aitor Arregi, Jon Garaño, Market Screening)
+            [] Masala (Srinivas Krishna, TIFF Classics)
+            [] Matador (Giampaolo Manfreda, Market Screening)
+            [] Measures for a Funeral (Sofia Bohdanowicz, Centrepiece)
+            [] Meat (Dimitris Nakos, Discovery)
+            [] Meet the Barbarians (Julie Delpy, Gala Presentations)
+            [] Megalopolis (Francis Ford Coppola, Gala Presentations)
+            [] Memoir of a Snail (Adam Elliot, Market Screening)
+            [] Men of War (Jen Gatien, Billy Corben, TIFF Docs)
+            [] Millers in Marriage (Edward Burns, Special Presentations)
+            [] Misericordia (Alain Guiraudie, Special Presentations)
+            [] Mistress Dispeller (Elizabeth Lo, TIFF Docs)
+            [] Monsieur Aznavour (Mehdi Idir, Grand Corps Malade, Market Screening)
+            [] Mother Mara (Mirjana Karanovic, Market Screening)
+            [] Mother Mother (K'naan Warsame, Discovery)
+            [] Mr. K (Tallulah H. Schwab, Platform)
+            [] My Fathers' Daughter (Egil Pedersen, Discovery)
+            [] My Sunshine (Hiroshi Okuyama, Centrepiece)
+            [] Nightbitch (Marielle Heller, Special Presentations)
+            [] No Other Land (Various Directors, TIFF Docs)
+            [] Noise (Kim Soo-jin, Market Screening)
+            [] Nutcrackers (David Gordon Green, Gala Presentations)
+            [] Oh, Canada (Paul Schrader, Gala Presentations)
+            [] Old Fox (Ya-Chuan Hsiao, Market Screening)
+            [] On Becoming a Guinea Fowl (Rungano Nyoni, TIFF Next Wave Selects)
+            [] On Falling (Laura Carreira, Discovery)
+            [] On Swift Horses (Daniel Minahan, Special Presentations)
+            [] Once In A Blue Moon (Andy Lo, Market Screening)
+            [] Patrice: The Movie (Ted Passon, TIFF Docs)
+            [] Paul Anka: His Way (John Maggio, Special Presentations)
+            [] Paying For It (Sook-Yin Lee, Platform)
+            [] Pedro Páramo (Rodrigo Prieto, Platform)
+            [] Peg O' My Heart (Nick Cheung, Market Screening)
+            [] People's Choice Award Winner Screening (Special Events)
+            [] Pepe (Nelson Carlo de los Santos Arias, Wavelengths)
+            [] Perfumed with Mint (Muhammed Hamdy, Wavelengths)
+            [] Piece by Piece (Morgan Neville, Special Presentations)
+            [] Pimpinero: Blood and Oil (Andrés Baiz, Centrepiece)
+            [] Pitch Perfect (Jason Moore, Festival Street)
+            [] Platform Award Winner Screening (Special Events)
+            [] Play the Part: Insights from Jia Zhang-Ke and Rafael Manuel (Special Events)
+            [] Post Truth (Chengpeng Dong, Market Screening)
+            [] Presence (Steven Soderbergh, Centrepiece)
+            [] Queer (Luca Guadagnino, Special Presentations)
+            [] Quisling - The Final Days (Erik Poppe, Special Presentations)
+            [] Ravens (Mark Gill, Market Screening)
+            [] Really Happy Someday (J Stevens, Discovery)
+            [] Relay (David Mackenzie, Special Presentations)
+            [] Rez Ball (Sydney Freeland, TIFF Next Wave Selects)
+            [] Rich Flu (Galder Gatztelu-Urrutia, Market Screening)
+            [] Riff Raff (Dito Montiel, Special Presentations)
+            [] Rita (Paz Vega, Market Screening)
+            [] Road Diary: Bruce Springsteen and The E Street Band (Thom Zimny, Gala Presentations)
+            [] Russians at War (Anastasia Trofimova, TIFF Docs)
+            [] SATURDAY NIGHT (Jason Reitman, Special Presentations)
+            [] Saba (Maksud Hossain, Discovery)
+            [] Sad Jokes (Fabian Stumm, Discovery)
+            [] Santosh (Sandhya Suri, Centrepiece)
+            [] Seeds (Kaniehtiio Horn, Discovery)
+            [] Seven Days (Ali Samadi Ahadi, Centrepiece)
+            [] Sharp Corner (Jason Buxton, Special Presentations)
+            [] Shell (Max Minghella, Special Presentations)
+            [] Shepherds (Sophie Deraspe, Special Presentations)
+            [] Shook (Amar Wala, Discovery)
+            [] Sicilian Letters (Antonio Piazza, Fabio Grassadonia, Market Screening)
+            [] Skeet (Nik Sexton, Market Screening)
+            [] Skeleton Coast (Robert O Peters, Market Screening)
+            [] Sketch (Seth Worley, Special Presentations)
+            [] So Surreal: Behind the Masks (Neil Diamond, Joanne Robertson, TIFF Docs)
+            [] Souleymane’s Story (Boris Lojkine, Centrepiece)
+            [] Space Cowboy (Marah Strauch, Bryce Leavitt, TIFF Docs)
+            [] Stalkers (Paul Thompson, Market Screening)
+            [] Sudan, remember us (Hind Meddeb, TIFF Docs)
+            [] Sunshine (Antoinette Jadaone, Centrepiece)
+            [] Superboys of Malegaon (Reema Kagti, Gala Presentations)
+            [] Sweet Angel Baby (Melanie Oates, TIFF Next Wave Selects)
+            [] Takin' Care of Business (Tyler Measom, Gala Presentations)
+            [] Tara And Akash: Love Beyond Realms (Srinivas Abrol, Market Screening)
+            [] Taste The Revolution (Daniel Klein, Market Screening)
+            [] Tata (Lina Vdovîi, Radu Ciorniciuc, TIFF Docs)
+            [] Temporary Shelter (Anastasiia Bortuali, TIFF Docs)
+            [] The 47 (Marcel Barrena, Market Screening)
+            [] The American Backyard (Giuseppe Avati, Market Screening)
+            [] The Assessment (Fleur Fortuné, Special Presentations)
+            [] The Ballad of Suzanne Césaire (Madeleine Hunt-Ehrlich, Wavelengths)
+            [] The Bibi Files (Alexis Bloom, TIFF Docs)
+            [] The Brutalist (Brady Corbet, Special Presentations)
+            [] The Courageous (Jasmin Gordon, Discovery)
+            [] The Cut (Sean Ellis, Special Presentations)
+            [] The Damned (Roberto Minervini, Wavelengths)
+            [] The Deb (Rebel Wilson, Gala Presentations)
+            [] The End (Joshua Oppenheimer, Special Presentations)
+            [] The Exiles (Belén Funes, Centrepiece)
+            [] The Fire Inside (Rachel Morrison, TIFF Next Wave Selects)
+            [] The Freedom of Fierro
                 - Director: Santiago Esteinou
                 - At 63, newly freed César Fierro must rebuild his life after being wrongfully sentenced to death in Texas 40 years earlier. In this documentary, the audience accompanies Fierro on his journey, observing…
-            - The Friend
+            [] The Friend
                 - Directors: David Siegel, Scott McGehee
                 - Bill Murray, Naomi Watts, and a charismatic Great Dane named Bing propel this wise and insightful character drama based on the acclaimed novel by Sigrid Nunez and directed by Scott McGehee and David Siegel.
-            - The Gesuidouz
+            [] The Gesuidouz
                 - Director: Kenichi Ugana
                 - From rising cult filmmaker Kenichi Ugana, a misfit horror-themed rock band moves to the Japanese countryside to write the greatest punk anthem in the world.
-            - The Girl with the Needle
+            [] The Girl with the Needle
                 - Director: Magnus von Horn
                 - In Magnus von Horn’s stylish and audacious blend of true-crime drama and expressionist nightmare, a young seamstress trying to survive in post-WWI Copenhagen makes a fateful connection with one of the…
-            - The Karate Kid
+            [] The Karate Kid
                 - Director: John G. Avildsen
                 - Daniel LaRusso (Ralph Macchio, The Outsiders) forms a heartwarming, intergenerational friendship with Mr. Miyagi (Pat Morita) while learning about karate, personal balance, and self-defense …
-            - The Knowing
+            [] The Knowing
                 - Directors: Courtney Montour, Tanya Talaga
                 - Acclaimed journalist Tanya Talaga brings her evocative storytelling from the page to the screen with her search for a long-lost matriarch named Annie, solving an 80-year-old family mystery.
-            - The Last Republican
+            [] The Last Republican
                 - Director: Steve Pink
                 - A fan of Hot Tub Time Machine, Republican Congressman Adam Kinzinger invites the left-wing Hollywood director Steve Pink to follow his efforts to hold Donald Trump accountable for the January…
-            - The Last Romantics
+            [] The Last Romantics
                 - Director: David Pérez Sañudo
                 - This screening is available to all accredited Industry
-            - The Last Showgirl
+            [] The Last Showgirl
                 - Director: Gia Coppola
                 - A seasoned performer must plan for her future when her show abruptly closes after a 30-year run. Starring Pamela Anderson, Jamie Lee Curtis, and Dave Bautista.
-            - The Last of The Sea Women
+            [] The Last of The Sea Women
                 - Director: Sue Kim
                 - A spirited portrait of an endangered tradition and a galvanizing plea for better stewardship of our oceans, Sue Kim’s documentary dives deep into the culture of the haenyeo, the South Korean fisherwomen…
-            - The Legend of the Vagabond Queen of Lagos
+            [] The Legend of the Vagabond Queen of Lagos
                 - Director: The Agbajowo Collective
                 - Anchored by a stunning performance from Temi Ami-Williams (Eyimofe), the debut from Nigeria’s Agbajowo Collective, part thriller, part magical realism, is a riveting indictment of the uncheck…
-            - The Life of Chuck
+            [] The Life of Chuck
                 - Director: Mike Flanagan
                 - Mike Flanagan takes a detour from the macabre with this adaptation of a uniquely structured Stephen King novella that unravels a seemingly ordinary accountant’s world.
-            - The Listeners
+            [] The Listeners
                 - Director: Janicza Bravo
                 - Rebecca Hall (Resurrection, Christine) stars as Claire, a schoolteacher who begins to hear a sound that no one else around her seems to, in this enigmatic adaptation of author Jordan…
-            - The Luckiest Man in America
+            [] The Luckiest Man in America
                 - Director: Samir Oliveros
                 - Featuring Paul Walter Hauser (Richard Jewell), Walton Goggins, and David Strathairn, this stranger-than-fiction drama resurrects a hugely popular 1980s game show and the “luckiest man in America” who…
-            - The Mother and the Bear
+            [] The Mother and the Bear
                 - Director: Johnny Ma
                 - When her grown daughter Sumi has a bad fall in Winnipeg, anxious widow Sara (Kim Ho-jung) travels from Korea to be with her — and discovers she doesn't really know Sumi at all.
-            - The Mountain
+            [] The Mountain
                 - Director: Rachel House
                 - Rachel House’s heartfelt debut film follows a brave trio on the journey of a lifetime, where they learn the true meaning of friendship and the power of their cultural legacy. Executive produced by Tai…
-            - The Order
+            [] The Order
                 - Director: Justin Kurzel
                 - Featuring startling performances from Jude Law and Tye Sheridan, this riveting historical thriller from director Justin Kurzel (Nitram) follows the FBI’s investigation into a domestic terrori…
-            - The Otherside of History
+            [] The Otherside of History
                 - Director: Onyeka Nwelue
                 - This screening is available to all accredited Industry
-            - The Outsiders
+            [] The Outsiders
                 - Director: Francis Ford Coppola
                 - As Francis Ford Coppola returns to the big screen in more than a decade with Megalopolis, TIFF Cinema Park is pleased to present a special screening of The Outsiders, his adaptation o…
-            - The Paradise of Thorns
+            [] The Paradise of Thorns
                 - Director: Boss Kuno
                 - When a tragedy takes Sek away
-            - The Party's Over
+            [] The Party's Over
                 - Director: Elena Manrique
                 - In southern Spain, a wealthy divorcée’s life is upended when a young Senegalese immigrant takes refuge in her tool shed. Though it explores harsh realities, Elena Manrique’s directorial debut blends h…
-            - The Penguin Lessons
+            [] The Penguin Lessons
                 - Director: Peter Cattaneo
                 - Starring Oscar nominee Steve Coogan, this poignant dramedy from director Peter Cattaneo (Military Wives, TIFF ’19) follows an Englishman’s personal and political awakening after he adopts a p…
-            - The Piano Lesson
+            [] The Piano Lesson
                 - Director: Malcolm Washington
                 - Malcolm Washington makes his feature directorial debut with this adaptation of the Pulitzer Prize–winning August Wilson play, featuring an incredible cast that includes Danielle Deadwyler, John David …
-            - The Price of Money: A Largo Winch Adventure
+            [] The Price of Money: A Largo Winch Adventure
                 - Director: Olivier Masset-Depasse
                 - This screening is limited to only accredited Buyers
-            - The Quiet Ones
+            [] The Quiet Ones
                 - Director: Frederik Louis Hviid
                 - Based on the true story of Denmark’s biggest-ever robbery, Frederik Louis Hviid’s heist thriller highlights the steely professionalism of men operating outside the law.
-            - The Return
+            [] The Return
                 - Director: Uberto Pasolini
                 - Odysseus washes up on the shores of his kingdom to find it much changed since he left to fight in the Trojan War, in this classical drama starring Ralph Fiennes and Juliette Binoche.
-            - The Room Next Door
+            [] The Room Next Door
                 - Director: Pedro Almodóvar
                 - Tilda Swinton and Julianne Moore star in this visually exquisite and intimate adaptation of What Are You Going Through by Sigrid Nunez, Pedro Almodóvar’s first English-language feature.
-            - The Rule of Jenny Pen
+            [] The Rule of Jenny Pen
                 - Director: James Ashcroft
-            - The Ruse
+            [] The Ruse
                 - Director: Stevan Mena
-            - The Saint of Varet
+            [] The Saint of Varet
                 - Director: Munnawar Bhagat
-            - The Salt Path
+            [] The Salt Path
                 - Director: Marianne Elliott
                 - After losing their home and livelihood, a middle-aged couple impulsively sets out on a 630-mile walk along the southwest English coast, a walk complicated to no small degree by the recent diagnosis of …
-            - The Seed of the Sacred Fig
+            [] The Seed of the Sacred Fig
                 - Director: Mohammad Rasoulof
                 - From renowned filmmaker Mohammad Rasoulof, The Seed of the Sacred Fig (winner of the Special Jury Prize at the 2024 Cannes Film Festival) is a social drama turned cat-and-mouse game…
-            - The Swedish Torpedo
+            [] The Swedish Torpedo
                 - Director: Frida Kempff
                 - This beautifully textured period drama from director Frida Kempff tells the story of Sally Bauer, a Swedish mother who pursues her dream of swimming the English Channel before the Second World War env…
-            - The Sweet Hereafter
+            [] The Sweet Hereafter
                 - Director: Atom Egoyan
                 - Recently restored, Atom Egoyan’s The Sweet Hereafter returns to the big screen in a new 4K restoration, a powerful adaptation of Russell Banks’ novel about a small town reeling from a devastating tragedy.
-            - The Tragically Hip: No Dress Rehearsal
+            [] The Tragically Hip: No Dress Rehearsal
                 - Director: Mike Downie
                 - Director Mike Downie assembles The Tragically Hip for an emotional look at the origin, impact, and legacy of the band that defined Canada, to the world and to itself.
-            - The Unwavering Brotherhood
+            [] The Unwavering Brotherhood
                 - Director: Terry Ng
                 - This screening is limited to only accredited Buyers
-            - The Village Next to Paradise
+            [] The Village Next to Paradise
                 - Director: Mo Harawe
                 - One of the breakout debuts from this year's Cannes Film Festival, writer-director Mo Harawe's sensitive and empathetic The Village Next to Paradise announces a bold new voice in art house and…
-            - The Vision of Dune: A Conversation with Denis Villeneuve
+            [] The Vision of Dune: A Conversation with Denis Villeneuve
                 - Special Events
-            - The Wailing
+            [] The Wailing
                 - Director: Pedro Martín-Calero
                 - This screening is limited to only accredited Buyers
-            - The Wild Robot
+            [] The Wild Robot
                 - Director: Chris Sanders
                 - Featuring the voices of Pedro Pascal, Catherine O’Hara, Lupita Nyong’o, Stephanie Hsu, and Bill Nighy, this DreamWorks Animation sci-fi adventure follows a robot designed to assist humans who finds he…
-            - The Wolves Always Come at Night
+            [] The Wolves Always Come at Night
                 - Director: Gabrielle Brady
                 - After a devastating storm wrought by climate change forces them from their home in the Mongolian countryside to the city, a young couple are forced to adapt to a new way of life in this breathtaking a…
-            - They Will Be Dust
+            [] They Will Be Dust
                 - Director: Carlos Marques-Marcet
                 - Unequal parts contemporary dance-musical and ensemble drama, They Will Be Dust reaches for the raw emotional core of humanity in all its
-            - Thou Shalt Not Steal
+            [] Thou Shalt Not Steal
                 - Director: Dylan River
                 - A wonderfully raw, darkly comedic road trip through the Outback, starring Heartbreak High’s Sherry-Lee Watson and Will McDonald on the run from Australian stars Miranda Otto and Noah Taylor.
-            - Three Friends
+            [] Three Friends
                 - Director: Emmanuel Mouret
                 - This screening is limited to only accredited Buyers
-            - Time of Maturity
+            [] Time of Maturity
                 - Director: Sohrab Shahid Saless
                 - Recently restored, Sohrab Shahid Saless’ Time of Maturity reveals — with a sparse, unhurried, deeply generous approach — the harsh realities of an Iranian family’s daily life.
-            - To a Land Unknown
+            [] To a Land Unknown
                 - Director: Mahdi Fleifel
                 - From burgeoning Palestinian auteur Mahdi Fleifel (A World Not Ours, TIFF Docs ’12; A Drowning Man, Short Cuts ’17) comes an intuitive thriller about displaced cousins who will stop at…
-            - Transamazonia
+            [] Transamazonia
                 - Director: Pia Marais
                 - This screening is limited to only accredited Buyers
-            - Transmitzvah
+            [] Transmitzvah
                 - Director: Daniel Burman
                 - This screening is available to all accredited Industry
-            - Triumph
+            [] Triumph
                 - Directors: Petar Valchanov, Kristina Grozeva
                 - Kristina Grozeva and Petar Valchanov’s Triumph — combined with their previous films The Lesson (TIFF ’14) and Glory (2016) — forms a trilogy inspired by sensationalist news …
-            - Trust
+            [] Trust
                 - Director: Daniele Luchetti
                 - This screening is available to all accredited Industry
-            - U Are the Universe
+            [] U Are the Universe
                 - Director: Pavlo Ostrikov
                 - Written and filmed during Russia’s ongoing invasion of Ukraine, Pavlo Ostrikov’s debut feature is a true wonder and a prescient reminder of how important it is to connect with someone who understands dur…
-            - Under the Volcano
+            [] Under the Volcano
                 - Director: Damian Kocur
                 - A Ukrainian family of four on vacation in the Canary Islands become refugees overnight when Russia’s ongoing occupation of Ukraine turns into a full-scale invasion, in Damian Kocur’s tense and timely …
-            - Universal Language
+            [] Universal Language
                 - Director: Matthew Rankin
                 - Matthew Rankin’s second feature is a lovingly detailed, charmingly impossible story of a Canada where Persian and French are the two official languages, and loneliness is the common currency.
-            - Unstoppable
+            [] Unstoppable
                 - Director: William Goldenberg
                 - Moonlight’s Jharrel Jerome gives another outstanding performance amid a star-studded cast (including Don Cheadle and Jennifer Lopez) in this heartfelt sports drama about a college wrestler wh…
-            - Vermiglio
+            [] Vermiglio
                 - Director: Maura Delpero
                 - Towards the end of the Second World War, in a high, remote mountain village in the Italian Alps, the arrival of a refugee soldier alters the dynamics of the place forever.
-            - Vice Is Broke
+            [] Vice Is Broke
                 - Director: Eddie Huang
                 - Eddie Huang of Huang’s World undertakes a first-person investigation into how Vice went from scrappy Montreal indie magazine to media giant. He interviews former contributors who wer…
-            - Viet and Nam
+            [] Viet and Nam
                 - Director: Trương Minh Quý
                 - Amidst the darkness 1,000 meters underground sparkles an intimate romance between Viêt and Nam in this mystical story of two young miners in search of a brighter future.
-            - Viktor
+            [] Viktor
                 - Director: Olivier Sarbil
                 - Fusing rigorous reportage with innovative cinematic subjectivity, this bold documentary from veteran war photographer Olivier Sarbil follows a group of Ukrainian soldiers fighting to retake their homel…
-            - Village Keeper
+            [] Village Keeper
                 - Director: Karen Chapman
                 - After a massive loss, an overwhelmed Toronto mother discovers a very unusual way to process her grief.
-            - Viva La Vida
+            [] Viva La Vida
                 - Director: Yan Han
                 - This screening is available by private invitation only
-            - We Live in Time
+            [] We Live in Time
                 - Director: John Crowley
                 - Featuring gorgeously detailed performances from Oscar nominees Florence Pugh and Andrew Garfield, this inventively structured romance explores the question of how to make the most of our time in this …
-            - Went Up the Hill
+            [] Went Up the Hill
                 - Director: Samuel Van Grinsven
                 - Dacre Montgomery (Stranger Things) and Vicky Krieps (The Dead Don’t Hurt) deliver haunting performances in Samuel Van Grinsven’s atmospheric ghost story that explores the legacy of l…
-            - When Fall Is Coming
+            [] When Fall Is Coming
                 - Director: François Ozon
                 - This screening is limited to only accredited Buyers
-            - When The Light Breaks preceded by O
+            [] When The Light Breaks preceded by O
                 -
-            - When the Monsters Come Out
+            [] When the Monsters Come Out
                 - Director: James Amuta
                 - This screening is available to all accredited Industry
-            - Whiplash
+            [] Whiplash
                 - Director: Damien Chazelle
                 - An ambitious young drummer (Miles Teller) at a prestigious music academy clashes with a hard-driving instructor (J.K. Simmons) in this sizzling, Academy Award–winning drama.
-            - Will & Harper
+            [] Will & Harper
                 - Director: Josh Greenbaum
                 - This heartfelt documentary from director Josh Greenbaum (Barb and Star Go to Vista Del Mar) follows Saturday Night Live alumni and close friends Will Fer
-            - William Tell
+            [] William Tell
                 - Director: Nick Hamm
                 - An all-star cast including Sir Ben Kingsley, Claes Bang, Jonathan Pryce, and Rafe Spall electrify this monumental tale about the legendary 14th century warrior marksman who liberated Switzerland, beco…
-            - Winter in Sokcho
+            [] Winter in Sokcho
                 - Director: Koya Kamura
                 - In this debut from filmmaker Koya Kamura, a young woman struggling to claim her identity and independence has her routine disrupted when a French artist checks into the small guesthouse in snowy Sokch…
-            - Wishing on a Star
+            [] Wishing on a Star
                 - Director: Peter Kerekes
                 - For his latest, full of star-crossed charm and earthly delights, veteran filmmaker and master of the hybrid form Péter Kerekes brilliantly combines the cinematic feel of a fiction film with cleverly c…
-            - Without Blood
+            [] Without Blood
                 - Director: Angelina Jolie
                 - This parable-like tale of family, war, and revenge is directed by Angelina Jolie and was filmed at Rome’s famed Cinecittà Studios.
-            - You Are Not Alone
+            [] You Are Not Alone
                 - Directors: Marie-Hélène Viens, Philippe Lupien
-            - Young Werther
+            [] Young Werther
                 - Director: José Avelino Gilles Corbett Lourenço
                 - Inspired by the popular 1770s novella The Sorrows of Young Werther, this modernization stars Douglas Booth and Alison Pill in a fast-paced and bright romantic comedy, set in Toronto.
-            - Your Tomorrow
+            [] Your Tomorrow
                 - Director: Ali Weinstein
                 - Ali Weinstein’s documentary captures the final year of Toronto’s celebrated Ontario Place, as the beloved provincial park is sectioned off for redevelopment while visitors keep showing up to walk its …
-            - Youth (Hard Times)
+            [] Youth (Hard Times)
                 - Director: Wang Bing
                 - Hard Times, the second chapter of Wang Bing’s monumental Youth, continues exploring the harsh living conditions of young migrant workers in the Yangtze Delta's garment district while…
-            - Youth (Homecoming)
+            [] Youth (Homecoming)
                 - Director: Wang Bing
                 - Homecoming, the final chapter of Wang Bing’s Youth, follows young textile workers from Zhili workshops to their rural homes for New Year's celebrations. It’s a powerful documentary a…
-            - Yuppie
+            [] Yuppie
                 - Director: Sergio Navaretta
                 - Screening for accredited industry and buyers during the Festival, Industry Selects is a curated selection of 10 films that go beyond the Official Selection, and are all available for worldwide acquis…
-            - exergue - on documenta 14
+            [] exergue - on documenta 14
                 - Director: Dimitris Athiridis
         - Victora Film Festival
             [] Me, Maryam, the Children and 26 Others
