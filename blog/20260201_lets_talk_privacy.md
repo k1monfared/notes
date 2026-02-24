@@ -1,6 +1,6 @@
 # Let's Talk Privacy
 
-[This came out of a conversation with Omid]
+[This came out of a conversation with Omid. DISCLAIMER: I'm not a security expert and most of how these things work are out of my ballpark. This is an attempt to understand this as an end user.]
 
 ## What Does "End-to-End Encryption" Really Mean?
 
