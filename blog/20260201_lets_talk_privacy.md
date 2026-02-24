@@ -1,5 +1,7 @@
 # Let's Talk Privacy
 
+[This came out of a conversation with Omid]
+
 ## What Does "End-to-End Encryption" Really Mean?
 
 When a company talks about "end-to-end encryption" (E2EE) they could mean several things in practical terms. The fact that data is encrypted "on sender's device" and then decrypted "on receiver's device" without it ever being decrypted along the way is in fact the definition of it. But we need to remember what is the purpose of this. If the purpose is that a man-in-the-middle attack will not likely compromise your data, then most implementations of this should be good enough. But usually that is not the main purpose when people need/want E2EE. In general one wants E2EE so that "no one" can access the data outside the sender and receivers, and in particular "the provider". That is if you're using WhatsApp, you don't want Facebook as a company to have access to the content of your messages. They still have a lot of information they can use to interpret things, e.g. they know your network, the frequency and amount of communication, times of communication etc. Any ways, the real question is that in theory, and in practice, can Facebook access the content of your WhatsApp messages or not. 
