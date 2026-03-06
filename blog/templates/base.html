@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/notes/">
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="static/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed" href="feed.xml">
+  <script src="static/theme.js"></script>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="./">Blog</a>
+      <nav>
+        <a href="feed.xml">RSS</a>
+        <button id="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+  <main class="container">
+    {{content}}
+  </main>
+  <footer>
+    <div class="container">
+      <!-- Giscus comments can be added here -->
+    </div>
+  </footer>
+</body>
+</html>
