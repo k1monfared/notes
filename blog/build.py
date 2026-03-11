@@ -22,8 +22,14 @@ FILES_DIR = BLOG_DIR / "files"
 SITE_URL = "https://k1monfared.github.io/notes"
 
 MD_EXTENSIONS = ["extra", "codehilite", "toc", "smarty", "md_in_html"]
+def unicode_slugify(value, separator='-'):
+    """Slugify that preserves Unicode characters (for Persian/Arabic headings)."""
+    value = re.sub(r'[^\w\s-]', '', value).strip().lower()
+    return re.sub(r'[\s]+', separator, value)
+
 MD_EXTENSION_CONFIGS = {
     "codehilite": {"css_class": "highlight", "guess_lang": False},
+    "toc": {"slugify": unicode_slugify},
 }
 
 GITHUB_LINK_RE = re.compile(
