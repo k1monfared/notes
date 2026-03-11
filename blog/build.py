@@ -162,9 +162,14 @@ def render_template(template, **kwargs):
 def generate_rss(posts_data):
     """Generate RSS 2.0 XML feed."""
     rss = ET.Element("rss", version="2.0")
+    rss.set("xmlns:atom", "http://www.w3.org/2005/Atom")
     channel = ET.SubElement(rss, "channel")
     ET.SubElement(channel, "title").text = "Blog"
     ET.SubElement(channel, "link").text = f"{SITE_URL}/"
+    atom_link = ET.SubElement(channel, "atom:link")
+    atom_link.set("href", f"{SITE_URL}/feed.xml")
+    atom_link.set("rel", "self")
+    atom_link.set("type", "application/rss+xml")
     ET.SubElement(channel, "description").text = "Blog posts"
     ET.SubElement(channel, "language").text = "en-us"
 
