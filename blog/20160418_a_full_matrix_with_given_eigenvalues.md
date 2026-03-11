@@ -149,3 +149,18 @@ To run the code in sage cell server click [here](https://sagecell.sagemath.org/?
 Assuming the eigenvalues are all positive, the induction method gets really close to producing an entrywise positive matrix, but the rotations actually ensure that some of the entries become negative! On the other hand the Jacobian method would result in an entrywise positive matrix if the perturbations of the off-diagonal entries are small enough that the adjustments of the diagonal entries wont make them zero or negative. To be fair, even if you start with a zero eigenvalue (you cannot have more than one, because the Jacobian method requires the matrix to have distinct eigenvalues), since the diagonal entries are strictly bounded by the smallest and largest eigenvalues, we have the following theorem:
 
 **Theorem. **Given real numbers $\lambda_1 > \lambda_2 > \ldots > \lambda_n \geq 0$, there is an entrywise positive matrix with the given eigenvalues.
+
+---
+
+## Old Comments
+
+> **Markus** — January 29, 2019
+> 
+> Nice one!
+> Seems there is some error when running the code in the link though!
+> Helped me out a great deal
+> 
+> > **k1monfared** — January 31, 2019
+> > 
+> > Ah, thanks for pointing out the error. It is fixed now.
+

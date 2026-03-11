@@ -18,7 +18,7 @@ A [spanning tree](http://Spanning tree) of a graph $G$ is a subgraph of $G$ that
 
 One of the beauties of algebraic (spectral) graph theory is that *some times* it solves some very hard problems very efficiently, thanks to linear algebra. For this particular problem, one can count the number of spanning trees of any graph using the [matrix-tree theorem](http://Kirchhoff's theorem), which states the number of spanning trees of a graph is equal to the determinant of *any *submatrix of its [Laplacian](https://en.wikipedia.org/wiki/Laplacian_matrix) by deleting any row and column (up to a minus sign), more precisely, any cofactor of the Laplacian. The Laplacian matrix of a graph on $n$ vertices is an $n\times n$ matrix where each diagonal entry $(i,i)$ is the degree of vertex $i$ and the off-diagonal entry $(i,j)$ is $-1$ whenever vertex $i$ is adjacent to vertex $j$, and zero otherwise. For example, the Laplacian matrix of the complete graph on $4$ vertices is
 
-$latex L = \left[ \begin{array}{rrrr}
+$L = \left[ \begin{array}{rrrr}
 3 & -1 & -1 & -1 \\
 -1 & 3 & -1 & -1 \\
 -1 & -1 & 3 & -1 \\
@@ -37,7 +37,7 @@ Well, that's a mouthful. Let's look at an example. The following graph is called
 
 OK, it's usually drawn differently to look more like a paw, but you get the point. It's signless Laplacian is
 
-$latex Q = \left(\begin{array}{rrrr}
+$Q = \left(\begin{array}{rrrr}
 1 & 1 & 0 & 0 \\
 1 & 3 & 1 & 1 \\
 0 & 1 & 2 & 1 \\

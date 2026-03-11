@@ -4,3 +4,11 @@
 
 Shel Selverstein
 Where the sidewalk ends
+
+---
+
+## Old Comments
+
+> **Shagha** — May 2, 2014
+> 
+> Love the artwork! :)

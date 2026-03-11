@@ -1,4 +1,4 @@
-# Permanent &amp; Determinant: Non-identical Twins
+# Permanent & Determinant: Non-identical Twins
 
 > Permanent & Determinant: Non-identical Twins
 > Tuesday, May 20, 2014

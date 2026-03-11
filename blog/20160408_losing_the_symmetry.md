@@ -10,7 +10,7 @@ $A = \begin{bmatrix}  a+d & x \\ y & a-d\end{bmatrix}$
 
 has eigenvalues $a \pm b \rm{i}$, where $d^2 = -xy -b^2$ for any choice of $x$ and $y$ such that $xy \leq -b^2$. Then there was time to go to $3 \times 3$ case which I suddenly realized I can just look at direct sums of $2 \times 2$ and $1 \times 1$ blocks, to construct a matrix (ignoring the graph) with the given spectrum.
 
-$latex A = \left( \bigoplus_{j=1}^{k} \left[ \begin{array}{cc}
+$A = \left( \bigoplus_{j=1}^{k} \left[ \begin{array}{cc}
 \lambda_j & \mu_j\\
 -\mu_j & \lambda_j
 \end{array} \right] \right)
@@ -46,3 +46,11 @@ The paper is submitted and the preprint ~~will be~~ is available through [arXiv]
 ~~
 
 **UPDATE: **The paper is published now and it is available [here](https://www.sciencedirect.com/science/article/pii/S002437951730229X?np=y&npKey=0c18348cdb17bfb3776074a5b70ba5b3592604688ecd35f7b90a500af00642ee).
+
+---
+
+## Old Comments
+
+> **“Existence of a Not Necessarily Symmetric Matrix with Given Distinct Eigenvalues and Graph” is published in LAA | k1monfared** — April 5, 2017
+> 
+> […] and its Applications, yesterday. It took it exactly one year! I’ve written about it here: Losing the Symmetry. And you can find the published version […]

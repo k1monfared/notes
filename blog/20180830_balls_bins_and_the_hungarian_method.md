@@ -57,3 +57,18 @@ Just looking at this picture might not tell much story about how the clusters ar
 ![Hungarian_method_proof_of_concept2](files/20180830/hungarian_method_proof_of_concept2.png)This already shows that until t = 7 nothing has changed in the clusters, and at time 7 only the last node has formed a new cluster. The next change happens at time 10 when the first node goes from the red cluster to the blue cluster, and so on.
 
 Here is a question for you to ponder upon: Does there always exist a node that its color never changes according to this scheme?
+
+---
+
+## Old Comments
+
+> **OKK** — September 12, 2018
+> 
+> Fun!
+> U should consider Alluvial diagram for visualizing temporal changes in network structure. https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0008694
+> http://www.mapequation.org/apps/AlluvialGenerator.html#alluvialinstructions
+> 
+> > **k1monfared** — September 13, 2018
+> > 
+> > Sounds interesting. I'll look into it. Thanks for sharing :)
+

@@ -13,3 +13,11 @@ Of course, compared to the concerns of my friends in US these are just a bunch o
 PS1: I need to mention that as an Iranian who lived in US under the Student status, I only had a single-entry visa to US and the risks of getting another one, if I exited the country, was so high that I and many others refrained from exiting US for the entire time that we were students, and even after that. That meant, I never went back home,  missed several conferences that I was invited to attend and give a talk, some very important for my career, and I didn't even consider participating in many other conferences and workshops. This means, the only difference that the new president has made is that he made the "high chance" to become "certain". I was called a "potentially terrorist" when I first interviewed for my US student visa (I was 22 back then and I could take things as jokes), and I've always been discriminated against because of my country of origin, whether it is at an embassy for a visa interview, that I had to provide lots more documents and wait for undetermined amount of time until they make decisions, or it was applying for a scholarship or a job that they didn't like Iranians for "security" reasons, or just because they *thought* I won't be able to get a visa or permit to work/study there.
 
 PS2: Here is an [Statement of Inclusiveness](http://www.math.toronto.edu/%7Erafi/statement/index.html) signed by several academics, and it is already adopted by some conferences.
+
+---
+
+## Old Comments
+
+> **On defending (human) rights and other issues – k1monfared** — December 5, 2017
+> 
+> […] are trapped in after the muslim ban has always been there as I mentioned in my previous post “Academic Cry Baby and the Wall“. I didn’t exit US during my time there, in fears that I would not be able to get a […]

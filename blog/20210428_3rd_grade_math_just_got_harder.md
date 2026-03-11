@@ -81,3 +81,11 @@ Even though that the fit is quite good ($R^2$ is almost 1) the output doesn't me
 Unfortunately the OEIS doesn't not have neither [this sequence](https://oeis.org/search?q=1%2C+2%2C+5%2C+12%2C+21%2C+35&sort=&language=english&go=Search) nor the [derivative of it](https://oeis.org/search?q=1%2C++++3%2C++++7%2C++++9%2C+++14%2C+++17&sort=&language=english&go=Search). One probably should add it to their database!
 
 I'm out of ideas for now, let me know if you've got any.
+
+---
+
+## Old Comments
+
+> **Mojtaba Eslami** — April 28, 2021
+> 
+> Cool, amigo!

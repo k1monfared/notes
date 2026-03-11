@@ -20,3 +20,11 @@ And I have written down my proof. But to prove it rigorously there are a lot of 
 Paul Horn provided a rigorous proof, and Sajjad Lakzian mentioned that
 > The zero set of a [single variable] polynomial in $\mathbb{C}$ is a [nonsingular] variety [and a manifold, since nonsingular algebraic varieties over the real or complex numbers are manifolds]. real roots are the intersection with the x-axis [another manifold]. having distinct real roots means that the real line is transversal to this variety at all intersection points. meaning the derivative of the polynomial is not zero! (even if you have more than one variables, this can be rigorously written using the partial derivatives). Now the theorem is a standard direct consequence of the inverse function theorem (or implicit function theorem to be more precise) [that small perturbations of two manifolds that intersect transversally at a point, still intersect transversally at a nearby point].
 I've also found this paper by Alen Alexanderian called [On continuous dependence of roots of polynomials on coefficients](http://users.ices.utexas.edu/~alen/articles/polyroots.pdf) which first uses Rouche's theorem to show the famous result that roots of a polynomial are continuous functions of its coefficients, then Theorem 3.5 states exactly what I needed. The continuity part is also proven in this short note using topological tools: [PDF](http://www.ams.org/journals/proc/1987-100-02/S0002-9939-1987-0884486-8/S0002-9939-1987-0884486-8.pdf).
+
+---
+
+## Old Comments
+
+> **Loosing the symmetry | k1monfared** — April 8, 2016
+> 
+> […] should hold by looking at a graph of a polynomial, but writing it formally was ugly. So I posted it here and soon I got a few answers, among them one by Paul Horn which had a rigorous analytic proof, and […]
