@@ -6,12 +6,12 @@
   document.addEventListener('DOMContentLoaded', function () {
     var btn = document.getElementById('theme-toggle');
     if (!btn) return;
-    btn.textContent = theme === 'dark' ? '\u2600\ufe0f' : '\ud83c\udf19';
+    btn.textContent = theme === 'dark' ? '\u263c' : '\u263e';
     btn.addEventListener('click', function () {
       theme = theme === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', theme);
       localStorage.setItem('theme', theme);
-      btn.textContent = theme === 'dark' ? '\u2600\ufe0f' : '\ud83c\udf19';
+      btn.textContent = theme === 'dark' ? '\u263c' : '\u263e';
     });
   });
 })();
