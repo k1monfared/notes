@@ -2,7 +2,6 @@
 """Static blog builder. Converts markdown posts to HTML with index and RSS."""
 
 import argparse
-import os
 import re
 import shutil
 import html
@@ -10,6 +9,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 from pathlib import Path
 
+import yaml
 import markdown
 from pygments.formatters import HtmlFormatter
 
@@ -19,7 +19,9 @@ SITE_DIR = BLOG_DIR / "_site"
 TEMPLATE_DIR = BLOG_DIR / "templates"
 STATIC_DIR = BLOG_DIR / "static"
 FILES_DIR = BLOG_DIR / "files"
+COMMENTS_DIR = BLOG_DIR / "comments"
 SITE_URL = "https://k1monfared.github.io/notes"
+COMMENT_ENDPOINT = ""  # Set to serverless function URL when ready
 
 MD_EXTENSIONS = ["extra", "codehilite", "toc", "smarty", "md_in_html"]
 def unicode_slugify(value, separator='-'):
@@ -139,6 +141,15 @@ def render_markdown(text):
     return md.convert(text)
 
 
+def add_target_blank(html_text):
+    """Add target='_blank' rel='noopener' to <a> tags that don't already have a target."""
+    return re.sub(
+        r'<a\s+((?:(?!target=)[^>])*)>',
+        r'<a \1 target="_blank" rel="noopener">',
+        html_text,
+    )
+
+
 def generate_pygments_css():
     """Generate Pygments CSS for light and dark themes."""
     light = HtmlFormatter(style="default").get_style_defs(".highlight")
@@ -186,6 +197,42 @@ def generate_rss(posts_data):
     tree = ET.ElementTree(rss)
     ET.indent(tree)
     return ET.tostring(rss, encoding="unicode", xml_declaration=True)
+
+
+def load_comments(url_slug):
+    """Load and render comments for a post from comments/<url_slug>/*.yml."""
+    comment_dir = COMMENTS_DIR / url_slug
+    if not comment_dir.is_dir():
+        return ""
+    comments = []
+    for yml_file in sorted(comment_dir.glob("*.yml")):
+        try:
+            data = yaml.safe_load(yml_file.read_text(encoding="utf-8"))
+            if not data or "comment" not in data:
+                continue
+            comments.append(data)
+        except Exception:
+            continue
+    if not comments:
+        return ""
+    parts = []
+    for c in comments:
+        name = html.escape(str(c.get("name", "Anonymous")))
+        date_val = c.get("date", "")
+        if hasattr(date_val, "strftime"):
+            date_str = date_val.strftime("%B %d, %Y")
+        else:
+            date_str = html.escape(str(date_val))
+        comment_text = html.escape(str(c["comment"])).replace("\n", "<br>")
+        parts.append(
+            f'<div class="comment">'
+            f'<div class="comment-header">'
+            f'<strong>{name}</strong> <span class="comment-date">{date_str}</span>'
+            f'</div>'
+            f'<div class="comment-body">{comment_text}</div>'
+            f'</div>'
+        )
+    return "\n".join(parts)
 
 
 def build(local=False):
@@ -255,11 +302,18 @@ def build(local=False):
             all_assets.add(f"files/{match.group(1)}")
 
         # Render markdown
-        body_html = render_markdown(content)
+        body_html = add_target_blank(render_markdown(content))
+
+        # Load comments
+        comments_html = load_comments(url_slug)
 
         # Render post page
         date_str = date.strftime("%B %d, %Y")
-        post_html = render_template(post_tmpl, title=title, date=date_str, body=body_html)
+        post_html = render_template(
+            post_tmpl, title=title, date=date_str, body=body_html,
+            comments=comments_html, comment_endpoint=COMMENT_ENDPOINT,
+            post_slug=url_slug,
+        )
         page_html = render_template(base_tmpl, title=title, content=post_html)
 
         # Write post
@@ -276,12 +330,14 @@ def build(local=False):
         })
 
     # Generate index page
+    PAGE_SIZE = 10
     post_items = []
-    for p in posts_data:
+    for i, p in enumerate(posts_data):
         excerpt_html = f'<p class="post-excerpt">{html.escape(p["excerpt"])}</p>' if p["excerpt"] else ""
+        hidden = ' hidden' if i >= PAGE_SIZE else ''
         post_items.append(
-            f'  <li>\n'
-            f'    <a href="{p["url_slug"]}/">\n'
+            f'  <li{hidden}>\n'
+            f'    <a href="{p["url_slug"]}/" target="_blank" rel="noopener">\n'
             f'      <span class="post-title">{html.escape(p["title"])}</span>\n'
             f'      <span class="post-date">{p["date_str"]}</span>\n'
             f'      {excerpt_html}\n'

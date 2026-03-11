@@ -309,11 +309,103 @@ footer {
   text-align: center;
 }
 
-/* Giscus placeholder */
+/* Comments */
 .comments {
   margin-top: 3rem;
   padding-top: 2rem;
   border-top: 1px solid var(--border);
+}
+
+.comment {
+  margin-bottom: 1.5rem;
+  padding: 0.75em 1em;
+  border-left: 4px solid var(--blockquote-border);
+  background: var(--code-bg);
+  border-radius: 0 4px 4px 0;
+}
+
+.comment-header {
+  font-size: 0.9rem;
+  margin-bottom: 0.4em;
+}
+
+.comment-date {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.comment-body {
+  line-height: 1.6;
+}
+
+/* Comment form */
+.comment-form-wrapper h3 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.comment-form-wrapper[data-endpoint=""] {
+  display: none;
+}
+
+.comment-form .form-field {
+  margin-bottom: 0.75rem;
+}
+
+.comment-form label {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+  color: var(--text-muted);
+}
+
+.comment-form input[type="text"],
+.comment-form textarea {
+  width: 100%;
+  padding: 0.5em 0.75em;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  transition: border-color 0.15s;
+}
+
+.comment-form input[type="text"]:focus,
+.comment-form textarea:focus {
+  outline: none;
+  border-color: var(--link);
+}
+
+.comment-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.comment-form button[type="submit"] {
+  padding: 0.5em 1.5em;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: #fff;
+  background: var(--link);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.comment-form button[type="submit"]:hover {
+  background: var(--link-hover);
+}
+
+/* Honeypot — hidden but accessible to bots */
+.hp-field {
+  position: absolute;
+  left: -9999px;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
 }
 
 /* Responsive */

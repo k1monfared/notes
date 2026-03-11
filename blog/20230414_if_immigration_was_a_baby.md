@@ -4,7 +4,7 @@
 
 # Fall 2009: How I Met Your Mother
 
-### I left Iran to pursue the American dream. Not really, I just wanted to study and hopefully get a decent job. Soon after my arrival, I faced the harsh reality that life is not what is shown in the movies shot in LA or NYC. And first and foremost, that dream is not for folks like me. In 2015 I came to the conclusion that living in the US is no longer an option for me. I rather not live in a country that does not want me for what I'm worth. I packed my stuff and immigrated yet again, this time to the White North.
+I left Iran to pursue the American dream. Not really, I just wanted to study and hopefully get a decent job. Soon after my arrival, I faced the harsh reality that life is not what is shown in the movies shot in LA or NYC. And first and foremost, that dream is not for folks like me. In 2015 I came to the conclusion that living in the US is no longer an option for me. I rather not live in a country that does not want me for what I'm worth. I packed my stuff and immigrated yet again, this time to the White North.
 
 # Fall 2016: Why Not Have A Baby
 
