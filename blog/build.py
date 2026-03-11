@@ -135,6 +135,28 @@ def rewrite_github_links(text, slug_map):
     return GITHUB_LINK_RE.sub(replace_link, text)
 
 
+EMBED_RE = re.compile(r'\[embed\](.*?)\[/embed\]', re.IGNORECASE)
+YOUTUBE_RE = re.compile(r'https?://(?:www\.)?youtube\.com/watch\?v=([\w-]+)')
+YOUTU_BE_RE = re.compile(r'https?://youtu\.be/([\w-]+)')
+
+
+def convert_embeds(text):
+    """Convert WordPress [embed]URL[/embed] to iframes (YouTube) or links."""
+    def replace_embed(match):
+        url = match.group(1).strip()
+        yt = YOUTUBE_RE.match(url) or YOUTU_BE_RE.match(url)
+        if yt:
+            vid = yt.group(1)
+            return (
+                f'<div class="video-embed">'
+                f'<iframe src="https://www.youtube.com/embed/{vid}" '
+                f'frameborder="0" allowfullscreen loading="lazy"></iframe>'
+                f'</div>'
+            )
+        return f'<a href="{url}">{url}</a>'
+    return EMBED_RE.sub(replace_embed, text)
+
+
 def render_markdown(text):
     """Convert markdown to HTML."""
     md = markdown.Markdown(extensions=MD_EXTENSIONS, extension_configs=MD_EXTENSION_CONFIGS)
@@ -293,6 +315,9 @@ def build(local=False):
 
         # Extract excerpt before processing
         excerpt = extract_excerpt(content)
+
+        # Convert WordPress embeds
+        content = convert_embeds(content)
 
         # Rewrite GitHub cross-links
         content = rewrite_github_links(content, slug_map)
