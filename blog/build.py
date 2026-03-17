@@ -346,33 +346,94 @@ def build(local=False):
         post_dir.mkdir(parents=True)
         (post_dir / "index.html").write_text(page_html, encoding="utf-8")
 
+        # Parse tags from frontmatter
+        tags = []
+        raw_tags = meta.get("tags", "")
+        if raw_tags:
+            tags = [t.strip().lower() for t in raw_tags.split(",") if t.strip()]
+
         posts_data.append({
             "title": title,
             "date": date,
             "date_str": date_str,
             "url_slug": url_slug,
             "excerpt": excerpt,
+            "tags": tags,
         })
+
+    # Build tag map
+    tag_map = {}
+    for p in posts_data:
+        for tag in p["tags"]:
+            tag_map.setdefault(tag, []).append(p)
+
+    # Generate tag sidebar HTML (sorted by count desc, then name)
+    tag_sidebar_html = ""
+    if tag_map:
+        sidebar_items = []
+        for tag in sorted(tag_map, key=lambda t: (-len(tag_map[t]), t)):
+            count = len(tag_map[tag])
+            sidebar_items.append(
+                f'<a href="tag/{tag}/" class="tag-sidebar-link">{html.escape(tag)}'
+                f' <span class="tag-count">{count}</span></a>'
+            )
+        tag_sidebar_html = "\n".join(sidebar_items)
+
+    def make_tag_chips(tags):
+        """Generate tag chip HTML for a post listing."""
+        if not tags:
+            return ""
+        chips = " ".join(
+            f'<a href="tag/{t}/" class="tag">{html.escape(t)}</a>' for t in tags
+        )
+        return f'<div class="tag-chips">{chips}</div>'
+
+    def make_post_list(post_list, page_size=None):
+        """Generate <li> items for a list of posts."""
+        items = []
+        for i, p in enumerate(post_list):
+            excerpt_html = f'<p class="post-excerpt">{html.escape(p["excerpt"])}</p>' if p["excerpt"] else ""
+            chips_html = make_tag_chips(p["tags"])
+            hidden = ' hidden' if page_size and i >= page_size else ''
+            items.append(
+                f'  <li{hidden}>\n'
+                f'    <a href="{p["url_slug"]}/" target="_blank" rel="noopener">\n'
+                f'      <span class="post-title">{html.escape(p["title"])}</span>\n'
+                f'      <span class="post-date">{p["date_str"]}</span>\n'
+                f'      {excerpt_html}\n'
+                f'    </a>\n'
+                f'    {chips_html}\n'
+                f'  </li>'
+            )
+        return "\n".join(items)
 
     # Generate index page
     PAGE_SIZE = 10
-    post_items = []
-    for i, p in enumerate(posts_data):
-        excerpt_html = f'<p class="post-excerpt">{html.escape(p["excerpt"])}</p>' if p["excerpt"] else ""
-        hidden = ' hidden' if i >= PAGE_SIZE else ''
-        post_items.append(
-            f'  <li{hidden}>\n'
-            f'    <a href="{p["url_slug"]}/" target="_blank" rel="noopener">\n'
-            f'      <span class="post-title">{html.escape(p["title"])}</span>\n'
-            f'      <span class="post-date">{p["date_str"]}</span>\n'
-            f'      {excerpt_html}\n'
-            f'    </a>\n'
-            f'  </li>'
-        )
-
-    index_content = render_template(index_tmpl, posts="\n".join(post_items))
+    index_content = render_template(
+        index_tmpl,
+        posts=make_post_list(posts_data, page_size=PAGE_SIZE),
+        tag_sidebar=tag_sidebar_html,
+    )
     index_html = render_template(base_tmpl, title="Blog", content=index_content)
     (SITE_DIR / "index.html").write_text(index_html, encoding="utf-8")
+
+    # Generate tag pages
+    if tag_map:
+        tag_tmpl = load_template("tag.html")
+        for tag, tag_posts in tag_map.items():
+            tag_content = render_template(
+                tag_tmpl,
+                tag=html.escape(tag),
+                posts=make_post_list(tag_posts),
+                tag_sidebar=tag_sidebar_html,
+            )
+            tag_html = render_template(
+                base_tmpl, title=f"Posts tagged: {tag}", content=tag_content
+            )
+            tag_dir = SITE_DIR / "tag" / tag
+            tag_dir.mkdir(parents=True, exist_ok=True)
+            (tag_dir / "index.html").write_text(tag_html, encoding="utf-8")
+        print(f"Generated {len(tag_map)} tag pages")
 
     # Generate RSS feed
     rss_xml = generate_rss(posts_data)
