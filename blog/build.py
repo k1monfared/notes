@@ -458,7 +458,10 @@ def build(local=False):
         inner = "\n".join(sidebar_parts)
         tag_sidebar_html = (
             '<aside class="tag-sidebar" id="tag-sidebar">\n'
-            '  <h3>Tags</h3>\n'
+            '  <div class="tag-sidebar-header">'
+            '<h3>Tags</h3>'
+            '<button id="tag-sort" class="tag-sort-btn" title="Sort alphabetically">A-Z</button>'
+            '</div>\n'
             f'  {inner}\n'
             '</aside>'
         )

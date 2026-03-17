@@ -448,10 +448,33 @@ footer {
   box-shadow: -4px 0 12px rgba(0,0,0,0.1);
 }
 
-.tag-sidebar h3 {
-  margin-top: 0;
-  margin-bottom: 0.75rem;
+.tag-sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.tag-sidebar-header h3 {
+  margin: 0;
   font-size: 1rem;
+}
+
+.tag-sort-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.15rem 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.tag-sort-btn:hover {
+  border-color: var(--text-muted);
+  color: var(--link);
 }
 
 /* Tags button in nav */
