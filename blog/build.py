@@ -332,19 +332,13 @@ def build(local=False):
         # Load comments
         comments_html = load_comments(url_slug)
 
-        # Render post page
+        # Render post content (final page written after sidebar is built)
         date_str = date.strftime("%B %d, %Y")
         post_html = render_template(
             post_tmpl, title=title, date=date_str, body=body_html,
             comments=comments_html, comment_endpoint=COMMENT_ENDPOINT,
             post_slug=url_slug,
         )
-        page_html = render_template(base_tmpl, title=title, content=post_html, sidebar="")
-
-        # Write post
-        post_dir = SITE_DIR / url_slug
-        post_dir.mkdir(parents=True)
-        (post_dir / "index.html").write_text(page_html, encoding="utf-8")
 
         # Parse tags from frontmatter
         tags = []
@@ -359,6 +353,7 @@ def build(local=False):
             "url_slug": url_slug,
             "excerpt": excerpt,
             "tags": tags,
+            "post_html": post_html,
         })
 
     # Build tag map
@@ -467,6 +462,13 @@ def build(local=False):
             f'  {inner}\n'
             '</aside>'
         )
+
+    # Write post pages (deferred so sidebar is available)
+    for p in posts_data:
+        page_html = render_template(base_tmpl, title=p["title"], content=p["post_html"], sidebar=tag_sidebar_html)
+        post_dir = SITE_DIR / p["url_slug"]
+        post_dir.mkdir(parents=True, exist_ok=True)
+        (post_dir / "index.html").write_text(page_html, encoding="utf-8")
 
     def make_tag_chips(tags):
         """Generate tag chip HTML for a post listing."""
