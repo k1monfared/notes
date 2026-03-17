@@ -1,5 +1,5 @@
 ---
-tags: math, neuroscience, utah, wrokshop
+tags: math, neuroscience, utah, workshop
 ---
 
 # Neuoromath

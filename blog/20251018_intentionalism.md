@@ -1,3 +1,6 @@
+---
+tags: math, philosophy
+---
 # On Intentionalism
 
 There's a mathematical insight that explains why some people consistently end up with better outcomes than others, and it has nothing to do with talent, luck, or even the quality of their choices.

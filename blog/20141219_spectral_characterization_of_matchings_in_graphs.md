@@ -1,5 +1,5 @@
 ---
-tags: combinatorics, eigenvalue, graph, iep, inverse eigenvalue problem, linear algebra, matching, spectrum
+tags: combinatorics, eigenvalue, graph, inverse eigenvalue problem, linear algebra, matching, spectrum, publication
 ---
 
 # Spectral characterization of matchings in graphs

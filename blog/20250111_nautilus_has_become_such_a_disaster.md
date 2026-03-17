@@ -1,3 +1,6 @@
+---
+tags: linux
+---
 # **Nautilus has become such a disaster**
 
 And that's partly because Ubuntu has become such a disaster. If only I could find reliable drivers for my GPU on any other linux distribution, I'd never go back to it.

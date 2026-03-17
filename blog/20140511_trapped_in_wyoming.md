@@ -1,5 +1,5 @@
 ---
-tags: snow, summer-snow, wy
+tags: wyoming, life
 ---
 
 # Trapped in Wyoming

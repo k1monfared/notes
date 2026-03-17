@@ -1,5 +1,5 @@
 ---
-tags: gift, painting
+tags: painting, art
 ---
 
 # Bar painting

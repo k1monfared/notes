@@ -1,3 +1,6 @@
+---
+tags: math, probability, combinatorics, python, statistics
+---
 # Can't Stop, Addicted To The Shindig
 
 I recently got introduced to this game called [Can't Stop](https://boardgamegeek.com/boardgame/41/cant-stop) and it got me thinking about probabilities. You know how it is - you start playing a dice game and suddenly you're knee-deep in combinatorics at 2am.

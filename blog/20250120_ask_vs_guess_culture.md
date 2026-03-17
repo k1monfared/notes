@@ -1,3 +1,6 @@
+---
+tags: life, observation, book
+---
 # Ask Culture vs. Guess Culture
 
 Someone was talking about this that these came up:

@@ -1,3 +1,6 @@
+---
+tags: philosophy, observation
+---
 # Foundation Or Competition, That Is The Question
 
 There's this pattern that keeps showing up in tech and beyond: companies get so caught up in matching what their competitors are doing that they lose sight of actually solving the underlying problem. They start optimizing for perception rather than reality.

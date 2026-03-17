@@ -1,3 +1,6 @@
+---
+tags: math, combinatorics, linear algebra
+---
 # Balls, bins, and the Hungarian method
 
 It always excites me when I see a combinatorial matrix theory problem, and this is no exception, though it is so basic that it shows up in all forms and shapes. Let me start with a combinatorial problem:

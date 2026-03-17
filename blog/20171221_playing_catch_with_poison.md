@@ -1,3 +1,6 @@
+---
+tags: math, probability, combinatorics, sage
+---
 # Playing catch with Poison
 
 My friend asked me this: Put balls into $n$ buckets uniformly at random and count $h$ the number of buckets with at least one ball in them. What is the expected value of number of balls $k$?

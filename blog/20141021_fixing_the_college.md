@@ -1,3 +1,6 @@
+---
+tags: teaching, education
+---
 # Why did we?
 
 I have students asking me why did we buy this book, and I've always had a hard time understanding that question, let alone answering it in a convincing way. Until I read the following.

@@ -1,5 +1,5 @@
 ---
-tags: function
+tags: function, math
 ---
 
 # One-parameter family of functions

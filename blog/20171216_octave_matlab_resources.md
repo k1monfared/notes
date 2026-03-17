@@ -1,3 +1,6 @@
+---
+tags: teaching, education
+---
 # Octave/MATLAB resources
 
 Andrew Ng in his Corsera course for machine learning provides the following links for resources for Matlab. I have had a terrible time remembering all the syntaxes in matlab (because they are so natural, no?) I'm putting them here so that I can access them later. The credit goes to Andrew Ng.

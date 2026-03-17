@@ -1,3 +1,6 @@
+---
+tags: philosophy, observation
+---
 # "Not Even Wrong": What We Believe And Why
 [disclaimenr: the content below is written with the help of Claude-3.5]
 

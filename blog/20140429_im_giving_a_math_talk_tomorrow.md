@@ -1,3 +1,6 @@
+---
+tags: math, linear algebra, eigenvalue, talk
+---
 # I'm giving a math talk tomorrow
 
 Algebra, Combinatorics, and Number Theory Seminar

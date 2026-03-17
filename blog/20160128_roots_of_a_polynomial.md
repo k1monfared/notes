@@ -1,5 +1,5 @@
 ---
-tags: analysis, polynomial, transversal intersection
+tags: analysis, polynomial, transversal intersection, math
 ---
 
 # Roots of a polynomial

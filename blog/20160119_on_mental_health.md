@@ -1,5 +1,5 @@
 ---
-tags: life
+tags: life, academia
 ---
 
 # On mental health?

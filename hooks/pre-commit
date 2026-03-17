@@ -28,4 +28,25 @@ else
     echo "Warning: Movie enrichment failed, continuing with commit anyway"
 fi
 
+# --- Blog post tag check ---
+# Warn if any staged blog posts lack tags in frontmatter
+BLOG_POSTS=$(git diff --cached --name-only --diff-filter=AM | grep '^blog/[0-9].*\.md$' || true)
+if [ -n "$BLOG_POSTS" ]; then
+    UNTAGGED=""
+    for post in $BLOG_POSTS; do
+        if [ -f "$post" ]; then
+            if ! head -20 "$post" | grep -q '^tags:'; then
+                UNTAGGED="$UNTAGGED  $post\n"
+            fi
+        fi
+    done
+    if [ -n "$UNTAGGED" ]; then
+        echo ""
+        echo "WARNING: Blog posts without tags:"
+        echo -e "$UNTAGGED"
+        echo "Run '/tag-post' in Claude Code to auto-tag them."
+        echo ""
+    fi
+fi
+
 exit 0

@@ -70,6 +70,7 @@ music:
   - persian traditional music
   - nava
   - arnold
+  - world
 
 linux:
   - bash
@@ -83,17 +84,13 @@ linux:
   - pdf
   - online-editor
   - database
-  - atuomation
+  - automation
   - windows
   - android
   - tablet
   - plot
   - interactive
-  - linus
   - computer science
-  - webby
-  - x
-  - x bash
 
 teaching:
   - education
@@ -108,7 +105,6 @@ teaching:
   - girls
   - women
   - iep
-  - teded
 
 life:
   - poetry:
@@ -121,7 +117,6 @@ life:
   - depression
   - anxiety
   - stress
-  - fun
   - food
   - art
   - painting
@@ -129,13 +124,16 @@ life:
   - book
   - movie
   - animation
+  - parenting
+  - health
+  - privacy
 
 politics:
   - racism
   - alienization
   - double standards
   - community
-  - world
+  - immigration
 
 publication:
   - paper
@@ -146,11 +144,8 @@ publication:
       - dissertation defense
       - defense
   - phd
-  - edit
-  - note
   - article
-  - wrokshop
-  - public
+  - workshop
   - biology
   - neuroscience
   - geophysics
@@ -160,11 +155,9 @@ publication:
       - work
       - uofc
       - uwyo
-      - boulder
       - calgary
       - laramie
       - utah
-      - wy
       - wyoming
 
 finance:

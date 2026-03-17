@@ -1,3 +1,6 @@
+---
+tags: math, number theory, sage
+---
 # Ulam spiral
 
 So, bored in a math talk Ulam starts writing integers in a [spiral](https://en.wikipedia.org/wiki/Ulam_spiral) and circling primes. He soon notices something weird:

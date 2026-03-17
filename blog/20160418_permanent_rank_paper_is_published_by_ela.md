@@ -1,5 +1,5 @@
 ---
-tags: combinatorics, linear algebra, publication
+tags: combinatorics, linear algebra, publication, permanent
 ---
 
 # Permanent rank paper is published by ELA

@@ -1,5 +1,5 @@
 ---
-tags: music
+tags: music, world
 ---
 
 # El Consenso, by Omar Sosa

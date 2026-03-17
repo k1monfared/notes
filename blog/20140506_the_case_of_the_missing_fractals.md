@@ -1,5 +1,5 @@
 ---
-tags: animation, fractal, math, teded
+tags: animation, fractal, math, education
 ---
 
 # The case of the missing fractals

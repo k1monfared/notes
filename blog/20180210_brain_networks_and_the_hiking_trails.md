@@ -1,3 +1,6 @@
+---
+tags: math, dynamical systems
+---
 # Brain networks and the hiking trails
 
 In the neuroscience community there's a divide on whether there are functional connectivity networks in the brain. This is a very vaguely defined concept, although, one can think of it this way:

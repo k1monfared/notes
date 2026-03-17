@@ -1,3 +1,6 @@
+---
+tags: life
+---
 # **In Search for a quite table saw**
 
 ## **But Why**

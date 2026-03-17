@@ -1,3 +1,6 @@
+---
+tags: immigration, politics, racism
+---
 # If Immigration Was A Baby
 
 ## 

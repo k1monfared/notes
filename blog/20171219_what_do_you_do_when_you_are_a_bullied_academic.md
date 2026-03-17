@@ -1,3 +1,6 @@
+---
+tags: academia, teaching, linear algebra
+---
 # What do you do when you are a bullied academic?
 
 This past summer I was given a course in introductory linear algebra to teach. The topics of the course, as usual, start from solving systems of linear equations, and then matrices, determinant and some matrix algebra, then moved to some topics in geometry of $\mathbb{R}^n$, linear transformations, complex numbers, and ended with eigen-things and applications like Markov precesses, and an intro to dynamical systems.

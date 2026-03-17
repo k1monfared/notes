@@ -1,5 +1,5 @@
 ---
-tags: history, math, webby
+tags: history, math, education
 ---
 
 # History of Mathematics

@@ -1,3 +1,6 @@
+---
+tags: movie
+---
 # Memoir of a Snail
 
 The other day Marjan recommended the movie [Memoir of a Snail](https://www.imdb.com/title/tt23770030/) and as I was going to find an watch it, the website recommended another movie called [Diary of a Nymphomaniac](https://www.imdb.com/title/tt1111890/). Everything about it seemed way below average, but still the storyline was interesting, so I watched it. Though it was trying to be erotic, it was not a good one it at. The conversations were at best cliche, and there was nothing really good about the story either. But one of the things I like about the movie is how well they pose a question. Sometimes, they might not even know they are doing it, like this one, but they still do a good job of it. So, I wouldn't really recommend the movie as a movie, but as a starting point for a conversation is a good one I guess, 6/10.

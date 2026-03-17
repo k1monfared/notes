@@ -1,3 +1,6 @@
+---
+tags: math, academia
+---
 # Memorandum
 
 ![Mirzakhani](files/20170726/mirzakhani.png)

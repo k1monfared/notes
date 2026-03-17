@@ -1,3 +1,6 @@
+---
+tags: philosophy, observation
+---
 # The Measurement Trap and the Path to Intentionalism
 I've been writing a series of thoughts recently in order to clarify a point of view of mine. These are the original posts:
 

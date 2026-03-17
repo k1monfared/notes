@@ -1,5 +1,5 @@
 ---
-tags: escher, math, tesselation, tie
+tags: escher, math, tesselation, art
 ---
 
 # Escher tie

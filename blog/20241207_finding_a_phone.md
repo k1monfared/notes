@@ -1,3 +1,6 @@
+---
+tags: life, python, observation
+---
 Finding a phone
 --
 

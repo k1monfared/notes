@@ -1,5 +1,5 @@
 ---
-tags: calculus, combinatorics, geophysics, linear algebra, publication, talk, teaching
+tags: calculus, combinatorics, geophysics, linear algebra, publication, talk, teaching, math
 ---
 
 # Some March Mathness

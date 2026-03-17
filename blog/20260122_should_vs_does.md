@@ -1,3 +1,6 @@
+---
+tags: philosophy, observation, parenting
+---
 # Should vs. Does
 
 You're at the lake with your 3-year-old. You want to fish. He wants to play with you. You brought toys, snacks, a little chair for him. He should be able to entertain himself for a bit. You set him up, cast your line, and within two minutes he's pulling at your arm. You redirect him. He's back. You're thinking: "I set everything up. He has what he needs. He should let me have this."

@@ -1,5 +1,5 @@
 ---
-tags: iep, inverse eigenvalue problem, linear algebra, publication
+tags: inverse eigenvalue problem, linear algebra, publication
 ---
 
 # lambda-tau paper got accepted

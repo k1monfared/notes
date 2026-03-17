@@ -1,5 +1,5 @@
 ---
-tags: observation
+tags: observation, life
 ---
 
 # A missed point

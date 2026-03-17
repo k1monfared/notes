@@ -1,5 +1,5 @@
 ---
-tags: movie, music, world
+tags: music, world
 ---
 
 # For a cold and gloomy Sunday

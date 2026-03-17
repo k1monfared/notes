@@ -1,3 +1,6 @@
+---
+tags: immigration, academia, politics
+---
 # Delayed Iranian Applications Update - UCalgary HR and ISS
 
 After meeting with Susan Parker, the vice provost of the student experience at the University of Calgary, and Brianna (Bree) Huene from International Student Services, the university announced a presentation on immigration topics for Iranian students and postdocs. About 70 people signed up for the meeting and at least 50 people showed up. The meeting was held on July 4th, 2018, in ST 140, at UofC main campus.

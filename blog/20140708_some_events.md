@@ -1,5 +1,5 @@
 ---
-tags: dissertation defense, jubilee days, laramie, nava, persian traditional music, phd, wyoming
+tags: dissertation defense, laramie, nava, persian traditional music, phd, wyoming, music, life
 ---
 
 # Some events

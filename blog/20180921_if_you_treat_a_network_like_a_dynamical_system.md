@@ -1,5 +1,5 @@
 ---
-tags: clustering, dynamical systems, graph, kuramoto, signed
+tags: clustering, dynamical systems, graph, kuramoto, signed, linear algebra, math
 ---
 
 # If you treat a network like a dynamical system...

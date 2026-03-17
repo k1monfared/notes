@@ -1,3 +1,6 @@
+---
+tags: philosophy, observation
+---
 # We Must Know, We Will Know
 
 There are people who view everyone around them through a single lens of accomplishment. In professional circles, it's salary or publication count. In religious communities, it might be how many children you have. In business, it's revenue. There's something deeply unsettling about these people who reduce everyone to numbers.

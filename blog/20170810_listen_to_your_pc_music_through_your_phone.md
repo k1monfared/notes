@@ -1,3 +1,6 @@
+---
+tags: linux, bash, shell, music
+---
 # Listen to your pc music through your phone
 
 So I have this bunch of music on my external hard drive that is connected to my PC at home and I need to get over there to play it while I'm at home, but that's usually a hassle, well, to some extent. So, here is a partial solution to it. I ssh into my PC from my phone and play the music, and listen to it from my bluetooth loud speakers or headphone, while doing my other things at home (specially in the morning having breakfast).

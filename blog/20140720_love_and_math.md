@@ -1,5 +1,5 @@
 ---
-tags: book, fermat, langland's program, life, love, math, public
+tags: book, fermat, langland's program, life, love, math
 ---
 
 # Love and math

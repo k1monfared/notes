@@ -1,5 +1,5 @@
 ---
-tags: bash, linux, x
+tags: bash, linux, tablet
 ---
 
 # Rotating X and disabling/enabling touch

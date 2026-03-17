@@ -1,3 +1,6 @@
+---
+tags: movie, python
+---
 # I Want Good Movies
 
 Hossein used to be my source of good movies. He knew my taste, he had his own taste, but also he used to watch a shit ton of movies, good and bad, and then he'd know what they're about and could judge them firsthand. His strength was also that he'd recognize different people have different tastes in movies and he'd suggest something to me and not someone else and vice versa. And he could do this simply because he had watched all those movies. But then life happened and he's not suggesting movies to me much anymore.

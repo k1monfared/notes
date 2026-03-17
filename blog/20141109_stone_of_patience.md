@@ -1,3 +1,6 @@
+---
+tags: movie
+---
 # Stone of patience
 
 [embed]https://www.youtube.com/watch?v=zWgfdquh2N4[/embed]

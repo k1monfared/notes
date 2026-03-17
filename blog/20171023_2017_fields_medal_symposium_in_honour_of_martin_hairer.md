@@ -1,5 +1,5 @@
 ---
-tags: abstract, conference, fields, medal, slides, spde, stochastic, stochastic partial differential equations, symposium, talk
+tags: abstract, conference, fields, slides, spde, stochastic, stochastic partial differential equations, symposium, talk, math
 ---
 
 # 2017 Fields Medal Symposium in honour of Martin Hairer

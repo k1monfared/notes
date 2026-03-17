@@ -1,3 +1,6 @@
+---
+tags: life, observation
+---
 # Discovering Perspectives Through Colorblindness
 
 One of the most enlightening conversations I've had recently started with my friend sharing how his colorblindness influenced his life choices—even leading him away from a potential career as a painter. To help us understand his perspective, he introduced our group to a common colorblindness detection tool: the [Isishara test](https://www.colorblindnesstest.org/ishihara-test). This test consists of a circle filled with smaller colored dots, arranged so that people with normal color vision can see a number within the pattern. For someone with colorblindness, however, the number might be invisible or hard to discern.

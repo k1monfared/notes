@@ -1,5 +1,5 @@
 ---
-tags: linux, pen, tablet, x bash
+tags: linux, tablet, bash
 ---
 
 # Calibrating pen through xinput

@@ -1,5 +1,5 @@
 ---
-tags: graduation, selfie, wy
+tags: graduation, wyoming, phd
 ---
 
 # Graduation Selfie

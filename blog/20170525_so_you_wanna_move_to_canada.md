@@ -1,3 +1,6 @@
+---
+tags: immigration, life
+---
 # So you wanna move to Canada?
 
 I've recently moved to Canada and applied for permanent residency through the Express Entry system. If your situation is similar to me (you have a higher education degree, a few years of part time -- yes TA and RA count -- or full time experience, you can speak English fair enough) then you might be eligible to enter Canada the same way. To do so, you don't need to be present in Canada, and you don't have to remain in Canada the entire time if you don't think that's something you'll want to keep.

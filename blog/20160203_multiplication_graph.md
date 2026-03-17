@@ -1,5 +1,5 @@
 ---
-tags: art, fun, geometry, sage
+tags: art, geometry, sage, math
 ---
 
 # Multiplication graph

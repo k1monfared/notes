@@ -1,3 +1,6 @@
+---
+tags: life, academia, conference
+---
 # What's been happening in my life recently
 
 I got hired at Western Illinois University as a visiting assistant professor and I'll start my job mid August.

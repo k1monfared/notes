@@ -1,3 +1,6 @@
+---
+tags: politics, philosophy
+---
 # The Case for Complete Government Transparency
 
 [ Note: this is a thought very much under construction and will be updated frequently! Feedback and criticism are mor than welcome :) ]

@@ -1,3 +1,6 @@
+---
+tags: philosophy, observation
+---
 # Idiocratic Much?
 
 After writing about [how companies get distracted by competitive dynamics](https://github.com/k1monfared/notes/blob/main/blog/20250913_foundation_or_competition.md), I got some great feedback that helped me work through some deeper thoughts.

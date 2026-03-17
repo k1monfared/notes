@@ -1,5 +1,5 @@
 ---
-tags: mustache
+tags: life
 ---
 
 # Loosing it

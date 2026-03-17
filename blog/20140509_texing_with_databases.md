@@ -1,5 +1,5 @@
 ---
-tags: atuomation, database, latex
+tags: database, latex, automation
 ---
 
 # TeXing with databases
