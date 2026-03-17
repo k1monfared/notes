@@ -332,19 +332,27 @@ def build(local=False):
         # Load comments
         comments_html = load_comments(url_slug)
 
-        # Render post content (final page written after sidebar is built)
-        date_str = date.strftime("%B %d, %Y")
-        post_html = render_template(
-            post_tmpl, title=title, date=date_str, body=body_html,
-            comments=comments_html, comment_endpoint=COMMENT_ENDPOINT,
-            post_slug=url_slug,
-        )
-
         # Parse tags from frontmatter
         tags = []
         raw_tags = meta.get("tags", "")
         if raw_tags:
             tags = [t.strip().lower() for t in raw_tags.split(",") if t.strip()]
+
+        # Build tag chips for post page
+        tag_chips_html = ""
+        if tags:
+            chips = " ".join(
+                f'<a href="tag/{t}/" class="tag">{html.escape(t)}</a>' for t in tags
+            )
+            tag_chips_html = f'<span class="tag-chips">{chips}</span>'
+
+        # Render post content (final page written after sidebar is built)
+        date_str = date.strftime("%B %d, %Y")
+        post_html = render_template(
+            post_tmpl, title=title, date=date_str, body=body_html,
+            comments=comments_html, comment_endpoint=COMMENT_ENDPOINT,
+            post_slug=url_slug, tag_chips=tag_chips_html,
+        )
 
         posts_data.append({
             "title": title,
