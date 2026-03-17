@@ -16,6 +16,7 @@
       <a href="./">Blog</a>
       <nav>
         <a href="feed.xml">RSS</a>
+        <button id="tag-sidebar-toggle" aria-label="Tags">Tags</button>
         <button id="theme-toggle" aria-label="Toggle theme"></button>
       </nav>
     </div>
@@ -23,10 +24,12 @@
   <main class="container">
     {{content}}
   </main>
+  {{sidebar}}
   <footer>
     <div class="container">
       <!-- Giscus comments can be added here -->
     </div>
   </footer>
+  <script src="static/sidebar.js"></script>
 </body>
 </html>

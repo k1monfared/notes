@@ -1,0 +1,174 @@
+# Tag hierarchy for sidebar display.
+# Format: each key is a tag (becomes a clickable link).
+# Values are lists of children — either strings (leaf tags) or
+# single-key dicts (sub-groups that expand further).
+# Tags not listed here go into "Other".
+
+math:
+  - linear algebra:
+      - eigenvalue
+      - eigenspace
+      - inverse eigenvalue problem
+      - matrix
+      - permanent
+      - spectrum
+      - spectral analysis
+      - laplacian
+      - signed
+      - transversal intersection
+      - jacobian method
+      - gilbert strang
+      - perturbation
+      - multiplicity
+  - statistics:
+      - probability
+      - probability distribution
+      - bayes
+      - t-test
+      - regression
+      - clustering
+      - mcmc
+      - random
+      - stochastic
+      - entropy
+      - information
+  - combinatorics:
+      - graph
+      - matching
+      - conjecture
+  - geometry:
+      - fractal
+      - tesselation
+      - escher
+  - dynamical systems:
+      - kuramoto
+      - spde
+      - stochastic partial differential equations
+      - signal
+  - number theory:
+      - fermat
+      - langland's program
+  - calculus
+  - analysis
+  - fields
+  - infinity
+  - polynomial
+  - function
+  - paradox
+  - abstract
+  - algorithm
+  - multiplication
+  - recursion
+
+music:
+  - concert
+  - cello
+  - classical
+  - minimalism
+  - piano
+  - folk
+  - persian traditional music
+  - nava
+  - arnold
+
+linux:
+  - bash
+  - shell
+  - terminal
+  - python
+  - customization
+  - keyboard
+  - sftp
+  - latex
+  - pdf
+  - online-editor
+  - database
+  - atuomation
+  - windows
+  - android
+  - tablet
+  - plot
+  - interactive
+  - linus
+  - computer science
+  - webby
+  - x
+  - x bash
+
+teaching:
+  - education
+  - sage
+  - feedback
+  - evaluation
+  - motivation
+  - slides
+  - stem
+  - diversity
+  - inclusive
+  - girls
+  - women
+  - iep
+  - teded
+
+life:
+  - poetry:
+      - poem
+      - fiction
+      - story
+  - philosophy
+  - observation
+  - love
+  - depression
+  - anxiety
+  - stress
+  - fun
+  - food
+  - art
+  - painting
+  - history
+  - book
+  - movie
+  - animation
+
+politics:
+  - racism
+  - alienization
+  - double standards
+  - community
+  - world
+
+publication:
+  - paper
+  - talk
+  - conference
+  - symposium
+  - dissertation:
+      - dissertation defense
+      - defense
+  - phd
+  - edit
+  - note
+  - article
+  - wrokshop
+  - public
+  - biology
+  - neuroscience
+  - geophysics
+  - ipam
+  - academia:
+      - graduation
+      - work
+      - uofc
+      - uwyo
+      - boulder
+      - calgary
+      - laramie
+      - utah
+      - wy
+      - wyoming
+
+finance:
+  - personal-finance
+  - income-tax
+  - tax-brackets
+  - taxes

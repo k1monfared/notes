@@ -339,7 +339,7 @@ def build(local=False):
             comments=comments_html, comment_endpoint=COMMENT_ENDPOINT,
             post_slug=url_slug,
         )
-        page_html = render_template(base_tmpl, title=title, content=post_html)
+        page_html = render_template(base_tmpl, title=title, content=post_html, sidebar="")
 
         # Write post
         post_dir = SITE_DIR / url_slug
@@ -367,17 +367,106 @@ def build(local=False):
         for tag in p["tags"]:
             tag_map.setdefault(tag, []).append(p)
 
-    # Generate tag sidebar HTML (sorted by count desc, then name)
+    # --- Tag hierarchy helpers ---
+    def collect_tree_tags(children):
+        """Collect all tag names from a recursive tree of children."""
+        tags = set()
+        for item in children:
+            if isinstance(item, str):
+                tags.add(item)
+            elif isinstance(item, dict):
+                for parent, sub in item.items():
+                    tags.add(parent)
+                    if sub:
+                        tags.update(collect_tree_tags(sub))
+        return tags
+
+    def render_tag_tree(items, tm):
+        """Render a list of tree items as nested HTML (details/summary)."""
+        parts = []
+        for item in items:
+            if isinstance(item, str):
+                if item not in tm:
+                    continue
+                parts.append(
+                    f'<a href="tag/{item}/" class="tag-sidebar-link">'
+                    f'{html.escape(item)}'
+                    f' <span class="tag-count">{len(tm[item])}</span></a>'
+                )
+            elif isinstance(item, dict):
+                for parent, sub_children in item.items():
+                    all_tags = {parent} | (collect_tree_tags(sub_children) if sub_children else set())
+                    existing = {t for t in all_tags if t in tm}
+                    if not existing:
+                        continue
+                    group_count = sum(len(tm[t]) for t in existing)
+                    child_html = render_tag_tree(sub_children, tm) if sub_children else ""
+                    if parent in tm:
+                        parent_link = (
+                            f'<a href="tag/{parent}/" class="tag-sidebar-link">'
+                            f'{html.escape(parent)}'
+                            f' <span class="tag-count">{group_count}</span></a>'
+                        )
+                    else:
+                        parent_link = (
+                            f'<span class="tag-sidebar-label">{html.escape(parent)}'
+                            f' <span class="tag-count">{group_count}</span></span>'
+                        )
+                    parts.append(
+                        f'<details>\n'
+                        f'<summary>{parent_link}</summary>\n'
+                        f'{child_html}\n'
+                        f'</details>'
+                    )
+        return "\n".join(parts)
+
+    # Load tag hierarchy from tags.yml
+    tags_yml_path = BLOG_DIR / "tags.yml"
+    grouped_tags = set()
     tag_sidebar_html = ""
+
     if tag_map:
-        sidebar_items = []
-        for tag in sorted(tag_map, key=lambda t: (-len(tag_map[t]), t)):
-            count = len(tag_map[tag])
-            sidebar_items.append(
-                f'<a href="tag/{tag}/" class="tag-sidebar-link">{html.escape(tag)}'
-                f' <span class="tag-count">{count}</span></a>'
+        hierarchy = {}
+        if tags_yml_path.exists():
+            hierarchy = yaml.safe_load(tags_yml_path.read_text(encoding="utf-8")) or {}
+
+        # Collect all tags claimed by the hierarchy
+        for parent, children in hierarchy.items():
+            grouped_tags.add(parent)
+            if children:
+                grouped_tags.update(collect_tree_tags(children))
+
+        # Render grouped tags as nested details
+        top_items = [{k: v} for k, v in hierarchy.items()]
+        sidebar_parts = [render_tag_tree(top_items, tag_map)]
+
+        # Collect ungrouped tags into "Other"
+        other_tags = sorted(
+            (t for t in tag_map if t not in grouped_tags),
+            key=lambda t: (-len(tag_map[t]), t),
+        )
+        if other_tags:
+            other_count = sum(len(tag_map[t]) for t in other_tags)
+            other_links = "\n".join(
+                f'<a href="tag/{t}/" class="tag-sidebar-link">{html.escape(t)}'
+                f' <span class="tag-count">{len(tag_map[t])}</span></a>'
+                for t in other_tags
             )
-        tag_sidebar_html = "\n".join(sidebar_items)
+            sidebar_parts.append(
+                f'<details>\n'
+                f'<summary><span class="tag-sidebar-label">Other'
+                f' <span class="tag-count">{other_count}</span></span></summary>\n'
+                f'{other_links}\n'
+                f'</details>'
+            )
+
+        inner = "\n".join(sidebar_parts)
+        tag_sidebar_html = (
+            '<aside class="tag-sidebar" id="tag-sidebar">\n'
+            '  <h3>Tags</h3>\n'
+            f'  {inner}\n'
+            '</aside>'
+        )
 
     def make_tag_chips(tags):
         """Generate tag chip HTML for a post listing."""
@@ -412,9 +501,8 @@ def build(local=False):
     index_content = render_template(
         index_tmpl,
         posts=make_post_list(posts_data, page_size=PAGE_SIZE),
-        tag_sidebar=tag_sidebar_html,
     )
-    index_html = render_template(base_tmpl, title="Blog", content=index_content)
+    index_html = render_template(base_tmpl, title="Blog", content=index_content, sidebar=tag_sidebar_html)
     (SITE_DIR / "index.html").write_text(index_html, encoding="utf-8")
 
     # Generate tag pages
@@ -425,10 +513,9 @@ def build(local=False):
                 tag_tmpl,
                 tag=html.escape(tag),
                 posts=make_post_list(tag_posts),
-                tag_sidebar=tag_sidebar_html,
             )
             tag_html = render_template(
-                base_tmpl, title=f"Posts tagged: {tag}", content=tag_content
+                base_tmpl, title=f"Posts tagged: {tag}", content=tag_content, sidebar=tag_sidebar_html
             )
             tag_dir = SITE_DIR / "tag" / tag
             tag_dir.mkdir(parents=True, exist_ok=True)
