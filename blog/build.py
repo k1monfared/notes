@@ -488,7 +488,7 @@ def build(local=False):
         chips = " ".join(
             f'<a href="tag/{t}/" class="tag">{html.escape(t)}</a>' for t in tags
         )
-        return f'<div class="tag-chips">{chips}</div>'
+        return f'<span class="tag-chips">{chips}</span>'
 
     def make_post_list(post_list, page_size=None):
         """Generate <li> items for a list of posts."""
@@ -504,7 +504,7 @@ def build(local=False):
                 f'      <span class="post-date">{p["date_str"]}</span>\n'
                 f'      {excerpt_html}\n'
                 f'    </a>\n'
-                f'    {chips_html}\n'
+                f'    <div class="post-meta-line">{chips_html}</div>\n'
                 f'  </li>'
             )
         return "\n".join(items)

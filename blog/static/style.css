@@ -591,7 +591,11 @@ footer {
 
 /* Tag chips on post listings */
 .tag-chips {
-  margin-top: 0.35rem;
+  display: inline;
+}
+
+.post-meta-line {
+  margin-top: 0.2rem;
 }
 
 .tag {
