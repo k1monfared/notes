@@ -1,5 +1,7 @@
 # Blog
 
+[https://k1monfared.github.io/notes/](https://k1monfared.github.io/notes/)
+
 Markdown posts that auto-build to a static site on push.
 
 ## Writing
