@@ -20,7 +20,7 @@ TEMPLATE_DIR = BLOG_DIR / "templates"
 STATIC_DIR = BLOG_DIR / "static"
 FILES_DIR = BLOG_DIR / "files"
 COMMENTS_DIR = BLOG_DIR / "comments"
-SITE_URL = "https://k1monfared.github.io/notes"
+SITE_URL = "https://k1monfared.github.io/notes/blog"
 COMMENT_ENDPOINT = ""  # Set to serverless function URL when ready
 
 MD_EXTENSIONS = ["extra", "codehilite", "toc", "smarty", "md_in_html"]
@@ -282,7 +282,7 @@ def build(local=False):
     # Load templates
     base_tmpl = load_template("base.html")
     if local:
-        base_tmpl = base_tmpl.replace('<base href="/notes/">', '<base href="/">')
+        base_tmpl = base_tmpl.replace('<base href="/notes/blog/">', '<base href="/">')
     post_tmpl = load_template("post.html")
     index_tmpl = load_template("index.html")
 

@@ -50,10 +50,15 @@ jobs:
         with:
           enablement: true
 
+      - name: Prepare deploy directory
+        run: |
+          mkdir -p _deploy/blog
+          cp -r blog/_site/* _deploy/blog/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: blog/_site
+          path: _deploy
 
       - name: Deploy to GitHub Pages
         id: deployment
