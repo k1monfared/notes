@@ -129,13 +129,13 @@ main {
   border-bottom: none;
 }
 
-.post-list a {
+.post-list > li > a {
   color: var(--text);
   text-decoration: none;
   display: block;
 }
 
-.post-list a:hover .post-title {
+.post-list > li > a:hover .post-title {
   color: var(--link);
 }
 
