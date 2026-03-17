@@ -1,3 +1,7 @@
+---
+tags: bash, linux, x
+---
+
 # Rotating X and disabling/enabling touch
 
 - I use my tablet to write with its pen quite a lot, whether for taking notes, annotating a pdf file, or teaching. Here is a nice little script that I've made to get the screen to rotate and disable the touchpad, trackpad and touchscreen so that I can easily write with pen:

@@ -1,3 +1,7 @@
+---
+tags: entropy, information, probability distribution, signal
+---
+
 # Mutually informing the cause?
 
 **Disclaimer:** I'm not a statistician, and no, correlation does not mean causation. Also, I'm not a seismologist. And none of the followings are necessarily true. I'm just stretching my thoughts here!

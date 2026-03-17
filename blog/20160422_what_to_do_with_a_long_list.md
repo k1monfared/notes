@@ -1,3 +1,7 @@
+---
+tags: linux, python, sage
+---
+
 # What to do with a long list?
 
 I mean a list in SAGE. The answer is to

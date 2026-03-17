@@ -1,3 +1,7 @@
+---
+tags: minimalism, music, world
+---
+
 # Ludovico Einaudi - In a time lapse
 
 [embed]https://www.youtube.com/watch?v=WJcv18IyvKM[/embed]

@@ -1,3 +1,7 @@
+---
+tags: linear algebra, sage, teaching
+---
+
 # Step-by-step reduction
 
 One of the things that I always tell my students is to check their solutions when they are done solving a problem. That by itself can mean several things, depending on what the problems is. Of course after solving a system of linear equations, one would plug in the solutions into the original system of equations to see if they are satisfied. The harder part is to come up with a way to check if you've done the row-reduction correctly or not. One can easily use Sage to see if the reduced row echelon form is computed correctly. If `A` is your matrix, just input `A.rref()` to find the reduced row echelon form of it.

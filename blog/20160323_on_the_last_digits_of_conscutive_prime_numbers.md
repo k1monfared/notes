@@ -1,3 +1,7 @@
+---
+tags: conjecture, number theory, publication, sage
+---
+
 # On the last digits of conscutive prime numbers
 
 If you have a prime number $p$ (other than two and five) then the last digit of $p$ is 1, 3, 7, or 9. If for some reason we believe that prime numbers are randomly distributed (after all, the last digits 1,3,7, and 9 appear equally likely among primes), then we expect if a prime numbers ends in 1, then the next prime number also ends in 1 with probability of 1/4. A [recent study](http://arxiv.org/abs/1603.03720) has shown otherwise, statistically, and has proved it mathematically, assuming the [Hardy–Littlewood *k*-tuple conjecture](https://en.wikipedia.org/wiki/Twin_prime#First_Hardy.E2.80.93Littlewood_conjecture) is true. In fact the statistical data shows the probability is less than 1/4. [Here](http://www.nature.com/news/peculiar-pattern-found-in-random-prime-numbers-1.19550) is an article explaining the main content of this study.

@@ -1,3 +1,7 @@
+---
+tags: linux, pdf, terminal
+---
+
 # Merge PDF files
 
 Try the good ghostscript:

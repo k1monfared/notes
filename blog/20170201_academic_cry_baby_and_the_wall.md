@@ -1,3 +1,7 @@
+---
+tags: academia, life, politics
+---
+
 # Academic Cry Baby and the Wall
 
 Yesterday I got several emails from various people at charge at the university stating that they are concerned about the people who are directly affected by the US ban on people from muslim-majority countries to enter US. And what I got from the context was that by "directly affected" they meant business. It is great to live and work in a community that they care about you. One of the emails asked to write up all the ways that we are affected by this law so that they can have a collective report on all the issues and act accordingly when needed.

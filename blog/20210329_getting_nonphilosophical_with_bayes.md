@@ -1,3 +1,7 @@
+---
+tags: bayes, paradox, probability, statistics
+---
+
 # Getting (Non)philosophical With Bayes
 
 Since first time I that have encountered a statistical "paradox" I have this feeling that my explanations for what is the "right" answer might not be correct and it might be the case that I'm just not seeing yet another blind spot in my reasoning. So, as any experimental mathematician would do, I set to actually perform the statistical experiments and at least empirically "approve" my reasoning. This is one of the most recent ones I just remembered, since it is mentioned in the book "Causal Inference In Statistics" by Pearl and co-authors:

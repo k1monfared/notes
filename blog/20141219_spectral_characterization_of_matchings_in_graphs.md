@@ -1,3 +1,7 @@
+---
+tags: combinatorics, eigenvalue, graph, iep, inverse eigenvalue problem, linear algebra, matching, spectrum
+---
+
 # Spectral characterization of matchings in graphs
 
 [![Examples of trees which are not NEB.](files/20141219/selection_475.jpg)](files/20141219/selection_475.jpg) Examples of trees which are not NEB.

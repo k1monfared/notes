@@ -1,3 +1,7 @@
+---
+tags: linux, python
+---
+
 # converting time to color
 
 So, Danny pointed out this [website](http://whatcolourisit.scn9a.org/) and asked if one can write a script to do this on a computer. Here is what I came up with:

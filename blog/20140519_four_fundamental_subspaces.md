@@ -1,3 +1,7 @@
+---
+tags: gilbert strang, linear algebra, math, talk
+---
+
 # Four fundamental subspaces
 
 ![Four fundamental subspaces](files/20140519/2014-01-17-13-03-53.jpg)

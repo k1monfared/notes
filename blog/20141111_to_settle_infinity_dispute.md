@@ -1,3 +1,7 @@
+---
+tags: article, infinity, philosophy
+---
+
 # To Settle Infinity Dispute
 
 > Mathematics has a reputation for objectivity. But without real-world infinite objects upon which to base abstractions, mathematical truth becomes, to some extent, a matter of opinion. The choice between "V = ultimate L" and "Martin’s maximum" is perhaps less of a true-false problem and more like asking which is lovelier, an English garden or a forest?

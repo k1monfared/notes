@@ -1,3 +1,7 @@
+---
+tags: academia, calgary, double standards, politics, uofc
+---
+
 # Non-teaching aspects of teaching at University of Calgary
 
 I've been a math postdoc at University of Calgary for two years now, and I'll be here for at least one more year. The teaching environment is very pleasant, and the resources are abundant. Nonetheless, there are a few non-teaching aspects of it that bothers me. The way that the teaching is handled in the mathematics department for postdocs is that we are hired as a sessional instructors, with a no strings attached for the teaching. A course is assigned to us, with a fixed number for the pay. There are no benefits coming with it, and no pension associated to it. However, after 1 year of being a sessional instructor we can apply for $200 reimbursement in professional development activities.

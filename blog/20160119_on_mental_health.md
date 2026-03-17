@@ -1,3 +1,7 @@
+---
+tags: life
+---
+
 # On mental health?
 
 I've received an email a few days ago to review a paper:

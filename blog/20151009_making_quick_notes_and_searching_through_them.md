@@ -1,3 +1,7 @@
+---
+tags: bash, linux, shell, terminal
+---
+
 # Making quick notes and searching through them
 
 There are several times that I just want to jot down something and I don't have time to open a note, or I don't want it to get lost somewhere, or I don't want to decide where to save the file and what to call it. So I have the following little script does the job for me. I called it quicknote and assigned a short alias to it in my .bashrc: `alias n='~/opt/quicknote'`.

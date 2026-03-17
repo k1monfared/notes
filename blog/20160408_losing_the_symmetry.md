@@ -1,3 +1,7 @@
+---
+tags: linear algebra, publication
+---
+
 # Losing the symmetry
 
 If you know about my work, you know that for the past several years I've been working on a special type of problems called structured inverse eigenvalue problems (or SIEP's for short). Well, I mainly focused on SIEP's for Graphs (or IEPG's for short). The question is that you give me a (multi-)set of $n$ numbers $\Lambda$ and a graph $G$ and ask me if there is a matrix whose graph is $G$ and its spectrum (the set of eigenvalues) is $\Lambda$. [Previously](http://www.sciencedirect.com/science/article/pii/S0024379513001006), Bryan Shader and I proved a few theorems and in particular we showed that whenever you choose those $n$ numbers to be distinct real numbers, then there is a real symmetric matrix with the given graph and spectrum. A little [after that](http://www.sciencedirect.com/science/article/pii/S0024379516000951), Sudipta Mallik and I had more fun with this problem and in particular showed that if you choose those numbers to be $2k$ distinct purely imaginary numbers in complex conjugate pairs and $l$ zeros, and if you choose a graph on $2k+l$ vertices which has a matching of the size $k$, then there is a real [skew-symmetric](https://en.wikipedia.org/wiki/Skew-symmetric_matrix) matrix with the given graph whose eigenvalues are the given numbers.

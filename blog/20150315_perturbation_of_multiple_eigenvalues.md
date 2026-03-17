@@ -1,3 +1,7 @@
+---
+tags: eigenspace, eigenvalue, graph, jacobian method, linear algebra, matrix, multiplicity, perturbation
+---
+
 # Perturbation of multiple eigenvalues
 
 For the past several months my Saturdays consist of two meetings, each of which about 4 hours long, with two of my colleagues working on various problems. Clearly we've hit a lot of dead ends, and we've got several interesting results too. Today's first meeting specially was interesting because it boiled down to an understanding that one of our conjectures is not correct. The fact that the conjecture is not correct was clear from a counterexample, but the understanding was established from a point in our method to prove the conjecture.

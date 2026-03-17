@@ -1,3 +1,7 @@
+---
+tags: linear algebra, sage, teaching
+---
+
 # Generating not-so-much-random matrices
 
 I've been using sage for a while now. I've also been teaching linear algebra for a few years. One of the problems in teaching linear algebra is coming up with a handful of examples of matrices that can nicely be row-reduced. One way to do this is to start with your "nice" row-reduced matrix and take a few (or many) "nice" elementary matrices and there is your example. So, one might want to code this in sage. I just recently found out that actually sage has such a function built in it. For example,

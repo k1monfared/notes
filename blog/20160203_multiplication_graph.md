@@ -1,3 +1,7 @@
+---
+tags: art, fun, geometry, sage
+---
+
 # Multiplication graph
 
 I was watching [this random video](https://www.youtube.com/watch?v=qhbuKbxJsk8) on youtube (which by the way is not the best video) that I thought maybe I can do the same thing. So, I started coding in Sage. Here is a what I want to do:

@@ -1,3 +1,7 @@
+---
+tags: analysis, polynomial, transversal intersection
+---
+
 # Roots of a polynomial
 
 Today I read a lot of random mathematics and many of them led to places outside math, and among them is this one: [Parkinson's Law](https://en.wikipedia.org/wiki/Parkinson's_law). One of them that at this last hour of work day is still related to math is a paper by Morris Marden which is from a [talk on his work on zeros of polynomials](http://www.jstor.org.ezproxy.lib.ucalgary.ca/stable/pdf/2318685.pdf), which he cheerfully names "MUCH ADO ABOUT NOTHING".

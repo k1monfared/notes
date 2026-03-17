@@ -1,3 +1,7 @@
+---
+tags: finance, income-tax, personal-finance, tax-brackets, taxes
+---
+
 # Which province in Canada pays the least tax?
 
 Well, that depends on how much income you have. Here is a chart of the 2023 tax brackets in 8 of the provinces (I was just too lazy to get them all!) [source: [https://www.canada.ca/en/revenue-agency/services/tax/individuals/frequently-asked-questions-individuals/canadian-income-tax-rates-individuals-current-previous-years.html](https://www.canada.ca/en/revenue-agency/services/tax/individuals/frequently-asked-questions-individuals/canadian-income-tax-rates-individuals-current-previous-years.html)]

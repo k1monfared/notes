@@ -1,3 +1,7 @@
+---
+tags: feedback, life, teaching
+---
+
 # Feedback - part I
 
 Without much ado here is a book that is changing my life:

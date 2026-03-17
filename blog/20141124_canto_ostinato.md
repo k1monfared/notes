@@ -1,3 +1,7 @@
+---
+tags: minimalism, music
+---
+
 # Canto Ostinato
 
 [embed]https://www.youtube.com/watch?v=JDCsOL2vBJc[/embed]

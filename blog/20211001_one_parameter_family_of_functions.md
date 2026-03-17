@@ -1,3 +1,7 @@
+---
+tags: function
+---
+
 # One-parameter family of functions
 
 Here's a fun paper to read: [Real numbers, data science and chaos: How to fit any dataset with a single parameter](https://arxiv.org/pdf/1904.12320.pdf). The premise of the paper is that "all the samples of any arbitrary data set can be reproduced by a simple differentiable equation", namely, this one:

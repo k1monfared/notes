@@ -1,3 +1,7 @@
+---
+tags: mcmc, statistics, t-test
+---
+
 # How far is far enough?
 
 A frequentist vs Bayesian case

@@ -1,3 +1,7 @@
+---
+tags: combinatorics, linear algebra, publication
+---
+
 # Permanent rank paper is published by ELA
 
 We started the project in [Graduate Research Workshop in Combinatorics](https://sites.google.com/site/rmgpgrwc/home) (Rocky Mountain Great Plains GRWC) in summer 2014, hosted by University of Denver and University of Colorado Denver. Two weeks of work with an amazing group of people in a great research environment, and we eventually submitted the final paper a few months ago, and it is now published by Electronic journal on Linear Algebra (ELA), a publication of International Linear Algebra Society (ILAS) which is an open access journal. The article is available here: [http://repository.uwyo.edu/ela/vol31/iss1/16](http://repository.uwyo.edu/ela/vol31/iss1/16)

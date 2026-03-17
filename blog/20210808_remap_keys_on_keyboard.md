@@ -1,3 +1,7 @@
+---
+tags: customization, keyboard, linux, terminal
+---
+
 # Remap keys on keyboard
 
 [source: https://dev-loki.blogspot.com/2006/04/mapping-unsupported-keys-with-xmodmap.html]

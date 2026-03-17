@@ -1,3 +1,7 @@
+---
+tags: calculus, sage, teaching
+---
+
 # Sagemath for calculus
 
 I have used several geogebra applets in my calculus class, but there's always things that you wanna do that there's no applet out there for, or you can't modify them etc. So, I decided to write my own code for computer algebra applications in sage, and that I can share it with students so that they can play around with it, and modify it. It makes learning more fun. I have to look into interactive option for sage, then I can actually get rid of the animations. For now, I'm just going to post a few simple codes that get the work done:

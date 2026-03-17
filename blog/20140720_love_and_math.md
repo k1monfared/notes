@@ -1,3 +1,7 @@
+---
+tags: book, fermat, langland's program, life, love, math, public
+---
+
 # Love and math
 
 I just read a book called "[Fermat's last theorem](http://www.amazon.com/Fermats-Last-Theorem-Simon-Singh-ebook/dp/B009UKUGXC)" by [Simon Singh](http://simonsingh.net/), and I think it was awesome. I actually listened to the audio version of it. The book does not assume any prior knowledge of mathematics, and a person in 8th or 9th grade should be able to easily follow it.

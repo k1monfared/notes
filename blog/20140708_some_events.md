@@ -1,3 +1,7 @@
+---
+tags: dissertation defense, jubilee days, laramie, nava, persian traditional music, phd, wyoming
+---
+
 # Some events
 
 So, the last days of living in Laramie and here are a few things happening:

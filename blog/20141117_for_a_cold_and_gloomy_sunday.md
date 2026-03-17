@@ -1,3 +1,7 @@
+---
+tags: movie, music, world
+---
+
 # For a cold and gloomy Sunday
 
 [Cheer up Sunday.](http://open.spotify.com/track/61YOzEN35Gxvatcnz8S6Zf)

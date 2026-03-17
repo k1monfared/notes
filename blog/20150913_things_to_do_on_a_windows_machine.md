@@ -1,3 +1,7 @@
+---
+tags: linux, windows
+---
+
 # Things to do on a windows machine
 
 And while I'm at it, let me get this post started. A lot of times it happens that I have to work on a windows machine for a period of time. While I'm still trying to figure out how to get rid of the annoying obligatory update which breaks the computer each time, I use some apps that do the basic things for me. Here are a few (I'll add more as I go):

@@ -1,3 +1,7 @@
+---
+tags: calculus, combinatorics, geophysics, linear algebra, publication, talk, teaching
+---
+
 # Some March Mathness
 
 I went to several talks and meetings in the past few days, and I am going to talk about some of them, but first let me start with some predicting game:

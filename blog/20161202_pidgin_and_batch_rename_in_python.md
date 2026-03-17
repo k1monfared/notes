@@ -1,3 +1,7 @@
+---
+tags: linux, python, shell
+---
+
 # Pidgin and batch rename in python
 
 I remembered that I can use pidgin! I don't know what I haven't been using it for a while. But now that I've installed it again, I went and downloaded yahoo smilies (from [here](https://developer.pidgin.im/wiki/ThirdPartySmileyThemes)) and the according to [this page](https://developer.pidgin.im/wiki/SmileyThemes) I had to copy the unzipped file to `~/.purple/smileys` folder. Everything worked fine, expect since the file I downloaded had a bunch of files that were all named like `yahoo\26.gif` and that made pidgin not to recognize them! So I had to change them, but it seems like also shell doesn't like `\` in file names either. So I asked python to help me. Here is the code:

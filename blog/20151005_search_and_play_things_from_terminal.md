@@ -1,3 +1,7 @@
+---
+tags: bash, linux, terminal
+---
+
 # Search and play things from terminal
 
 There are times that I feel lazy to open a new tab in my firefox to search for something or a youtube video, even though I have tags for every important thing that I use commonly. For example if my firefox is open, all I need to do is to press `ctrl+t` to open a new tab, then `ctrl+k` to go to search bar, and then type in my search query and press enter to search my term in `DuckDuckGo`. Though that `ctrl+k` is not really needed! Or when I have a new tab, all I need to do is to type `yt` my search query to search it in `youtube`. Firefox has this great shortcuts for this searches. But still sometimes I feel lazy. So, I open a terminal (`F12` opens up my `Guake terminal`) and then type `ytp my search query` and it does the same youtube search for me, or other things (see below). The whole idea is very simple. Here is what I do. I have some bash scripts in a folder at `~/opt`. I've added the address of this folder to my `~/.bashrc` file with: `PATH=$PATH:"~/opt"`

@@ -1,3 +1,7 @@
+---
+tags: observation
+---
+
 # A missed point
 
 You call a company to book an appointment for their service,

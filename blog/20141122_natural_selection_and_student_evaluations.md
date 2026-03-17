@@ -1,3 +1,7 @@
+---
+tags: evaluation, feedback, teaching
+---
+
 # Natural Selection and Student Evaluations
 
 > There is an undoubted relationship between teaching effectiveness and popularity. Certainly, an instructor, who cannot engage in person to person relationships or who would be disliked as an individual by those whom he or she is teaching, has some significant hurdles to overcome in order to be an effective teacher. This is not to say, however, that the popularity of an instructor is a solid and reliable measure of that instructor’s effectiveness. The universities tread a dangerous path indeed when they identify effectiveness with popularity and, in so doing, provide their faculty with a strong incentive to play popularity games.

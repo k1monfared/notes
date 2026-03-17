@@ -1,3 +1,7 @@
+---
+tags: math, multiplication, recursion, regression
+---
+
 # 3rd-grade math just got harder
 
 [James Tanton](https://twitter.com/jamestanton) is full of seemingly innocent and amusing questions. One of the questions that kept me busy one night is [this one](https://twitter.com/jamestanton/status/1384863126852677632): 

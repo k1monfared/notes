@@ -1,3 +1,7 @@
+---
+tags: music, world
+---
+
 # An Eastern Love Story
 
 [embed]https://www.youtube.com/watch?v=c2WoTk111_c[/embed]

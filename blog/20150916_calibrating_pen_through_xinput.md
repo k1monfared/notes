@@ -1,3 +1,7 @@
+---
+tags: linux, pen, tablet, x bash
+---
+
 # Calibrating pen through xinput
 
 So, this is too long, I'm gonna just make a new post for it. When I connect the tablet to a projector, due to change of resolution the pen is not calibrated any more. I've tried `xinput_calibrator` to adjust it, but since it "auto-detect"s misclicks I can't really get it to work. I tried to turn it off using the option `--misclick 0`, but that also didn't work. The option `--precalib` doesn't get me anywhere.

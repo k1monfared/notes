@@ -1,3 +1,7 @@
+---
+tags: cello, concert, music
+---
+
 # Zoe Keating Concert in Boulder
 
 [Zoe Keating Concert in Boulder](https://www.youtube.com/user/zoekeating)

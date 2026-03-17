@@ -1,3 +1,7 @@
+---
+tags: alienization, life, racism
+---
+
 # Shapism in Polygons
 
 Visit http://ncase.me/polygons for an incredible presentation of mathematical sociology using simple fun games.

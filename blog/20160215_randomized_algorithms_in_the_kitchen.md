@@ -1,3 +1,7 @@
+---
+tags: algorithm, computer science, life, random
+---
+
 # Randomized algorithms in the kitchen
 
 Officially, I first learned about randomized algorithms and derandomizing them in a course called Randomness in Computations, offered by John Hitchcock at University of Wyoming. It wasn't until then that I realized my old friend Hossein Rahmani had taught me a very cool application of this back in the day when we lived in the dorm in Tehran, without any of us having any idea what we are doing.

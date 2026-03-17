@@ -1,3 +1,7 @@
+---
+tags: atuomation, database, latex
+---
+
 # TeXing with databases
 
 It is happened to me many times that I have a database and I need to build multiple files PDF based on that database. Say, you have a list of people and their addresses and you want to send a generic letter to each of them with their names and addresses on it. Or you have a questionnaire online and you collect the responses in a single spreadsheet (like using google forms). And you want to generate a PDF file for the responses to each question. Here is how you can combine the power of $\LaTeX$ with some simple terminal commands to do this in a few minutes.

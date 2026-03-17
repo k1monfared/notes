@@ -1,3 +1,7 @@
+---
+tags: linear algebra, sage
+---
+
 # A full matrix with given eigenvalues
 
 ## Induction: comprehension and precision

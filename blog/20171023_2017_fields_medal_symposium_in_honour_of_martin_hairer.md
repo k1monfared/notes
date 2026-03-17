@@ -1,3 +1,7 @@
+---
+tags: abstract, conference, fields, medal, slides, spde, stochastic, stochastic partial differential equations, symposium, talk
+---
+
 # 2017 Fields Medal Symposium in honour of Martin Hairer
 
 I recently participated at the [Fields Medal Symposium](http://www.fields.utoronto.ca/activities/17-18/fieldsmedalsym) held at the Fields Institute in Toronto, in honour of Martin Hairer, one of the recipients of the medal in 2014. His work revolves around stochastic partial differential equations.

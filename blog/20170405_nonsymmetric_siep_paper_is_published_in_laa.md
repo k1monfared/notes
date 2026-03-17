@@ -1,3 +1,7 @@
+---
+tags: eigenvalue, graph, inverse eigenvalue problem, linear algebra, matching, paper, publication
+---
+
 # Nonsymmetric SIEP paper is published in LAA
 
 My first solo paper "Existence of a Not Necessarily Symmetric Matrix with Given Distinct Eigenvalues and Graph" got published in Journal of Linear Algebra and its Applications, yesterday. It took it exactly one year! I've written about it here: [Losing the Symmetry](https://k1monfared.wordpress.com/2016/04/08/losing-the-symmetry/).

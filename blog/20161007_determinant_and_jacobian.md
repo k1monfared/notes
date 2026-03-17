@@ -1,3 +1,7 @@
+---
+tags: calculus, linear algebra, teaching
+---
+
 # Determinant and Jacobian
 
 Today I started my linear algebra class by motivating the determinant using a little bit of history and applications. In particular I talked about determinant appearing in the change of variables in integration of multivariate functions in calculus:![Selection_183.png](files/20161007/selection_183.png)Then after the class I noticed that my picture of what happens when we linearize the image wasn't very clear as I had drawn it. So I decided to take a look at an actual example. The following code takes a function $f$ that maps $\mathbb{R}^2$ to $\mathbb{R}^2$ and draws three regions:

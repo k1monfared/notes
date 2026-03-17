@@ -1,3 +1,7 @@
+---
+tags: teaching
+---
+
 # Teaching philosophies
 
 One of the recent workshops I've attended here at the Taylor Institute was about developing a teaching philosophy offered by Carol Berenson.The goals of the workshop were

@@ -1,3 +1,7 @@
+---
+tags: math, movie
+---
+
 # Traveling Salesman, the Movie
 
 https://www.youtube.com/watch?v=6ybd5rbQ5rU

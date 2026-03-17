@@ -1,3 +1,7 @@
+---
+tags: ipam, math, permanent, talk
+---
+
 # Permanent & Determinant: Non-identical Twins
 
 > Permanent & Determinant: Non-identical Twins

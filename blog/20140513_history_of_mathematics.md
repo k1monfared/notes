@@ -1,3 +1,7 @@
+---
+tags: history, math, webby
+---
+
 # History of Mathematics
 
 [History of Mathematics](https://www.youtube.com/playlist?list=PL34B589BE3014EAEB)

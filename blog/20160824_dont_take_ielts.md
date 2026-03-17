@@ -1,3 +1,7 @@
+---
+tags: life
+---
+
 # Don't take IELTS
 
 I recently took an IELTS exam at the University of Calgary branch. During the test dates several issues bothered me. The issues concerned the physical situation of the test room, unclear instructions during the test, and discriminatory behaviour of the examiners, which I will discuss thoroughly below.

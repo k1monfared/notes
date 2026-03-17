@@ -1,3 +1,7 @@
+---
+tags: life
+---
+
 # Teamerican
 
 A long while is passed since the last time that I let the tea completely brew before I pour it and start drinking it while it is still close to 100°C. I did it today again. I was thinking about almost seven years ago that I was busy, that I was stressed, that I didn't know what's happening, that I had decided to let go, and I did. Then one summer day that I was flying to Cyprus for an interview in the US embassy I missed my flight, the flight that I had rescheduled to an earlier day so that I won't be late. I missed it and I lost all the confidence that I had gathered in myself, for the interview, for the travels, for the move, for life. Things worked out well eventually. They had to. Missing that flight ended in me finding a good friend, Farhang, that unfortunately I haven't seen him since then, but later on he told me that first when he saw me and heard my story of missing my flight, he thought that I'm just a wealthy guy who doesn't have much to do in his life and just giving it a try for the heck of it, and didn't care enough to be on time for the flight.

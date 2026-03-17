@@ -1,3 +1,7 @@
+---
+tags: biology, defense, dissertation, math, neuroscience
+---
+
 # Dissertating
 
 These days I'm working hard to finish writing my dissertation. I put an average of 12 hours a day in. It's started looking nice. One more chapter to write, then doing final edits, putting codes in, and I'll be ready to defend in a month.

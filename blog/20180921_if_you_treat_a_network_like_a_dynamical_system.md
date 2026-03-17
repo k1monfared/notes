@@ -1,3 +1,7 @@
+---
+tags: clustering, dynamical systems, graph, kuramoto, signed
+---
+
 # If you treat a network like a dynamical system...
 
 Let's say we have a graph (i.e. network), and we want to cluster the vertices (nodes).  Here, think of the nodes as people, agents, oscillators, some dynamic being, and the edges... the edges tell you if these people are **friends or enemies**, and how much, they tell you if the agents want to collaborate with each other or not, they tell you if the oscillators **attract** each other or **repel** each other, and how much. This means we have a (signed weighted) network that can be treated as a dynamical system. One of the most famous and simple (nonlinear) dynamical systems that can model **attraction/repulsion** is the [Kuramoto ](https://en.wikipedia.org/wiki/Kuramoto_model)model. In simple terms, it says if you have $n$ oscillators $i$ and each of them is moving around the unit circle with a natural frequency $\omega_i$ while being attracted/repelled by other oscillators $j$ as strongly as $a_{ij}$, the derivative of its phase with respect to time (the angular velocity, the rate of change of its phase) is given by

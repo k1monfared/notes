@@ -1,3 +1,7 @@
+---
+tags: community, education, graph, laplacian, linear algebra, sage, spectral analysis
+---
+
 # Miroslav and the separating wand
 
 In a huge graph, it is hard to determine a bottleneck by just looking at it, or doing any type of search. And by a bottleneck, I mean part of graph that is not very much connected to the other part. In different setting this could mean different things, for example, if your graph is a communication network, then a bottleneck mean the information doesn't get to all of the nodes very easily, there will be traffic around the bottleneck.

@@ -1,3 +1,7 @@
+---
+tags: classical, music, piano
+---
+
 # Barcarolle in G minor
 
 https://www.youtube.com/watch?v=jfWRrPpva00

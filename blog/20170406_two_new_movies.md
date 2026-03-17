@@ -1,3 +1,7 @@
+---
+tags: computer science, diversity, girls, inclusive, movie, stem, women
+---
+
 # Two New Movies
 
 I recently went to a couple of screening which made me really happy.

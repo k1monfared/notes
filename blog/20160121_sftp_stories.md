@@ -1,3 +1,7 @@
+---
+tags: linux, sftp
+---
+
 # sftp stories
 
 When I was at WIU I had this website on their server that I had to maintain through their sftp server. It's been a while I have forgotten how to connect to do it. So, I am rediscovering it step by step, and here is a map for later!

@@ -1,3 +1,7 @@
+---
+tags: linux, music, shell, terminal
+---
+
 # Spotify on linux
 
 Here I'm going to collect my attempts at installing and using spotify client on fedora 22.

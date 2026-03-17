@@ -1,3 +1,7 @@
+---
+tags: combinatorics, geometry, talk
+---
+
 # On convex bodies
 
 [Dmitry ](http://www.math.kent.edu/~ryabogin/)[Ryabogin](http://www.math.kent.edu/~ryabogin/) from Kent State University gave two talks today here at UCalgray. The first talk was about convex bodies with congruent projections. You can read about it here: [PDF](http://www.math.kent.edu/~ryabogin/Monthly11.pdf). And their recent results here: [arXiv](http://arxiv.org/abs/1412.2727). The question asks for two convex bodies $k$ and $L$ in $\mathbb{R}^n$, if orthogonal projections of them into each hyperplane is a rotation and translation of each other, is it true that $K = \pm L + a$ where $a$ is a translation?

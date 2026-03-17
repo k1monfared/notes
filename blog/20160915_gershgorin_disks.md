@@ -1,3 +1,7 @@
+---
+tags: linear algebra, sage, teaching
+---
+
 # Gershgorin Disks
 
 Gershgorin circle theorem roughly states that the eigenvalues of an $n \times n$ matrix lie inside $n$ circles where $i$-th circle is centred at $A_{i,i}$ and its radius is the sum of the absolute values of the off-diagonal entries of the $i$-th row of $A$. Applying this to $A^{\top}$ implies that the radius of this circles shall be the smaller of the sums for rows and columns. The following Sage code draws the circles for a given matrix.

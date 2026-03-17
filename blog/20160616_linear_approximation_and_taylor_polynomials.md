@@ -1,3 +1,7 @@
+---
+tags: calculus, interactive, plot, sage
+---
+
 # Linear approximation and Taylor polynomials
 
 For a given function $f(x)$ around a point $a$, if you zoom in close enough on the graph of the function, you can't tell the difference between the curve and the tangent line to the graph of the function at point $a$. This is the basic idea for linear approximations. To explore that statement here I wrote a little sage interactive code that will let you play around with it:

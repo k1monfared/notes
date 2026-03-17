@@ -1,3 +1,7 @@
+---
+tags: snow, summer-snow, wy
+---
+
 # Trapped in Wyoming
 
 [![image](files/20140511/wpid-2014-05-11-10-16-43-jpg.jpeg)](files/20140511/wpid-2014-05-11-10-16-43-jpg.jpeg)
