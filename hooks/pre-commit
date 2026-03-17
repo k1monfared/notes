@@ -28,24 +28,30 @@ else
     echo "Warning: Movie enrichment failed, continuing with commit anyway"
 fi
 
-# --- Blog post tag check ---
-# Warn if any staged blog posts lack tags in frontmatter
+# --- Blog post auto-tagging ---
+# Auto-tag staged blog posts that lack tags, then re-stage them
 BLOG_POSTS=$(git diff --cached --name-only --diff-filter=AM | grep '^blog/[0-9].*\.md$' || true)
 if [ -n "$BLOG_POSTS" ]; then
-    UNTAGGED=""
+    AUTO_TAG_SCRIPT="blog/scripts/auto_tag.py"
+    NEEDS_TAG=""
     for post in $BLOG_POSTS; do
         if [ -f "$post" ]; then
             if ! head -20 "$post" | grep -q '^tags:'; then
-                UNTAGGED="$UNTAGGED  $post\n"
+                NEEDS_TAG="$NEEDS_TAG $post"
             fi
         fi
     done
-    if [ -n "$UNTAGGED" ]; then
-        echo ""
-        echo "WARNING: Blog posts without tags:"
-        echo -e "$UNTAGGED"
-        echo "Run '/tag-post' in Claude Code to auto-tag them."
-        echo ""
+    if [ -n "$NEEDS_TAG" ]; then
+        echo "Auto-tagging blog posts..."
+        if python3 "$AUTO_TAG_SCRIPT" $NEEDS_TAG; then
+            # Re-stage the modified files
+            for post in $NEEDS_TAG; do
+                git add "$post"
+            done
+            echo "Tags added and re-staged."
+        else
+            echo "WARNING: Auto-tagging failed. Posts committed without tags."
+        fi
     fi
 fi
 
