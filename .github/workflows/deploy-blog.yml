@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'blog/**'
+      - 'movies/**'
+      - 'movies.log'
       - '.github/workflows/deploy-blog.yml'
   workflow_dispatch:
 
@@ -54,6 +56,8 @@ jobs:
         run: |
           mkdir -p _deploy/blog
           cp -r blog/_site/* _deploy/blog/
+          mkdir -p _deploy/movies
+          cp movies/index.html _deploy/movies/index.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
