@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movies</title>
+<style>
+:root {
+  --bg:   #0f0f0f;
+  --bg2:  #1a1a1a;
+  --bg3:  #252525;
+  --bd:   #2e2e2e;
+  --txt:  #e0e0e0;
+  --txt2: #888;
+  --acc:  #c9a227;
+  --green:#4caf50;
+  --blue: #2196f3;
+  --ora:  #ff9800;
+  --red:  #f44336;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-system,sans-serif; font-size: 15px; line-height: 1.5; }
+
+/* ── Header ── */
+#hdr {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg); border-bottom: 1px solid var(--bd);
+  padding: 10px 14px 8px;
+}
+#hdr h1 { font-size: 1.25rem; color: var(--acc); margin-bottom: 8px; letter-spacing: .5px; }
+#search {
+  width: 100%; padding: 7px 12px;
+  border-radius: 8px; border: 1px solid var(--bd);
+  background: var(--bg2); color: var(--txt); font-size: 14px;
+  margin-bottom: 8px;
+}
+#search:focus { outline: none; border-color: var(--acc); }
+.frow { display: flex; gap: 5px; flex-wrap: wrap; }
+.fbtn {
+  padding: 4px 12px; border-radius: 20px; border: 1px solid var(--bd);
+  background: var(--bg2); color: var(--txt2); cursor: pointer; font-size: 13px;
+  transition: all .15s;
+}
+.fbtn:hover { border-color: var(--acc); color: var(--txt); }
+.fbtn.on { background: var(--acc); color: #000; border-color: var(--acc); font-weight: 600; }
+
+/* ── Root tabs ── */
+#tabs {
+  display: flex; overflow-x: auto; border-bottom: 2px solid var(--bd);
+  background: var(--bg);
+}
+.tab {
+  padding: 8px 18px; cursor: pointer; color: var(--txt2); font-size: 13px;
+  font-weight: 500; border-bottom: 2px solid transparent; margin-bottom: -2px;
+  white-space: nowrap; transition: all .15s;
+}
+.tab:hover { color: var(--txt); }
+.tab.on { color: var(--acc); border-bottom-color: var(--acc); }
+
+/* ── Stats ── */
+#stats { padding: 5px 14px; color: var(--txt2); font-size: 12px; border-bottom: 1px solid var(--bd); }
+
+/* ── Section ── */
+.sec { border-bottom: 1px solid var(--bd); }
+.sec-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; cursor: pointer; background: var(--bg2); user-select: none;
+}
+.sec-hdr:hover { background: var(--bg3); }
+.sec-title { font-weight: 600; font-size: .9rem; }
+.sec-meta { display: flex; align-items: center; gap: 8px; color: var(--txt2); font-size: 12px; }
+.arr { color: var(--txt2); font-size: 11px; transition: transform .2s; }
+.sec.open .arr { transform: rotate(90deg); }
+.sec-body { display: none; }
+.sec.open .sec-body { display: block; }
+
+/* Tier colors */
+[data-t="1"] .sec-title { color: #f9c74f; }
+[data-t="2"] .sec-title { color: #90be6d; }
+[data-t="3"] .sec-title { color: #43aa8b; }
+[data-t="4"] .sec-title { color: #4d908e; }
+[data-t="5"] .sec-title { color: #577590; }
+[data-t="6"] .sec-title { color: #999; }
+[data-t="7"] .sec-title { color: var(--ora); }
+[data-t="8"] .sec-title { color: var(--red); }
+
+/* ── Subsection ── */
+.sub-lbl {
+  padding: 5px 14px; font-size: 11px; text-transform: uppercase;
+  letter-spacing: .8px; color: var(--acc); background: var(--bg);
+  border-bottom: 1px solid var(--bd);
+}
+
+/* ── Movie ── */
+.mv { border-bottom: 1px solid var(--bd); }
+.mv-hdr {
+  display: flex; align-items: flex-start; gap: 9px;
+  padding: 9px 14px; cursor: pointer;
+}
+.mv-hdr:hover { background: var(--bg2); }
+.si { flex-shrink: 0; font-size: 14px; margin-top: 3px; }
+.si.watched    { color: var(--green); }
+.si.unwatched  { color: var(--txt2); }
+.si.in-progress{ color: var(--ora); }
+.si.uncertain  { color: var(--txt2); }
+.mv-info { flex: 1; min-width: 0; }
+.mv-name { font-weight: 500; }
+.mv-sub { font-size: 12px; color: var(--txt2); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mv-rating { flex-shrink: 0; font-size: 12px; color: var(--acc); font-weight: 500; margin-top: 3px; }
+
+/* ── Movie detail ── */
+.mv-detail {
+  display: none; padding: 10px 14px 14px 37px;
+  background: var(--bg2); border-top: 1px solid var(--bd);
+}
+.mv.open .mv-detail { display: block; }
+.review { font-style: italic; margin-bottom: 10px; line-height: 1.6; color: var(--txt); font-size: 14px; }
+.dg { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; font-size: 13px; }
+.dk { color: var(--txt2); white-space: nowrap; }
+.dv { color: var(--txt); }
+.synopsis { font-size: 12px; color: var(--txt2); margin-top: 8px; line-height: 1.5; }
+.imdb-link { display: inline-block; margin-top: 8px; color: var(--blue); font-size: 13px; text-decoration: none; }
+.imdb-link:hover { text-decoration: underline; }
+
+/* ── Loading / empty ── */
+.center { text-align: center; padding: 50px 20px; color: var(--txt2); }
+.err { color: var(--red); }
+
+@media(max-width:500px) {
+  .dg { grid-template-columns: 1fr; }
+  .dk { font-size: 11px; color: var(--acc); margin-top: 4px; }
+}
+</style>
+</head>
+<body>
+
+<div id="hdr">
+  <h1>Movies</h1>
+  <input type="search" id="search" placeholder="Search title, director, country, review…" autocomplete="off">
+  <div class="frow">
+    <button class="fbtn on" data-f="all">All</button>
+    <button class="fbtn" data-f="watched">✓ Watched</button>
+    <button class="fbtn" data-f="unwatched">○ To Watch</button>
+    <button class="fbtn" data-f="in-progress">◑ In Progress</button>
+  </div>
+</div>
+<div id="tabs"></div>
+<div id="stats"></div>
+<div id="content"><div class="center">Loading movies…</div></div>
+
+<script>
+'use strict';
+
+const RAW = 'https://raw.githubusercontent.com/k1monfared/notes/main/movies.log';
+
+// ── Parser ───────────────────────────────────────────────────────────────────
+
+function spaces(line) {
+  let n = 0; while (n < line.length && line[n] === ' ') n++; return n;
+}
+
+function parseTodo(tr) {
+  const m = tr.match(/^\[([x\-? ]?)\]\s*(.*)/i);
+  if (!m) return null;
+  const ch = (m[1] || '').toLowerCase().trim();
+  return {
+    status: ch === 'x' ? 'watched' : ch === '-' ? 'in-progress' : ch === '?' ? 'uncertain' : 'unwatched',
+    title: m[2].trim()
+  };
+}
+
+function isTodo(tr) { return /^\[[x\-? ]?\]/i.test(tr); }
+
+function parseLog(text) {
+  const lines = text.split('\n');
+  const rootSections = [];   // [{name, cats:[]}]
+  // cat = {name, root, movies:[], subs:[{name,movies:[]}]}
+  // movie = {status, title, indent, section, rootSection, subsection, props:{}}
+
+  let root = null, cat = null, sub = null, mov = null, movInd = -1, lastKey = null, collecting = null;
+
+  function finishMov() { mov = null; movInd = -1; lastKey = null; collecting = null; }
+
+  function addProp(rawKey, val) {
+    if (!mov) return;
+    const key = rawKey.toLowerCase().trim();
+    const v   = val.trim();
+    const p   = mov.props;
+
+    if (key === 'imdb' || key === 'imdb link' || key === 'link') {
+      if (!p.imdb && v.startsWith('http')) p.imdb = v;
+    } else if (key === 'imdb rating') {
+      p.rating = p.rating || v;
+    } else if (key === 'year') {
+      p.year = p.year || v;
+    } else if (key === 'genres' || key === 'genre') {
+      p.genres = p.genres || v;
+    } else if (key === 'country') {
+      p.country = p.country || v;
+    } else if (key === 'duration') {
+      p.duration = p.duration || v;
+    } else if (key === 'released') {
+      p.released = p.released || v;
+    } else if (key === 'synopsis') {
+      p.synopsis = p.synopsis || v;
+    } else if (key.includes('director')) {
+      p.director = p.director ? p.director + ', ' + v : v;
+      collecting = v ? null : 'director';
+    } else if (key === 'cast') {
+      if (!p.cast) p.cast = [];
+      collecting = 'cast';
+    } else if (['recommender','recommended by','recommmender','receommender','recommender by'].includes(key)) {
+      p.recommender = p.recommender ? p.recommender + ', ' + v : v;
+    } else if (key === 'review') {
+      p.review = p.review || v || '';
+      if (!v) collecting = 'review';
+    } else if (key === 'because of') {
+      p.becauseOf = v;
+    } else if (key === 'tag') {
+      p.tag = v;
+    }
+    // always update lastKey
+    lastKey = key;
+  }
+
+  function handleSubItem(inner) {
+    // Called for "- <inner>" lines deeper than the standard prop indent
+    if (!mov) return;
+    const p = mov.props;
+    if (collecting === 'cast' || lastKey === 'cast') {
+      if (!p.cast) p.cast = [];
+      if (!inner.includes(':')) p.cast.push(inner.trim());
+    } else if (collecting === 'review') {
+      p.review = p.review ? p.review + ' ' + inner.trim() : inner.trim();
+    } else if (collecting === 'director') {
+      p.director = p.director ? p.director + ', ' + inner.trim() : inner.trim();
+    }
+  }
+
+  for (const raw of lines) {
+    const ind = spaces(raw);
+    const tr  = raw.trim();
+    if (!tr) continue;
+
+    // Root section (indent 0, starts with "- ", not a todo)
+    if (ind === 0 && tr.startsWith('- ') && !isTodo(tr.slice(2))) {
+      const name = tr.slice(2).replace(/:$/, '').trim();
+      root = { name, cats: [] };
+      rootSections.push(root);
+      cat = null; sub = null; finishMov();
+      continue;
+    }
+
+    // Category section (indent 4, starts with "- ", not a todo)
+    if (ind === 4 && tr.startsWith('- ') && !isTodo(tr.slice(2))) {
+      const name = tr.slice(2).replace(/:$/, '').trim();
+      cat = { name, root: root?.name || '', movies: [], subs: [] };
+      root?.cats.push(cat);
+      sub = null; finishMov();
+      continue;
+    }
+
+    // Todo line → movie
+    if (isTodo(tr)) {
+      const parsed = parseTodo(tr);
+      if (!parsed || !cat) continue;
+      if (ind <= 8) sub = null;          // movie at section level clears subsection
+      mov = {
+        status: parsed.status,
+        title: parsed.title,
+        indent: ind,
+        section: cat.name,
+        rootSection: root?.name || '',
+        subsection: sub?.name || null,
+        props: {}
+      };
+      movInd = ind; lastKey = null; collecting = null;
+      cat.movies.push(mov);
+      if (sub) sub.movies.push(mov);
+      continue;
+    }
+
+    // Subsection (indent 8, "- ", not todo, and either no current movie or new-section context)
+    if (ind === 8 && tr.startsWith('- ') && cat && (!mov || ind <= movInd)) {
+      const name = tr.slice(2).replace(/:$/, '').trim();
+      sub = { name, movies: [] };
+      cat.subs.push(sub);
+      if (mov && ind <= movInd) finishMov();
+      continue;
+    }
+
+    // Properties of the current movie
+    if (mov && ind > movInd) {
+      const propInd = movInd + 4;
+
+      if (ind === propInd) {
+        if (tr.startsWith('- ')) {
+          const inner = tr.slice(2);
+          const ci = inner.indexOf(':');
+          if (ci > 0) {
+            const key = inner.slice(0, ci);
+            const val = inner.slice(ci + 1);
+            // Standalone URL line like "- https://..."
+            if (key.trimStart().toLowerCase().startsWith('http')) {
+              mov.props.imdb = mov.props.imdb || (key.trim() + ':' + val);
+            } else {
+              addProp(key, val);
+              if (val.trim()) collecting = null;
+            }
+          } else {
+            // No colon → sub-item or freetext note
+            if (collecting === 'cast') {
+              if (!mov.props.cast) mov.props.cast = [];
+              mov.props.cast.push(inner.trim());
+            } else if (collecting === 'review') {
+              mov.props.review = mov.props.review ? mov.props.review + ' ' + inner.trim() : inner.trim();
+            } else {
+              // Generic note (e.g. "- A nicely made musical love story.")
+              mov.props.notes = mov.props.notes ? mov.props.notes + ' ' + inner.trim() : inner.trim();
+            }
+          }
+        } else {
+          // Non-standard "key: value" (no leading "- ", used in some TIFF entries)
+          const ci = tr.indexOf(':');
+          if (ci > 0 && !tr.startsWith('http')) {
+            addProp(tr.slice(0, ci), tr.slice(ci + 1));
+          }
+        }
+
+      } else if (ind > propInd) {
+        // Sub-property (cast members, multi-line review, multi-director, etc.)
+        if (tr.startsWith('- ')) {
+          handleSubItem(tr.slice(2));
+        } else {
+          // Deeper non-standard property line
+          const ci = tr.indexOf(':');
+          if (ci > 0 && !tr.startsWith('http')) {
+            addProp(tr.slice(0, ci), tr.slice(ci + 1));
+          }
+        }
+      }
+    }
+  }
+
+  return rootSections;
+}
+
+// ── App state ────────────────────────────────────────────────────────────────
+
+let data  = [];   // rootSections[]
+let rootI = 0;
+let sfilt = 'all';
+let sq    = '';
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+const esc = s => s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : '';
+
+const TIERS = [
+  'i highly recommend',
+  'i recommend',
+  "i think it's a nice one",
+  "there's something in it",
+  'good entertainment',
+  "i've watched it",
+  'not a good one',
+  'i highly discourage'
+];
+
+function tier(name) {
+  const n = name.toLowerCase();
+  const i = TIERS.findIndex(t => n.startsWith(t));
+  return i >= 0 ? i + 1 : 0;
+}
+
+function matches(m) {
+  if (sfilt !== 'all' && m.status !== sfilt) return false;
+  if (!sq) return true;
+  const q = sq.toLowerCase();
+  const hay = [
+    m.title, m.section, m.subsection,
+    m.props.director, m.props.review, m.props.notes,
+    m.props.country, m.props.genres, m.props.recommender,
+    m.props.year, m.props.synopsis, m.props.tag,
+    (m.props.cast || []).join(' ')
+  ].filter(Boolean).join(' ').toLowerCase();
+  return hay.includes(q);
+}
+
+// ── Render ───────────────────────────────────────────────────────────────────
+
+function siIcon(status) {
+  const icons = { watched: '✓', unwatched: '○', 'in-progress': '◑', uncertain: '?' };
+  return `<span class="si ${status}">${icons[status] || '○'}</span>`;
+}
+
+function movieDetail(m) {
+  const p = m.props;
+  let h = '';
+
+  const review = p.review || p.notes;
+  if (review) h += `<div class="review">${esc(review)}</div>`;
+
+  const rows = [];
+  if (p.director)   rows.push(['Director',    esc(p.director)]);
+  if (p.year)       rows.push(['Year',         esc(p.year)]);
+  if (p.rating)     rows.push(['IMDB',         esc(p.rating)]);
+  if (p.genres)     rows.push(['Genres',       esc(p.genres)]);
+  if (p.country)    rows.push(['Country',      esc(p.country)]);
+  if (p.duration)   rows.push(['Duration',     esc(p.duration)]);
+  if (p.released)   rows.push(['Released',     esc(p.released)]);
+  if (p.recommender)rows.push(['Via',          esc(p.recommender)]);
+  if (p.becauseOf)  rows.push(['Because of',   esc(p.becauseOf)]);
+  const castStr = (p.cast || []).slice(0,5).join(', ');
+  if (castStr)      rows.push(['Cast',         esc(castStr)]);
+
+  if (rows.length) {
+    h += `<div class="dg">`;
+    for (const [k, v] of rows)
+      h += `<div class="dk">${k}</div><div class="dv">${v}</div>`;
+    h += `</div>`;
+  }
+
+  if (p.synopsis) h += `<div class="synopsis">${esc(p.synopsis)}</div>`;
+
+  const url = p.imdb && p.imdb.startsWith('http') ? p.imdb : null;
+  if (url) h += `<a class="imdb-link" href="${esc(url)}" target="_blank" rel="noopener">View on IMDB ↗</a>`;
+
+  if (!h) h = '<div class="synopsis">No additional details available.</div>';
+  return h;
+}
+
+function buildMovieEl(m) {
+  const div = document.createElement('div');
+  div.className = 'mv';
+
+  const year = m.props.year ? `${m.props.year}` : '';
+  const dir  = m.props.director ? m.props.director.split(',')[0].trim() : '';
+  const sub  = [year, dir].filter(Boolean).join(' · ');
+  const rat  = m.props.rating || '';
+
+  div.innerHTML = `
+    <div class="mv-hdr" onclick="toggleMv(this.parentElement)">
+      ${siIcon(m.status)}
+      <div class="mv-info">
+        <div class="mv-name">${esc(m.title)}</div>
+        ${sub ? `<div class="mv-sub">${esc(sub)}</div>` : ''}
+      </div>
+      ${rat ? `<div class="mv-rating">★ ${esc(rat.replace('/10',''))}</div>` : ''}
+    </div>
+    <div class="mv-detail">${movieDetail(m)}</div>`;
+  return div;
+}
+
+function buildSection(cat) {
+  const filtered = cat.movies.filter(matches);
+  if (!filtered.length) return null;
+
+  const watched = cat.movies.filter(m => m.status === 'watched').length;
+  const t = tier(cat.name);
+
+  const sec = document.createElement('div');
+  sec.className = 'sec';
+  if (t) sec.dataset.t = t;
+
+  sec.innerHTML = `
+    <div class="sec-hdr" onclick="toggleSec(this.parentElement)">
+      <div class="sec-title">${esc(cat.name)}</div>
+      <div class="sec-meta">
+        <span>${filtered.length}</span>
+        ${watched ? `<span style="color:var(--green)">${watched}✓</span>` : ''}
+        <span class="arr">▶</span>
+      </div>
+    </div>
+    <div class="sec-body"></div>`;
+
+  const body = sec.querySelector('.sec-body');
+
+  // Group filtered movies preserving original order
+  const subsecMap = new Map();
+  const direct = [];
+
+  for (const m of filtered) {
+    if (m.subsection) {
+      if (!subsecMap.has(m.subsection)) subsecMap.set(m.subsection, []);
+      subsecMap.get(m.subsection).push(m);
+    } else {
+      direct.push(m);
+    }
+  }
+
+  for (const m of direct) body.appendChild(buildMovieEl(m));
+
+  for (const [subname, smovies] of subsecMap) {
+    const lbl = document.createElement('div');
+    lbl.className = 'sub-lbl';
+    lbl.textContent = subname;
+    body.appendChild(lbl);
+    for (const m of smovies) body.appendChild(buildMovieEl(m));
+  }
+
+  return sec;
+}
+
+function render() {
+  if (!data.length) return;
+  const content = document.getElementById('content');
+  content.innerHTML = '';
+
+  const rootSec = data[rootI];
+  if (!rootSec) return;
+
+  let total = 0;
+  for (const cat of rootSec.cats) {
+    const el = buildSection(cat);
+    if (el) { content.appendChild(el); total += cat.movies.filter(matches).length; }
+  }
+
+  document.getElementById('stats').textContent =
+    `${total} movie${total !== 1 ? 's' : ''}${sq ? ` matching "${sq}"` : ''}`;
+
+  if (!total) {
+    content.innerHTML = '<div class="center">No movies found.</div>';
+  }
+}
+
+function renderTabs() {
+  const el = document.getElementById('tabs');
+  el.innerHTML = '';
+  data.forEach((rs, i) => {
+    const tab = document.createElement('div');
+    tab.className = 'tab' + (i === rootI ? ' on' : '');
+    tab.textContent = rs.name;
+    tab.onclick = () => {
+      rootI = i;
+      document.querySelectorAll('.tab').forEach((t, j) => t.classList.toggle('on', j === i));
+      render();
+    };
+    el.appendChild(tab);
+  });
+}
+
+// ── Interactions ─────────────────────────────────────────────────────────────
+
+function toggleSec(el) { el.classList.toggle('open'); }
+function toggleMv(el)  { el.classList.toggle('open'); }
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+
+async function init() {
+  try {
+    const resp = await fetch(RAW);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const text = await resp.text();
+    data = parseLog(text);
+
+    renderTabs();
+    render();
+
+    document.getElementById('search').addEventListener('input', e => {
+      sq = e.target.value.trim();
+      render();
+    });
+
+    document.querySelectorAll('.fbtn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        sfilt = btn.dataset.f;
+        document.querySelectorAll('.fbtn').forEach(b => b.classList.toggle('on', b === btn));
+        render();
+      });
+    });
+
+  } catch (err) {
+    document.getElementById('content').innerHTML =
+      `<div class="center err">Failed to load movies.log: ${esc(err.message)}</div>`;
+  }
+}
+
+init();
+</script>
+</body>
+</html>
