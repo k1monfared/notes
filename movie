@@ -1,0 +1,390 @@
+#!/usr/bin/env python3
+"""CLI tool for managing movies.log."""
+
+import argparse
+import json
+import os
+import re
+import sys
+import urllib.request
+import urllib.parse
+from pathlib import Path
+
+MOVIES_FILE = Path(__file__).parent / "movies.log"
+OMDB_URL = "http://www.omdbapi.com/"
+TODO_RE = re.compile(r"^(\s*)\[([x\-? ]?)\]\s*(.+?)\s*$", re.IGNORECASE)
+
+
+# ── File helpers ──────────────────────────────────────────────────────────────
+
+def read_lines():
+    return MOVIES_FILE.read_text(encoding="utf-8").splitlines(keepends=True)
+
+
+def write_lines(lines):
+    MOVIES_FILE.write_text("".join(lines), encoding="utf-8")
+
+
+def find_movie(lines, title):
+    """Find a movie line by title (case-insensitive). Returns (index, indent, match) or None."""
+    title_lower = title.lower().strip()
+    for i, line in enumerate(lines):
+        m = TODO_RE.match(line.rstrip("\n"))
+        if m and m.group(3).strip().lower() == title_lower:
+            return i, len(m.group(1)), m
+    return None
+
+
+def find_insert_after(lines, movie_idx, movie_indent):
+    """Find the index after a movie's existing children."""
+    idx = movie_idx + 1
+    while idx < len(lines):
+        stripped = lines[idx].rstrip("\n")
+        if not stripped.strip():
+            idx += 1
+            continue
+        line_indent = len(stripped) - len(stripped.lstrip())
+        if line_indent > movie_indent:
+            idx += 1
+        else:
+            break
+    return idx
+
+
+# ── Commands ──────────────────────────────────────────────────────────────────
+
+def omdb_search(api_key, title):
+    """Search OMDb and return list of results."""
+    params = urllib.parse.urlencode({"apikey": api_key, "s": title, "type": "movie"})
+    with urllib.request.urlopen(f"{OMDB_URL}?{params}", timeout=10) as resp:
+        data = json.loads(resp.read())
+    if data.get("Response") == "False":
+        return []
+    return data.get("Search", [])
+
+
+def omdb_details(api_key, imdb_id):
+    """Fetch full movie details from OMDb by ID."""
+    params = urllib.parse.urlencode({"apikey": api_key, "i": imdb_id, "plot": "short"})
+    with urllib.request.urlopen(f"{OMDB_URL}?{params}", timeout=10) as resp:
+        data = json.loads(resp.read())
+    if data.get("Response") == "False":
+        return None
+    return data
+
+
+def find_to_watch_insert(lines, section=None):
+    """Find the insert position at the end of a category in the To Watch section.
+    Returns (insert_idx, indent) or (None, None)."""
+    in_to_watch = False
+    last_cat_line = None
+
+    for i, line in enumerate(lines):
+        stripped = line.rstrip("\n")
+        indent = len(stripped) - len(stripped.lstrip()) if stripped.strip() else 999
+
+        if indent == 0 and stripped.strip().startswith("- "):
+            if in_to_watch:
+                break
+            if "to watch" in stripped.lower():
+                in_to_watch = True
+            continue
+
+        if in_to_watch and indent == 4 and stripped.strip().startswith("- "):
+            cat_name = stripped.strip()[2:].rstrip(":").strip()
+            if section:
+                if section.lower() in cat_name.lower():
+                    last_cat_line = i
+            else:
+                last_cat_line = i
+
+    if not in_to_watch or last_cat_line is None:
+        return None, None
+
+    insert_at = last_cat_line + 1
+    while insert_at < len(lines):
+        stripped = lines[insert_at].rstrip("\n")
+        if not stripped.strip():
+            insert_at += 1
+            continue
+        ind = len(stripped) - len(stripped.lstrip())
+        if ind <= 4:
+            break
+        insert_at += 1
+
+    return insert_at, 8
+
+
+def build_imdb_lines(d, indent):
+    """Build property lines from OMDb details dict."""
+    na = lambda v: v if v and v != "N/A" else None
+    pad = " " * (indent + 4)
+    new_lines = []
+
+    fields = [
+        ("Year", na(d.get("Year"))),
+        ("IMDB Rating", na(d.get("imdbRating")) and d["imdbRating"] + "/10"),
+        ("Genres", na(d.get("Genre"))),
+        ("Country", na(d.get("Country"))),
+        ("Duration", na(d.get("Runtime"))),
+        ("Released", na(d.get("Released"))),
+        ("Director", na(d.get("Director"))),
+        ("Synopsis", na(d.get("Plot"))),
+    ]
+
+    for key, val in fields:
+        if val:
+            new_lines.append(f"{pad}- {key}: {val} (IMDb)\n")
+
+    actors = na(d.get("Actors"))
+    if actors:
+        new_lines.append(f"{pad}- Cast (IMDb):\n")
+        cast_pad = " " * (indent + 8)
+        for actor in actors.split(",")[:5]:
+            new_lines.append(f"{cast_pad}- {actor.strip()}\n")
+
+    if d.get("imdbID"):
+        new_lines.append(f"{pad}- IMDB: https://www.imdb.com/title/{d['imdbID']}/\n")
+
+    return new_lines
+
+
+def cmd_add(args):
+    """Interactively add a movie to the To Watch section."""
+    api_key = os.environ.get("OMDB_API_KEY")
+
+    # Interactive prompts
+    title = input("Movie title: ").strip()
+    if not title:
+        print("No title provided")
+        return 1
+
+    recommender = input("Recommended by (optional, press Enter to skip): ").strip()
+
+    # Check if already exists
+    lines = read_lines()
+    if find_movie(lines, title):
+        print(f"Movie '{title}' already exists in movies.log")
+        return 1
+
+    # Fetch IMDb info for verification
+    details = None
+    if api_key:
+        print(f"\nSearching IMDb for '{title}'...")
+        try:
+            results = omdb_search(api_key, title)
+            if results:
+                # Show top results for user to pick
+                print(f"\nFound {len(results)} result(s):")
+                for i, r in enumerate(results[:5], 1):
+                    print(f"  {i}. {r['Title']} ({r.get('Year', '?')})")
+
+                choice = input(f"\nSelect [1-{min(5, len(results))}] or 0 to skip: ").strip()
+                if choice.isdigit() and 1 <= int(choice) <= min(5, len(results)):
+                    selected = results[int(choice) - 1]
+                    details = omdb_details(api_key, selected["imdbID"])
+                    if details:
+                        na = lambda v: v if v and v != "N/A" else None
+                        print(f"\n  Title:    {details.get('Title')}")
+                        print(f"  Year:     {details.get('Year')}")
+                        print(f"  Director: {na(details.get('Director')) or '?'}")
+                        print(f"  Rating:   {na(details.get('imdbRating')) or '?'}/10")
+                        print(f"  Genre:    {na(details.get('Genre')) or '?'}")
+
+                        confirm = input("\nAdd this movie? [Y/n]: ").strip().lower()
+                        if confirm and confirm != "y":
+                            print("Cancelled")
+                            return 0
+                elif choice == "0":
+                    print("Skipping IMDb lookup")
+                else:
+                    print("Invalid choice, skipping IMDb lookup")
+            else:
+                print("No IMDb results found, adding without IMDb data")
+        except Exception as e:
+            print(f"IMDb lookup failed: {e}. Adding without IMDb data.")
+    else:
+        print("(OMDB_API_KEY not set — skipping IMDb lookup)")
+
+    # Find insert position
+    insert_at, indent = find_to_watch_insert(lines, args.section)
+    if insert_at is None:
+        print("Could not find To Watch section or matching category")
+        return 1
+
+    # Build the entry
+    new_lines = [f"{' ' * indent}[ ] {title}\n"]
+    pad = " " * (indent + 4)
+
+    if recommender:
+        new_lines.append(f"{pad}- Recommender: {recommender}\n")
+
+    if details:
+        new_lines.extend(build_imdb_lines(details, indent))
+
+    # Insert
+    lines[insert_at:insert_at] = new_lines
+    write_lines(lines)
+    print(f"\nAdded '{title}' to To Watch (line {insert_at + 1}, {len(new_lines)} lines)")
+    return 0
+
+
+def cmd_watched(args):
+    """Mark a movie as watched."""
+    lines = read_lines()
+    result = find_movie(lines, args.title)
+
+    if not result:
+        print(f"Movie '{args.title}' not found")
+        return 1
+
+    idx, indent, m = result
+    old_line = lines[idx]
+    # Replace the checkbox content with [x]
+    lines[idx] = re.sub(r"\[[x\-? ]?\]", "[x]", old_line, count=1, flags=re.IGNORECASE)
+    write_lines(lines)
+    print(f"Marked '{args.title}' as watched (line {idx + 1})")
+    return 0
+
+
+def cmd_review(args):
+    """Add a review to a movie."""
+    lines = read_lines()
+    result = find_movie(lines, args.title)
+
+    if not result:
+        print(f"Movie '{args.title}' not found")
+        return 1
+
+    idx, indent, _ = result
+    insert_at = find_insert_after(lines, idx, indent)
+    pad = " " * (indent + 4)
+    review_line = f"{pad}- review: {args.text}\n"
+    lines.insert(insert_at, review_line)
+    write_lines(lines)
+    print(f"Added review to '{args.title}' (line {insert_at + 1})")
+    return 0
+
+
+def cmd_fetch_imdb(args):
+    """Fetch IMDb info for a movie and insert it."""
+    api_key = os.environ.get("OMDB_API_KEY")
+    if not api_key:
+        print("OMDB_API_KEY environment variable not set")
+        print("Get a free key at https://www.omdbapi.com/apikey.aspx")
+        return 1
+
+    lines = read_lines()
+    result = find_movie(lines, args.title)
+
+    if not result:
+        print(f"Movie '{args.title}' not found")
+        return 1
+
+    idx, indent, _ = result
+
+    print(f"Searching OMDb for '{args.title}'...")
+    try:
+        results = omdb_search(api_key, args.title)
+    except Exception as e:
+        print(f"Search failed: {e}")
+        return 1
+
+    if not results:
+        print(f"No results found for '{args.title}'")
+        return 1
+
+    # Auto-match: prefer exact title, then first result
+    match = results[0]
+    exact = [r for r in results if r["Title"].lower() == args.title.lower()]
+    if exact:
+        match = exact[0]
+
+    print(f"Fetching details for '{match['Title']}' ({match.get('Year', '')})...")
+    try:
+        d = omdb_details(api_key, match["imdbID"])
+    except Exception as e:
+        print(f"Details fetch failed: {e}")
+        return 1
+
+    if not d:
+        print("Could not get movie details")
+        return 1
+
+    new_lines = build_imdb_lines(d, indent)
+
+    if not new_lines:
+        print("No data to add")
+        return 0
+
+    for line in new_lines:
+        stripped = line.strip().lstrip("- ")
+        if stripped and not stripped.startswith("Cast") and ":" in stripped:
+            print(f"  + {stripped}")
+
+    insert_at = find_insert_after(lines, idx, indent)
+    lines[insert_at:insert_at] = new_lines
+    write_lines(lines)
+    print(f"\n{len(new_lines)} lines added at line {insert_at + 1}")
+    return 0
+
+
+def cmd_list(args):
+    print("Not implemented yet. Coming soon.")
+    return 0
+
+
+def cmd_move(args):
+    print("Not implemented yet. Coming soon.")
+    return 0
+
+
+def cmd_search(args):
+    print("Not implemented yet. Coming soon.")
+    return 0
+
+
+# ── CLI ───────────────────────────────────────────────────────────────────────
+
+def main():
+    parser = argparse.ArgumentParser(prog="movie", description="Manage movies.log")
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    # add
+    p = sub.add_parser("add", help="Add a movie to To Watch (interactive)")
+    p.add_argument("-s", "--section", help="Target category (e.g. 'Festivals')")
+
+    # watched
+    p = sub.add_parser("watched", help="Mark a movie as watched")
+    p.add_argument("title", help="Movie title")
+
+    # review
+    p = sub.add_parser("review", help="Add a review to a movie")
+    p.add_argument("title", help="Movie title")
+    p.add_argument("text", help="Review text")
+
+    # fetch-imdb
+    p = sub.add_parser("fetch-imdb", help="Fetch IMDb info for a movie")
+    p.add_argument("title", help="Movie title")
+
+    # placeholders
+    sub.add_parser("list", help="List movies (coming soon)")
+    sub.add_parser("move", help="Move a movie between sections (coming soon)")
+    p = sub.add_parser("search", help="Search movies (coming soon)")
+    p.add_argument("query", nargs="?", default="", help="Search query")
+
+    args = parser.parse_args()
+    commands = {
+        "add": cmd_add,
+        "watched": cmd_watched,
+        "review": cmd_review,
+        "fetch-imdb": cmd_fetch_imdb,
+        "list": cmd_list,
+        "move": cmd_move,
+        "search": cmd_search,
+    }
+    sys.exit(commands[args.command](args))
+
+
+if __name__ == "__main__":
+    main()
