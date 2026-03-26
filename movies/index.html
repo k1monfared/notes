@@ -19,6 +19,13 @@
   --red:  #f44336;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bd); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--txt2); }
+* { scrollbar-width: thin; scrollbar-color: var(--bd) transparent; }
 body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-system,sans-serif; font-size: 15px; line-height: 1.5; }
 
 /* ── Header ── */
@@ -28,25 +35,17 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
   padding: 10px 14px 8px;
 }
 #hdr h1 { font-size: 1.25rem; color: var(--acc); margin-bottom: 8px; letter-spacing: .5px; }
+.search-row { display: flex; gap: 8px; align-items: center; }
 #search {
-  width: 100%; padding: 7px 12px;
+  flex: 1; padding: 7px 12px;
   border-radius: 8px; border: 1px solid var(--bd);
   background: var(--bg2); color: var(--txt); font-size: 14px;
-  margin-bottom: 8px;
 }
 #search:focus { outline: none; border-color: var(--acc); }
-.frow { display: flex; gap: 5px; flex-wrap: wrap; }
-.fbtn {
-  padding: 4px 12px; border-radius: 20px; border: 1px solid var(--bd);
-  background: var(--bg2); color: var(--txt2); cursor: pointer; font-size: 13px;
-  transition: all .15s;
-}
-.fbtn:hover { border-color: var(--acc); color: var(--txt); }
-.fbtn.on { background: var(--acc); color: #000; border-color: var(--acc); font-weight: 600; }
 
 /* ── Root tabs ── */
 #tabs {
-  display: flex; overflow-x: auto; border-bottom: 2px solid var(--bd);
+  display: flex; border-bottom: 2px solid var(--bd);
   background: var(--bg);
 }
 .tab {
@@ -85,11 +84,22 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
 [data-t="8"] .sec-title { color: var(--red); }
 
 /* ── Subsection ── */
-.sub-lbl {
-  padding: 5px 14px; font-size: 11px; text-transform: uppercase;
-  letter-spacing: .8px; color: var(--acc); background: var(--bg);
-  border-bottom: 1px solid var(--bd);
+.subsec { border-bottom: 1px solid var(--bd); }
+.subsec-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 14px 6px 28px; cursor: pointer; background: var(--bg);
+  user-select: none;
 }
+.subsec-hdr:hover { background: var(--bg2); }
+.subsec-title {
+  font-size: 11px; text-transform: uppercase;
+  letter-spacing: .8px; color: var(--acc); font-weight: 600;
+}
+.subsec-meta { display: flex; align-items: center; gap: 8px; color: var(--txt2); font-size: 12px; }
+.subsec .arr { color: var(--txt2); font-size: 10px; transition: transform .2s; }
+.subsec.open .arr { transform: rotate(90deg); }
+.subsec-body { display: none; }
+.subsec.open .subsec-body { display: block; }
 
 /* ── Movie ── */
 .mv { border-bottom: 1px solid var(--bd); }
@@ -106,7 +116,6 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
 .mv-info { flex: 1; min-width: 0; }
 .mv-name { font-weight: 500; }
 .mv-sub { font-size: 12px; color: var(--txt2); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mv-rating { flex-shrink: 0; font-size: 12px; color: var(--acc); font-weight: 500; margin-top: 3px; }
 
 /* ── Movie detail ── */
 .mv-detail {
@@ -114,21 +123,146 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
   background: var(--bg2); border-top: 1px solid var(--bd);
 }
 .mv.open .mv-detail { display: block; }
-.review { font-style: italic; margin-bottom: 10px; line-height: 1.6; color: var(--txt); font-size: 14px; }
+.review { margin-bottom: 10px; line-height: 1.6; font-size: 14px; border-left: 3px solid var(--acc); padding-left: 10px; }
+.review-label { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--acc); font-weight: 600; margin-bottom: 3px; }
+.review-text { font-style: italic; color: var(--txt); }
 .dg { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; font-size: 13px; }
 .dk { color: var(--txt2); white-space: nowrap; }
 .dv { color: var(--txt); }
-.synopsis { font-size: 12px; color: var(--txt2); margin-top: 8px; line-height: 1.5; }
+.recommended-by { font-size: 13px; color: var(--txt2); margin-bottom: 10px; }
 .imdb-link { display: inline-block; margin-top: 8px; color: var(--blue); font-size: 13px; text-decoration: none; }
 .imdb-link:hover { text-decoration: underline; }
+
+/* ── Enrich button ── */
+.enrich-btn {
+  display: inline-block; margin-top: 8px; padding: 4px 12px;
+  border-radius: 4px; border: 1px solid var(--acc); background: transparent;
+  color: var(--acc); cursor: pointer; font-size: 12px; transition: all .15s;
+}
+.enrich-btn:hover { background: var(--acc); color: #000; }
+.enrich-btn:disabled { opacity: .5; cursor: default; }
+.enrich-result {
+  margin-top: 10px; padding: 10px; background: var(--bg3);
+  border: 1px solid var(--bd); border-radius: 6px;
+}
+.enrich-result .dg { margin-bottom: 8px; }
+.enrich-copy {
+  display: flex; gap: 8px; align-items: center; margin-top: 8px;
+}
+.enrich-copy button {
+  padding: 4px 12px; border-radius: 4px; border: 1px solid var(--green);
+  background: transparent; color: var(--green); cursor: pointer; font-size: 12px;
+}
+.enrich-copy button:hover { background: var(--green); color: #000; }
+.enrich-save { border-color: var(--acc) !important; color: var(--acc) !important; }
+.enrich-save:hover { background: var(--acc) !important; color: #000 !important; }
+.enrich-save:disabled { opacity: .5; cursor: default; }
+.enrich-copy .copied { font-size: 11px; color: var(--green); }
+.enrich-pre {
+  margin-top: 6px; padding: 8px; background: var(--bg); border: 1px solid var(--bd);
+  border-radius: 4px; font-family: monospace; font-size: 12px; color: var(--txt2);
+  white-space: pre; overflow-x: auto; max-height: 200px;
+}
 
 /* ── Loading / empty ── */
 .center { text-align: center; padding: 50px 20px; color: var(--txt2); }
 .err { color: var(--red); }
 
+/* ── Filter toggle button ── */
+#filter-toggle {
+  background: var(--bg2); border: 1px solid var(--bd); color: var(--txt2);
+  padding: 7px 12px; border-radius: 8px; cursor: pointer; font-size: 13px;
+  white-space: nowrap; flex-shrink: 0;
+}
+#filter-toggle:hover { border-color: var(--acc); color: var(--txt); }
+#filter-toggle.on { color: var(--acc); border-color: var(--acc); }
+
+/* ── Sidebar ── */
+#sidebar {
+  position: fixed; top: 0; right: 0; bottom: 0; width: 300px;
+  background: var(--bg); border-left: 1px solid var(--bd);
+  z-index: 200; transform: translateX(100%); transition: transform .2s;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+#sidebar.open { transform: translateX(0); }
+#sidebar-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.5);
+  z-index: 199; display: none;
+}
+#sidebar-overlay.open { display: block; }
+
+.sb-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 14px; border-bottom: 1px solid var(--bd); flex-shrink: 0;
+}
+.sb-header h2 { font-size: 1rem; color: var(--acc); }
+.sb-close {
+  background: none; border: none; color: var(--txt2); font-size: 20px;
+  cursor: pointer; padding: 0 4px;
+}
+.sb-close:hover { color: var(--txt); }
+
+.sb-body { flex: 1; overflow-y: auto; padding: 14px; }
+
+.sb-section { margin-bottom: 20px; }
+.sb-section-title {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .8px;
+  color: var(--acc); font-weight: 600; margin-bottom: 8px;
+}
+
+/* Genre actions */
+.sb-actions { display: flex; gap: 6px; margin-bottom: 8px; }
+.sb-action {
+  padding: 3px 10px; border-radius: 4px; border: 1px solid var(--bd);
+  background: var(--bg2); color: var(--txt2); cursor: pointer; font-size: 11px;
+}
+.sb-action:hover { border-color: var(--acc); color: var(--txt); }
+
+/* Genre list */
+.sb-genres { max-height: 320px; overflow-y: auto; }
+.sb-genre {
+  display: flex; align-items: center; gap: 8px;
+  padding: 3px 0; cursor: pointer; font-size: 13px; color: var(--txt);
+}
+.sb-genre input[type="checkbox"] { accent-color: var(--acc); flex-shrink: 0; }
+.sb-genre-count { margin-left: auto; color: var(--txt2); font-size: 11px; }
+
+/* ── Dual range slider ── */
+.range-wrap { position: relative; height: 36px; margin-top: 8px; }
+.range-track {
+  position: absolute; top: 16px; left: 0; right: 0; height: 4px;
+  background: var(--bg3); border-radius: 2px;
+}
+.range-fill {
+  position: absolute; top: 16px; height: 4px;
+  background: var(--acc); border-radius: 2px;
+}
+.range-wrap input[type="range"] {
+  position: absolute; top: 8px; width: 100%; height: 20px;
+  -webkit-appearance: none; appearance: none;
+  background: transparent; pointer-events: none; margin: 0;
+}
+.range-wrap input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--acc); border: 2px solid var(--bg);
+  cursor: pointer; pointer-events: auto;
+}
+.range-wrap input[type="range"]::-moz-range-thumb {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--acc); border: 2px solid var(--bg);
+  cursor: pointer; pointer-events: auto;
+}
+.range-labels {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: var(--txt2); margin-top: 4px;
+}
+.range-labels span { color: var(--txt); font-weight: 500; }
+
 @media(max-width:500px) {
   .dg { grid-template-columns: 1fr; }
   .dk { font-size: 11px; color: var(--acc); margin-top: 4px; }
+  #sidebar { width: 100%; }
 }
 </style>
 </head>
@@ -136,22 +270,52 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
 
 <div id="hdr">
   <h1>Movies</h1>
-  <input type="search" id="search" placeholder="Search title, director, country, review…" autocomplete="off">
-  <div class="frow">
-    <button class="fbtn on" data-f="all">All</button>
-    <button class="fbtn" data-f="watched">✓ Watched</button>
-    <button class="fbtn" data-f="unwatched">○ To Watch</button>
-    <button class="fbtn" data-f="in-progress">◑ In Progress</button>
+  <div class="search-row">
+    <input type="search" id="search" placeholder="Search title, director, country, review…" autocomplete="off">
+    <button id="filter-toggle" onclick="toggleSidebar()">Filters</button>
   </div>
 </div>
 <div id="tabs"></div>
 <div id="stats"></div>
 <div id="content"><div class="center">Loading movies…</div></div>
 
+<div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+<div id="sidebar">
+  <div class="sb-header">
+    <h2>Filters</h2>
+    <button class="sb-close" onclick="toggleSidebar()">×</button>
+  </div>
+  <div class="sb-body">
+    <div class="sb-section">
+      <div class="sb-section-title">IMDB Rating</div>
+      <div class="range-wrap">
+        <div class="range-track"></div>
+        <div class="range-fill" id="range-fill"></div>
+        <input type="range" id="rating-min" min="0" max="10" step="0.1" value="0">
+        <input type="range" id="rating-max" min="0" max="10" step="0.1" value="10">
+      </div>
+      <div class="range-labels">
+        <span id="rating-min-label">0</span>
+        <span id="rating-max-label">10</span>
+      </div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-title">Genres</div>
+      <div class="sb-actions">
+        <button class="sb-action" onclick="genreSelectAll()">All</button>
+        <button class="sb-action" onclick="genreSelectNone()">None</button>
+        <button class="sb-action" onclick="genreInvert()">Invert</button>
+      </div>
+      <div class="sb-genres" id="genre-list"></div>
+    </div>
+  </div>
+</div>
+
 <script>
 'use strict';
 
-const RAW = 'https://raw.githubusercontent.com/k1monfared/notes/main/movies.log';
+const isLocalHost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+const RAW = isLocalHost ? '/movies.log' : 'https://raw.githubusercontent.com/k1monfared/notes/main/movies.log';
 
 // ── Parser ───────────────────────────────────────────────────────────────────
 
@@ -351,6 +515,12 @@ let data  = [];   // rootSections[]
 let rootI = 0;
 let sfilt = 'all';
 let sq    = '';
+const movieMap = new Map(); // id -> movie object
+let movieIdCounter = 0;
+let selectedGenres = new Set(); // empty = all selected (before init)
+let allGenres = [];             // sorted list of all genres
+let ratingMin = 0;
+let ratingMax = 10;
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -373,8 +543,32 @@ function tier(name) {
   return i >= 0 ? i + 1 : 0;
 }
 
+function parseGenres(m) {
+  if (!m.props.genres) return [];
+  return m.props.genres.split(/[,\/]/).map(g => g.trim().toLowerCase()).filter(Boolean);
+}
+
+function parseRating(m) {
+  if (!m.props.rating) return null;
+  const n = parseFloat(m.props.rating);
+  return isNaN(n) ? null : n;
+}
+
 function matches(m) {
   if (sfilt !== 'all' && m.status !== sfilt) return false;
+
+  // Genre filter
+  if (selectedGenres.size < allGenres.length) {
+    const mg = parseGenres(m);
+    if (mg.length && !mg.some(g => selectedGenres.has(g))) return false;
+  }
+
+  // Rating filter
+  if (ratingMin > 0 || ratingMax < 10) {
+    const r = parseRating(m);
+    if (r !== null && (r < ratingMin || r > ratingMax)) return false;
+  }
+
   if (!sq) return true;
   const q = sq.toLowerCase();
   const hay = [
@@ -399,20 +593,21 @@ function movieDetail(m) {
   let h = '';
 
   const review = p.review || p.notes;
-  if (review) h += `<div class="review">${esc(review)}</div>`;
+  if (review) h += `<div class="review"><div class="review-label">My review</div><div class="review-text">${esc(review)}</div></div>`;
+  if (p.recommender) h += `<div class="recommended-by">Recommended by ${esc(p.recommender)}</div>`;
 
   const rows = [];
   if (p.director)   rows.push(['Director',    esc(p.director)]);
   if (p.year)       rows.push(['Year',         esc(p.year)]);
-  if (p.rating)     rows.push(['IMDB',         esc(p.rating)]);
+  if (p.rating)     rows.push(['IMDB',         esc(p.rating.replace('/10',''))]);
   if (p.genres)     rows.push(['Genres',       esc(p.genres)]);
   if (p.country)    rows.push(['Country',      esc(p.country)]);
   if (p.duration)   rows.push(['Duration',     esc(p.duration)]);
-  if (p.released)   rows.push(['Released',     esc(p.released)]);
-  if (p.recommender)rows.push(['Via',          esc(p.recommender)]);
+  if (p.released)   rows.push(['Released',     esc(p.released.replace(/.*(\d{4}).*/, '$1'))]);
   if (p.becauseOf)  rows.push(['Because of',   esc(p.becauseOf)]);
   const castStr = (p.cast || []).slice(0,5).join(', ');
   if (castStr)      rows.push(['Cast',         esc(castStr)]);
+  if (p.synopsis)   rows.push(['Synopsis',     esc(p.synopsis)]);
 
   if (rows.length) {
     h += `<div class="dg">`;
@@ -421,24 +616,26 @@ function movieDetail(m) {
     h += `</div>`;
   }
 
-  if (p.synopsis) h += `<div class="synopsis">${esc(p.synopsis)}</div>`;
-
   const url = p.imdb && p.imdb.startsWith('http') ? p.imdb : null;
   if (url) h += `<a class="imdb-link" href="${esc(url)}" target="_blank" rel="noopener">View on IMDB ↗</a>`;
+
+  if (needsEnrichment(m)) h += `<button class="enrich-btn" onclick="enrichMovie(this, movieRef(this))">Fetch IMDb info</button>`;
 
   if (!h) h = '<div class="synopsis">No additional details available.</div>';
   return h;
 }
 
 function buildMovieEl(m) {
+  const id = movieIdCounter++;
+  movieMap.set(id, m);
+
   const div = document.createElement('div');
   div.className = 'mv';
+  div.dataset.mid = id;
 
   const year = m.props.year ? `${m.props.year}` : '';
   const dir  = m.props.director ? m.props.director.split(',')[0].trim() : '';
   const sub  = [year, dir].filter(Boolean).join(' · ');
-  const rat  = m.props.rating || '';
-
   div.innerHTML = `
     <div class="mv-hdr" onclick="toggleMv(this.parentElement)">
       ${siIcon(m.status)}
@@ -446,10 +643,14 @@ function buildMovieEl(m) {
         <div class="mv-name">${esc(m.title)}</div>
         ${sub ? `<div class="mv-sub">${esc(sub)}</div>` : ''}
       </div>
-      ${rat ? `<div class="mv-rating">★ ${esc(rat.replace('/10',''))}</div>` : ''}
     </div>
     <div class="mv-detail">${movieDetail(m)}</div>`;
   return div;
+}
+
+function movieRef(el) {
+  const mv = el.closest('.mv');
+  return movieMap.get(Number(mv.dataset.mid));
 }
 
 function buildSection(cat) {
@@ -492,11 +693,20 @@ function buildSection(cat) {
   for (const m of direct) body.appendChild(buildMovieEl(m));
 
   for (const [subname, smovies] of subsecMap) {
-    const lbl = document.createElement('div');
-    lbl.className = 'sub-lbl';
-    lbl.textContent = subname;
-    body.appendChild(lbl);
-    for (const m of smovies) body.appendChild(buildMovieEl(m));
+    const subsec = document.createElement('div');
+    subsec.className = 'subsec';
+    subsec.innerHTML = `
+      <div class="subsec-hdr" onclick="toggleSec(this.parentElement)">
+        <div class="subsec-title">${esc(subname)}</div>
+        <div class="subsec-meta">
+          <span>${smovies.length}</span>
+          <span class="arr">▶</span>
+        </div>
+      </div>
+      <div class="subsec-body"></div>`;
+    const sbody = subsec.querySelector('.subsec-body');
+    for (const m of smovies) sbody.appendChild(buildMovieEl(m));
+    body.appendChild(subsec);
   }
 
   return sec;
@@ -504,6 +714,8 @@ function buildSection(cat) {
 
 function render() {
   if (!data.length) return;
+  movieMap.clear();
+  movieIdCounter = 0;
   const content = document.getElementById('content');
   content.innerHTML = '';
 
@@ -545,6 +757,309 @@ function renderTabs() {
 function toggleSec(el) { el.classList.toggle('open'); }
 function toggleMv(el)  { el.classList.toggle('open'); }
 
+// ── Sidebar ──────────────────────────────────────────────────────────────────
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+  document.getElementById('filter-toggle').classList.toggle('on');
+}
+
+function collectGenres() {
+  const counts = new Map();
+  for (const rs of data) {
+    for (const cat of rs.cats) {
+      for (const m of cat.movies) {
+        for (const g of parseGenres(m)) {
+          counts.set(g, (counts.get(g) || 0) + 1);
+        }
+      }
+    }
+  }
+  allGenres = [...counts.keys()].sort();
+  selectedGenres = new Set(allGenres);
+  renderGenres(counts);
+}
+
+function renderGenres(counts) {
+  const el = document.getElementById('genre-list');
+  if (!counts) {
+    counts = new Map();
+    for (const rs of data) {
+      for (const cat of rs.cats) {
+        for (const m of cat.movies) {
+          for (const g of parseGenres(m)) {
+            counts.set(g, (counts.get(g) || 0) + 1);
+          }
+        }
+      }
+    }
+  }
+  el.innerHTML = '';
+  for (const g of allGenres) {
+    const label = document.createElement('label');
+    label.className = 'sb-genre';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = selectedGenres.has(g);
+    cb.addEventListener('change', () => {
+      if (cb.checked) selectedGenres.add(g);
+      else selectedGenres.delete(g);
+      render();
+    });
+    const name = document.createElement('span');
+    name.textContent = g;
+    const count = document.createElement('span');
+    count.className = 'sb-genre-count';
+    count.textContent = counts.get(g) || 0;
+    label.append(cb, name, count);
+    el.appendChild(label);
+  }
+}
+
+function genreSelectAll() {
+  selectedGenres = new Set(allGenres);
+  document.querySelectorAll('#genre-list input').forEach(cb => cb.checked = true);
+  render();
+}
+
+function genreSelectNone() {
+  selectedGenres.clear();
+  document.querySelectorAll('#genre-list input').forEach(cb => cb.checked = false);
+  render();
+}
+
+function genreInvert() {
+  const inverted = new Set(allGenres.filter(g => !selectedGenres.has(g)));
+  selectedGenres = inverted;
+  document.querySelectorAll('#genre-list input').forEach(cb => {
+    const g = cb.nextSibling.textContent;
+    cb.checked = selectedGenres.has(g);
+  });
+  render();
+}
+
+function initRatingSlider() {
+  const minEl = document.getElementById('rating-min');
+  const maxEl = document.getElementById('rating-max');
+  const fillEl = document.getElementById('range-fill');
+  const minLbl = document.getElementById('rating-min-label');
+  const maxLbl = document.getElementById('rating-max-label');
+
+  function updateFill() {
+    const lo = parseFloat(minEl.value);
+    const hi = parseFloat(maxEl.value);
+    const pctLo = (lo / 10) * 100;
+    const pctHi = (hi / 10) * 100;
+    fillEl.style.left = pctLo + '%';
+    fillEl.style.width = (pctHi - pctLo) + '%';
+    minLbl.textContent = lo.toFixed(1);
+    maxLbl.textContent = hi.toFixed(1);
+  }
+
+  minEl.addEventListener('input', () => {
+    if (parseFloat(minEl.value) > parseFloat(maxEl.value)) minEl.value = maxEl.value;
+    ratingMin = parseFloat(minEl.value);
+    updateFill();
+    render();
+  });
+
+  maxEl.addEventListener('input', () => {
+    if (parseFloat(maxEl.value) < parseFloat(minEl.value)) maxEl.value = minEl.value;
+    ratingMax = parseFloat(maxEl.value);
+    updateFill();
+    render();
+  });
+
+  updateFill();
+}
+
+// ── Enrich (OMDb) ────────────────────────────────────────────────────────────
+
+function needsEnrichment(m) {
+  return !m.props.rating && !m.props.genres;
+}
+
+let _omdbKeyCache = null;
+
+async function getOmdbKey() {
+  if (_omdbKeyCache) return _omdbKeyCache;
+
+  // When running locally, read from server (which reads OMDB_API_KEY env var)
+  if (isLocalHost) {
+    try {
+      const resp = await fetch('/api/omdb-key');
+      const data = await resp.json();
+      if (data.key) { _omdbKeyCache = data.key; return data.key; }
+    } catch {}
+  }
+
+  // Fallback: check localStorage, then prompt
+  let key = localStorage.getItem('omdb_api_key');
+  if (!key) {
+    key = prompt('Enter your OMDb API key (get one free at omdbapi.com/apikey.aspx):');
+    if (key) localStorage.setItem('omdb_api_key', key.trim());
+  }
+  _omdbKeyCache = key ? key.trim() : null;
+  return _omdbKeyCache;
+}
+
+async function enrichMovie(btn, m) {
+  const key = await getOmdbKey();
+  if (!key) return;
+
+  btn.disabled = true;
+  btn.textContent = 'Fetching…';
+
+  try {
+    // Search OMDb by title
+    const searchResp = await fetch(`https://www.omdbapi.com/?apikey=${encodeURIComponent(key)}&s=${encodeURIComponent(m.title)}&type=movie`);
+    const searchData = await searchResp.json();
+
+    if (searchData.Response === 'False') {
+      btn.textContent = 'Not found';
+      return;
+    }
+
+    const results = searchData.Search || [];
+    // Auto-match: exact title or single result, prefer year match
+    let match = results[0];
+    if (m.props.year) {
+      const yearMatch = results.find(r => r.Year === m.props.year);
+      if (yearMatch) match = yearMatch;
+    }
+    const exact = results.find(r => r.Title.toLowerCase() === m.title.toLowerCase());
+    if (exact) match = exact;
+
+    // Fetch full details
+    const detResp = await fetch(`https://www.omdbapi.com/?apikey=${encodeURIComponent(key)}&i=${match.imdbID}&plot=short`);
+    const d = detResp.ok ? await detResp.json() : null;
+
+    if (!d || d.Response === 'False') {
+      btn.textContent = 'Details unavailable';
+      return;
+    }
+
+    // Build the result display
+    const detail = btn.closest('.mv-detail');
+    const resultDiv = document.createElement('div');
+    resultDiv.className = 'enrich-result';
+
+    const na = v => v && v !== 'N/A' ? v : null;
+    const fields = [
+      ['Year', na(d.Year)],
+      ['Rating', na(d.imdbRating) ? d.imdbRating + '/10' : null],
+      ['Genres', na(d.Genre)],
+      ['Country', na(d.Country)],
+      ['Duration', na(d.Runtime)],
+      ['Released', na(d.Released)],
+      ['Director', na(d.Director)],
+      ['Synopsis', na(d.Plot)],
+      ['Cast', na(d.Actors)],
+    ].filter(([,v]) => v);
+
+    let gridHtml = '<div class="dg">';
+    for (const [k, v] of fields)
+      gridHtml += `<div class="dk">${esc(k)}</div><div class="dv">${esc(v)}</div>`;
+    gridHtml += '</div>';
+
+    // Build loglog text for movies.log
+    const indent = ' '.repeat(m.indent + 4);
+    let logLines = [];
+    for (const [k, v] of fields) {
+      if (k === 'Cast') {
+        logLines.push(`${indent}- Cast (IMDb):`);
+        for (const actor of v.split(',').slice(0, 5))
+          logLines.push(`${indent}    - ${actor.trim()}`);
+      } else {
+        logLines.push(`${indent}- ${k}: ${v} (IMDb)`);
+      }
+    }
+    if (d.imdbID) {
+      logLines.push(`${indent}- IMDB: https://www.imdb.com/title/${d.imdbID}/`);
+    }
+    const logText = logLines.join('\n');
+
+    // Build structured payload for the local API
+    const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    const apiPayload = {
+      title: m.title,
+      indent: m.indent,
+      properties: fields.filter(([k]) => k !== 'Cast').map(([k, v]) => ({ key: k, value: v + ' (IMDb)' })),
+      cast: na(d.Actors) ? d.Actors.split(',').slice(0, 5).map(a => a.trim()) : [],
+      imdb_url: d.imdbID ? `https://www.imdb.com/title/${d.imdbID}/` : null,
+    };
+
+    const saveBtn = isLocal
+      ? `<button class="enrich-save" onclick="saveEnrich(this)">Save to movies.log</button>`
+      : '';
+
+    resultDiv.innerHTML = `
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--acc);font-weight:600;margin-bottom:6px">
+        IMDb: ${esc(d.Title)} (${esc(d.Year || '')})
+      </div>
+      ${gridHtml}
+      <div class="enrich-copy">
+        ${saveBtn}
+        <button onclick="copyEnrich(this)">Copy for movies.log</button>
+        <span class="copied"></span>
+      </div>
+      <div class="enrich-pre">${esc(logText)}</div>`;
+
+    resultDiv.querySelector('.enrich-pre').dataset.text = logText;
+    resultDiv.dataset.payload = JSON.stringify(apiPayload);
+    btn.replaceWith(resultDiv);
+
+  } catch (err) {
+    btn.textContent = 'Error: ' + err.message;
+    btn.disabled = false;
+  }
+}
+
+function copyEnrich(btn) {
+  const pre = btn.closest('.enrich-result').querySelector('.enrich-pre');
+  navigator.clipboard.writeText(pre.dataset.text).then(() => {
+    const msg = btn.closest('.enrich-copy').querySelector('.copied');
+    msg.textContent = 'Copied!';
+    setTimeout(() => { msg.textContent = ''; }, 2000);
+  });
+}
+
+async function saveEnrich(btn) {
+  const result = btn.closest('.enrich-result');
+  const payload = JSON.parse(result.dataset.payload);
+  const msg = btn.closest('.enrich-copy').querySelector('.copied');
+
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+
+  try {
+    const resp = await fetch('/api/enrich', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json();
+
+    if (resp.ok && data.ok) {
+      btn.textContent = 'Saved!';
+      btn.style.borderColor = 'var(--green)';
+      btn.style.color = 'var(--green)';
+      msg.textContent = `${data.added} lines added at line ${data.at_line}`;
+    } else {
+      btn.textContent = 'Failed';
+      msg.textContent = data.error || 'Unknown error';
+      msg.style.color = 'var(--red)';
+      btn.disabled = false;
+    }
+  } catch (err) {
+    btn.textContent = 'Error';
+    msg.textContent = err.message;
+    msg.style.color = 'var(--red)';
+    btn.disabled = false;
+  }
+}
+
 // ── Init ─────────────────────────────────────────────────────────────────────
 
 async function init() {
@@ -554,6 +1069,8 @@ async function init() {
     const text = await resp.text();
     data = parseLog(text);
 
+    collectGenres();
+    initRatingSlider();
     renderTabs();
     render();
 
@@ -562,13 +1079,6 @@ async function init() {
       render();
     });
 
-    document.querySelectorAll('.fbtn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        sfilt = btn.dataset.f;
-        document.querySelectorAll('.fbtn').forEach(b => b.classList.toggle('on', b === btn));
-        render();
-      });
-    });
 
   } catch (err) {
     document.getElementById('content').innerHTML =
