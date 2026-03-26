@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
     paths:
+      - 'index.html'
       - 'blog/**'
       - 'movies/**'
       - 'movies.log'
@@ -55,6 +56,7 @@ jobs:
       - name: Prepare deploy directory
         run: |
           mkdir -p _deploy/blog
+          cp index.html _deploy/index.html
           cp -r blog/_site/* _deploy/blog/
           mkdir -p _deploy/movies
           cp movies/index.html _deploy/movies/index.html
