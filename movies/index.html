@@ -65,6 +65,9 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
   display: flex; align-items: center; justify-content: space-between;
   padding: 10px 14px; cursor: pointer; background: var(--bg2); user-select: none;
 }
+.sec.open > .sec-hdr {
+  position: sticky; top: var(--hdr-h, 80px); z-index: 10;
+}
 .sec-hdr:hover { background: var(--bg3); }
 .sec-title { font-weight: 600; font-size: .9rem; }
 .sec-meta { display: flex; align-items: center; gap: 8px; color: var(--txt2); font-size: 12px; }
@@ -89,6 +92,9 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
   display: flex; align-items: center; justify-content: space-between;
   padding: 6px 14px 6px 28px; cursor: pointer; background: var(--bg);
   user-select: none;
+}
+.subsec.open > .subsec-hdr {
+  position: sticky; top: var(--hdr-sec-h, 120px); z-index: 9;
 }
 .subsec-hdr:hover { background: var(--bg2); }
 .subsec-title {
@@ -116,6 +122,9 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
 .mv-info { flex: 1; min-width: 0; }
 .mv-name { font-weight: 500; }
 .mv-sub { font-size: 12px; color: var(--txt2); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mv-toggle { flex-shrink: 0; color: var(--txt2); font-size: 14px; margin-top: 3px; width: 16px; text-align: center; }
+.mv.open .mv-toggle::after { content: '−'; }
+.mv:not(.open) .mv-toggle::after { content: '+'; }
 
 /* ── Movie detail ── */
 .mv-detail {
@@ -125,11 +134,12 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
 .mv.open .mv-detail { display: block; }
 .review { margin-bottom: 10px; line-height: 1.6; font-size: 14px; border-left: 3px solid var(--acc); padding-left: 10px; }
 .review-label { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--acc); font-weight: 600; margin-bottom: 3px; }
-.review-text { font-style: italic; color: var(--txt); }
+.review-text { color: var(--txt); }
 .dg { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; font-size: 13px; }
 .dk { color: var(--txt2); white-space: nowrap; }
 .dv { color: var(--txt); }
 .recommended-by { font-size: 13px; color: var(--txt2); margin-bottom: 10px; }
+.recommended-by .rec-name { color: var(--txt); font-weight: 500; }
 .imdb-link { display: inline-block; margin-top: 8px; color: var(--blue); font-size: 13px; text-decoration: none; }
 .imdb-link:hover { text-decoration: underline; }
 
@@ -154,9 +164,6 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
   background: transparent; color: var(--green); cursor: pointer; font-size: 12px;
 }
 .enrich-copy button:hover { background: var(--green); color: #000; }
-.enrich-save { border-color: var(--acc) !important; color: var(--acc) !important; }
-.enrich-save:hover { background: var(--acc) !important; color: #000 !important; }
-.enrich-save:disabled { opacity: .5; cursor: default; }
 .enrich-copy .copied { font-size: 11px; color: var(--green); }
 .enrich-pre {
   margin-top: 6px; padding: 8px; background: var(--bg); border: 1px solid var(--bd);
@@ -209,6 +216,18 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
   font-size: 11px; text-transform: uppercase; letter-spacing: .8px;
   color: var(--acc); font-weight: 600; margin-bottom: 8px;
 }
+
+/* Toggle filters */
+.sb-toggles { display: flex; flex-direction: column; gap: 6px; }
+.sb-toggle-label { font-size: 12px; color: var(--txt2); margin-top: 4px; }
+.sb-toggle-row { display: flex; gap: 4px; }
+.sb-tbtn {
+  padding: 4px 14px; border-radius: 4px; border: 1px solid var(--bd);
+  background: var(--bg2); color: var(--txt2); cursor: pointer; font-size: 12px;
+  transition: all .15s;
+}
+.sb-tbtn:hover { border-color: var(--acc); color: var(--txt); }
+.sb-tbtn.on { background: var(--acc); color: #000; border-color: var(--acc); font-weight: 600; }
 
 /* Genre actions */
 .sb-actions { display: flex; gap: 6px; margin-bottom: 8px; }
@@ -298,6 +317,27 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
         <span id="rating-min-label">0</span>
         <span id="rating-max-label">10</span>
       </div>
+      <label class="sb-genre" style="margin-top:8px">
+        <input type="checkbox" id="include-unrated" checked onchange="includeUnrated=this.checked;render()">
+        <span>Include unrated movies</span>
+      </label>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-title">Status</div>
+      <div class="sb-toggles">
+        <label class="sb-toggle-label">Watched</label>
+        <div class="sb-toggle-row" id="watched-filter">
+          <button class="sb-tbtn on" data-v="all" onclick="setFilter('watched','all',this)">All</button>
+          <button class="sb-tbtn" data-v="yes" onclick="setFilter('watched','yes',this)">Yes</button>
+          <button class="sb-tbtn" data-v="no" onclick="setFilter('watched','no',this)">No</button>
+        </div>
+        <label class="sb-toggle-label">Reviewed</label>
+        <div class="sb-toggle-row" id="reviewed-filter">
+          <button class="sb-tbtn on" data-v="all" onclick="setFilter('reviewed','all',this)">All</button>
+          <button class="sb-tbtn" data-v="yes" onclick="setFilter('reviewed','yes',this)">Yes</button>
+          <button class="sb-tbtn" data-v="no" onclick="setFilter('reviewed','no',this)">No</button>
+        </div>
+      </div>
     </div>
     <div class="sb-section">
       <div class="sb-section-title">Genres</div>
@@ -352,7 +392,7 @@ function parseLog(text) {
     const p   = mov.props;
 
     if (key === 'imdb' || key === 'imdb link' || key === 'link') {
-      if (!p.imdb && v.startsWith('http')) p.imdb = v;
+      if (!p.imdb && (v.startsWith('http') || v.toLowerCase() === 'n/a')) p.imdb = v;
     } else if (key === 'imdb rating') {
       p.rating = p.rating || v;
     } else if (key === 'year') {
@@ -521,6 +561,9 @@ let selectedGenres = new Set(); // empty = all selected (before init)
 let allGenres = [];             // sorted list of all genres
 let ratingMin = 0;
 let ratingMax = 10;
+let includeUnrated = true;
+let watchedFilter = 'all';   // 'all', 'yes', 'no'
+let reviewedFilter = 'all';  // 'all', 'yes', 'no'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -557,6 +600,14 @@ function parseRating(m) {
 function matches(m) {
   if (sfilt !== 'all' && m.status !== sfilt) return false;
 
+  // Watched filter
+  if (watchedFilter === 'yes' && m.status !== 'watched') return false;
+  if (watchedFilter === 'no' && m.status === 'watched') return false;
+
+  // Reviewed filter
+  if (reviewedFilter === 'yes' && !m.props.review && !m.props.notes) return false;
+  if (reviewedFilter === 'no' && (m.props.review || m.props.notes)) return false;
+
   // Genre filter
   if (selectedGenres.size < allGenres.length) {
     const mg = parseGenres(m);
@@ -564,9 +615,11 @@ function matches(m) {
   }
 
   // Rating filter
-  if (ratingMin > 0 || ratingMax < 10) {
-    const r = parseRating(m);
-    if (r !== null && (r < ratingMin || r > ratingMax)) return false;
+  const r = parseRating(m);
+  if (r === null) {
+    if (!includeUnrated) return false;
+  } else {
+    if (r < ratingMin || r > ratingMax) return false;
   }
 
   if (!sq) return true;
@@ -594,7 +647,7 @@ function movieDetail(m) {
 
   const review = p.review || p.notes;
   if (review) h += `<div class="review"><div class="review-label">My review</div><div class="review-text">${esc(review)}</div></div>`;
-  if (p.recommender) h += `<div class="recommended-by">Recommended by ${esc(p.recommender)}</div>`;
+  if (p.recommender) h += `<div class="recommended-by">Recommended by <span class="rec-name">${esc(p.recommender)}</span></div>`;
 
   const rows = [];
   if (p.director)   rows.push(['Director',    esc(p.director)]);
@@ -643,6 +696,7 @@ function buildMovieEl(m) {
         <div class="mv-name">${esc(m.title)}</div>
         ${sub ? `<div class="mv-sub">${esc(sub)}</div>` : ''}
       </div>
+      <span class="mv-toggle"></span>
     </div>
     <div class="mv-detail">${movieDetail(m)}</div>`;
   return div;
@@ -765,6 +819,13 @@ function toggleSidebar() {
   document.getElementById('filter-toggle').classList.toggle('on');
 }
 
+function setFilter(type, value, btn) {
+  if (type === 'watched') watchedFilter = value;
+  else if (type === 'reviewed') reviewedFilter = value;
+  btn.parentElement.querySelectorAll('.sb-tbtn').forEach(b => b.classList.toggle('on', b === btn));
+  render();
+}
+
 function collectGenres() {
   const counts = new Map();
   for (const rs of data) {
@@ -877,7 +938,10 @@ function initRatingSlider() {
 // ── Enrich (OMDb) ────────────────────────────────────────────────────────────
 
 function needsEnrichment(m) {
-  return !m.props.rating && !m.props.genres;
+  // If IMDB link exists (real URL or N/A marker), don't show button
+  if (m.props.imdb) return false;
+  return !m.props.rating || !m.props.genres || !m.props.director ||
+         !m.props.year || !m.props.country || !m.props.synopsis || !m.props.duration;
 }
 
 let _omdbKeyCache = null;
@@ -917,7 +981,24 @@ async function enrichMovie(btn, m) {
     const searchData = await searchResp.json();
 
     if (searchData.Response === 'False') {
-      btn.textContent = 'Not found';
+      const errMsg = (searchData.Error || '').toLowerCase();
+      if (errMsg.includes('limit') || errMsg.includes('unauthorized')) {
+        btn.textContent = 'API limit reached — try later';
+        btn.disabled = false;
+        return;
+      }
+      if (isLocalHost) {
+        // Mark as N/A so we don't retry
+        try {
+          await fetch('/api/enrich', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: m.title, indent: m.indent, properties: [], cast: [], imdb_url: 'N/A' }),
+          });
+        } catch {}
+      }
+      btn.textContent = 'Not found on IMDb';
+      btn.style.color = 'var(--txt2)';
       return;
     }
 
@@ -980,35 +1061,68 @@ async function enrichMovie(btn, m) {
     }
     const logText = logLines.join('\n');
 
+    // IMDB link
+    const imdbUrl = d.imdbID ? `https://www.imdb.com/title/${d.imdbID}/` : null;
+    const imdbLinkHtml = imdbUrl ? `<a class="imdb-link" href="${esc(imdbUrl)}" target="_blank" rel="noopener">View on IMDB ↗</a>` : '';
+
     // Build structured payload for the local API
-    const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
     const apiPayload = {
       title: m.title,
       indent: m.indent,
       properties: fields.filter(([k]) => k !== 'Cast').map(([k, v]) => ({ key: k, value: v + ' (IMDb)' })),
       cast: na(d.Actors) ? d.Actors.split(',').slice(0, 5).map(a => a.trim()) : [],
-      imdb_url: d.imdbID ? `https://www.imdb.com/title/${d.imdbID}/` : null,
+      imdb_url: imdbUrl,
     };
 
-    const saveBtn = isLocal
-      ? `<button class="enrich-save" onclick="saveEnrich(this)">Save to movies.log</button>`
-      : '';
+    if (isLocalHost) {
+      // Local: auto-save, show result without raw loglog or copy button
+      resultDiv.innerHTML = `
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--acc);font-weight:600;margin-bottom:6px">
+          IMDb: ${esc(d.Title)} (${esc(d.Year || '')})
+        </div>
+        ${gridHtml}
+        ${imdbLinkHtml}
+        <div class="enrich-copy"><span class="copied">Saving…</span></div>`;
+      resultDiv.dataset.payload = JSON.stringify(apiPayload);
+      btn.replaceWith(resultDiv);
 
-    resultDiv.innerHTML = `
-      <div style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--acc);font-weight:600;margin-bottom:6px">
-        IMDb: ${esc(d.Title)} (${esc(d.Year || '')})
-      </div>
-      ${gridHtml}
-      <div class="enrich-copy">
-        ${saveBtn}
-        <button onclick="copyEnrich(this)">Copy for movies.log</button>
-        <span class="copied"></span>
-      </div>
-      <div class="enrich-pre">${esc(logText)}</div>`;
-
-    resultDiv.querySelector('.enrich-pre').dataset.text = logText;
-    resultDiv.dataset.payload = JSON.stringify(apiPayload);
-    btn.replaceWith(resultDiv);
+      // Auto-save
+      try {
+        const resp = await fetch('/api/enrich', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(apiPayload),
+        });
+        const saveData = await resp.json();
+        const msg = resultDiv.querySelector('.copied');
+        if (resp.ok && saveData.ok) {
+          msg.textContent = `Saved (${saveData.added} lines added)`;
+          msg.style.color = 'var(--green)';
+        } else {
+          msg.textContent = saveData.error || 'Save failed';
+          msg.style.color = 'var(--red)';
+        }
+      } catch (saveErr) {
+        const msg = resultDiv.querySelector('.copied');
+        msg.textContent = 'Save failed: ' + saveErr.message;
+        msg.style.color = 'var(--red)';
+      }
+    } else {
+      // GitHub Pages: show copy button and raw loglog
+      resultDiv.innerHTML = `
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--acc);font-weight:600;margin-bottom:6px">
+          IMDb: ${esc(d.Title)} (${esc(d.Year || '')})
+        </div>
+        ${gridHtml}
+        ${imdbLinkHtml}
+        <div class="enrich-copy">
+          <button onclick="copyEnrich(this)">Copy</button>
+          <span class="copied"></span>
+        </div>
+        <div class="enrich-pre">${esc(logText)}</div>`;
+      resultDiv.querySelector('.enrich-pre').dataset.text = logText;
+      btn.replaceWith(resultDiv);
+    }
 
   } catch (err) {
     btn.textContent = 'Error: ' + err.message;
@@ -1025,40 +1139,6 @@ function copyEnrich(btn) {
   });
 }
 
-async function saveEnrich(btn) {
-  const result = btn.closest('.enrich-result');
-  const payload = JSON.parse(result.dataset.payload);
-  const msg = btn.closest('.enrich-copy').querySelector('.copied');
-
-  btn.disabled = true;
-  btn.textContent = 'Saving…';
-
-  try {
-    const resp = await fetch('/api/enrich', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    const data = await resp.json();
-
-    if (resp.ok && data.ok) {
-      btn.textContent = 'Saved!';
-      btn.style.borderColor = 'var(--green)';
-      btn.style.color = 'var(--green)';
-      msg.textContent = `${data.added} lines added at line ${data.at_line}`;
-    } else {
-      btn.textContent = 'Failed';
-      msg.textContent = data.error || 'Unknown error';
-      msg.style.color = 'var(--red)';
-      btn.disabled = false;
-    }
-  } catch (err) {
-    btn.textContent = 'Error';
-    msg.textContent = err.message;
-    msg.style.color = 'var(--red)';
-    btn.disabled = false;
-  }
-}
 
 // ── Init ─────────────────────────────────────────────────────────────────────
 
@@ -1073,6 +1153,16 @@ async function init() {
     initRatingSlider();
     renderTabs();
     render();
+
+    // Compute sticky offsets from actual header heights
+    requestAnimationFrame(() => {
+      const hdrH = document.getElementById('hdr').offsetHeight;
+      document.documentElement.style.setProperty('--hdr-h', hdrH + 'px');
+      // sec-hdr height: measure first one or use default
+      const secHdr = document.querySelector('.sec-hdr');
+      const secH = secHdr ? secHdr.offsetHeight : 40;
+      document.documentElement.style.setProperty('--hdr-sec-h', (hdrH + secH) + 'px');
+    });
 
     document.getElementById('search').addEventListener('input', e => {
       sq = e.target.value.trim();

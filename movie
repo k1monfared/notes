@@ -5,9 +5,11 @@ import argparse
 import json
 import os
 import re
+import subprocess
 import sys
 import urllib.request
 import urllib.parse
+import webbrowser
 from pathlib import Path
 
 MOVIES_FILE = Path(__file__).parent / "movies.log"
@@ -291,7 +293,11 @@ def cmd_fetch_imdb(args):
         return 1
 
     if not results:
-        print(f"No results found for '{args.title}'")
+        print(f"No results found for '{args.title}' — marking as N/A")
+        pad = " " * (indent + 4)
+        insert_at = find_insert_after(lines, idx, indent)
+        lines.insert(insert_at, f"{pad}- IMDB: N/A\n")
+        write_lines(lines)
         return 1
 
     # Auto-match: prefer exact title, then first result
@@ -326,6 +332,106 @@ def cmd_fetch_imdb(args):
     lines[insert_at:insert_at] = new_lines
     write_lines(lines)
     print(f"\n{len(new_lines)} lines added at line {insert_at + 1}")
+    return 0
+
+
+def cmd_server(args):
+    """Start the local dev server and open the movies page in browser."""
+    serve_script = Path(__file__).parent / "serve.py"
+    if not serve_script.exists():
+        print(f"serve.py not found at {serve_script}")
+        return 1
+
+    port = args.port
+    url = f"http://localhost:{port}/movies/index.html"
+    print(f"Starting server on port {port}...")
+    print(f"Opening {url}")
+    webbrowser.open(url)
+
+    # Run serve.py (blocks until Ctrl+C)
+    try:
+        subprocess.run([sys.executable, str(serve_script)], check=True)
+    except KeyboardInterrupt:
+        print("\nServer stopped.")
+    return 0
+
+
+def cmd_page(args):
+    """Open the GitHub Pages movies page in browser."""
+    url = "https://k1monfared.github.io/notes/movies/"
+    print(f"Opening {url}")
+    webbrowser.open(url)
+    return 0
+
+
+def cmd_push(args):
+    """Commit and push movies.log changes to GitHub."""
+    repo_dir = Path(__file__).parent
+
+    # Check if movies.log has changes
+    result = subprocess.run(
+        ["git", "diff", "--name-only", "movies.log"],
+        capture_output=True, text=True, cwd=repo_dir,
+    )
+    staged = subprocess.run(
+        ["git", "diff", "--cached", "--name-only", "movies.log"],
+        capture_output=True, text=True, cwd=repo_dir,
+    )
+
+    if not result.stdout.strip() and not staged.stdout.strip():
+        print("No changes to movies.log")
+        return 0
+
+    # Stage, commit, push
+    subprocess.run(["git", "add", "movies.log"], cwd=repo_dir, check=True)
+    subprocess.run(
+        ["git", "commit", "-m", "Update movies.log"],
+        cwd=repo_dir, check=True,
+    )
+    print("Pushing to GitHub...")
+    subprocess.run(["git", "push"], cwd=repo_dir, check=True)
+    print("Done.")
+    return 0
+
+
+def cmd_help(args):
+    """Show detailed help for all commands."""
+    print("""movie - Manage movies.log
+
+Commands:
+  add                 Interactively add a movie to To Watch
+                      Prompts for title, recommender, and verifies via IMDb
+                      Options: -s SECTION (target a specific category)
+
+  watched TITLE       Mark a movie as watched ([ ] → [x])
+
+  review TITLE TEXT   Add a review to a movie
+
+  fetch-imdb TITLE    Fetch IMDb info and insert into movies.log
+
+  server              Start local dev server and open movies page in browser
+                      Options: -p PORT (default: 8787)
+
+  page                Open the GitHub Pages movies page in browser
+
+  push                Commit and push movies.log changes to GitHub
+
+  list                List movies (coming soon)
+  move                Move a movie between sections (coming soon)
+  search QUERY        Search movies (coming soon)
+
+  help                Show this help
+
+Environment:
+  OMDB_API_KEY        Required for IMDb lookups (free at omdbapi.com/apikey.aspx)
+
+Examples:
+  movie add
+  movie watched "Parasite"
+  movie review "Parasite" "A masterpiece of social commentary"
+  movie fetch-imdb "Parasite"
+  movie server
+  movie push""")
     return 0
 
 
@@ -367,6 +473,17 @@ def main():
     p = sub.add_parser("fetch-imdb", help="Fetch IMDb info for a movie")
     p.add_argument("title", help="Movie title")
 
+    # server & page
+    p = sub.add_parser("server", help="Start local dev server and open in browser")
+    p.add_argument("-p", "--port", type=int, default=8787, help="Port (default: 8787)")
+    sub.add_parser("page", help="Open the GitHub Pages movies page")
+
+    # push
+    sub.add_parser("push", help="Commit and push movies.log changes to GitHub")
+
+    # help
+    sub.add_parser("help", help="Show detailed help for all commands")
+
     # placeholders
     sub.add_parser("list", help="List movies (coming soon)")
     sub.add_parser("move", help="Move a movie between sections (coming soon)")
@@ -379,6 +496,10 @@ def main():
         "watched": cmd_watched,
         "review": cmd_review,
         "fetch-imdb": cmd_fetch_imdb,
+        "help": cmd_help,
+        "server": cmd_server,
+        "page": cmd_page,
+        "push": cmd_push,
         "list": cmd_list,
         "move": cmd_move,
         "search": cmd_search,

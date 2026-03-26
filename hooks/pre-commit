@@ -7,25 +7,52 @@
 
 set -e
 
-MOVIES_FILE="movies"
+MOVIES_FILE="movies.log"
 ENRICH_SCRIPT="/home/k1/public/imdb_helper/scripts/enrich_new_movies.py"
+ENRICH_ALL_SCRIPT="enrich_all.py"
+FIX_RECOMMENDERS="fix_recommenders.py"
 
 # Check if the movies file is staged for commit
-if ! git diff --cached --name-only | grep -q "^${MOVIES_FILE}$"; then
-    exit 0
-fi
+if git diff --cached --name-only | grep -q "^${MOVIES_FILE}$"; then
 
-echo "Movies file staged - checking for new entries to enrich..."
+    echo "Movies file staged - checking for new entries to enrich..."
 
-# Run the enrich script for new movies only
-if python3 "$ENRICH_SCRIPT" -f "$MOVIES_FILE"; then
-    # Check if the movies file was modified by the enrichment
-    if git diff --name-only | grep -q "^${MOVIES_FILE}$"; then
-        echo "IMDb data added - re-staging movies file..."
-        git add "$MOVIES_FILE"
+    # Run the enrich script for new movies only
+    if python3 "$ENRICH_SCRIPT" -f "$MOVIES_FILE" 2>/dev/null; then
+        # Check if the movies file was modified by the enrichment
+        if git diff --name-only | grep -q "^${MOVIES_FILE}$"; then
+            echo "IMDb data added - re-staging movies file..."
+            git add "$MOVIES_FILE"
+        fi
+    else
+        echo "Warning: New movie enrichment failed, continuing..."
     fi
-else
-    echo "Warning: Movie enrichment failed, continuing with commit anyway"
+
+    # Auto-add recommender property from subsection names
+    if [ -f "$FIX_RECOMMENDERS" ]; then
+        echo "Fixing recommender properties..."
+        if python3 "$FIX_RECOMMENDERS"; then
+            if git diff --name-only | grep -q "^${MOVIES_FILE}$"; then
+                echo "Recommenders added - re-staging movies file..."
+                git add "$MOVIES_FILE"
+            fi
+        else
+            echo "Warning: Fix recommenders failed, continuing..."
+        fi
+    fi
+
+    # Backfill: enrich ALL movies missing IMDb data (uses remaining API budget)
+    if [ -n "$OMDB_API_KEY" ] && [ -f "$ENRICH_ALL_SCRIPT" ]; then
+        echo "Backfilling missing IMDb data..."
+        if python3 "$ENRICH_ALL_SCRIPT"; then
+            if git diff --name-only | grep -q "^${MOVIES_FILE}$"; then
+                echo "Backfill data added - re-staging movies file..."
+                git add "$MOVIES_FILE"
+            fi
+        else
+            echo "Warning: Backfill enrichment failed, continuing with commit anyway"
+        fi
+    fi
 fi
 
 # --- Blog post auto-tagging ---
