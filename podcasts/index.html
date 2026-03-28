@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Podcasts</title>
+<link rel="stylesheet" href="../shared/loglog-viewer.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="../shared/loglog-viewer.js"></script>
+<script>
+createLoglogViewer(document.getElementById('app'), {
+  title: 'Podcasts',
+  dataFile: '../podcasts.log',
+  checkboxes: false,
+  tiers: [
+    'I highly recommend',
+    'I recommend',
+    "There's something in it",
+    'Good entertainment/fun and/or story telling is nice',
+    "I've listened",
+    'Not a good one',
+    'I highly discourage',
+    'lost interest, not for me',
+    'listening list',
+  ],
+  summaryField: 'by',
+  reviewFields: ['review'],
+});
+</script>
+</body>
+</html>

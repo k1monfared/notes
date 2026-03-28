@@ -12,7 +12,7 @@ import urllib.parse
 import webbrowser
 from pathlib import Path
 
-MOVIES_FILE = Path(__file__).parent / "movies.log"
+MOVIES_FILE = Path(__file__).parent.parent / "movies.log"
 OMDB_URL = "http://www.omdbapi.com/"
 TODO_RE = re.compile(r"^(\s*)\[([x\-? ]?)\]\s*(.+?)\s*$", re.IGNORECASE)
 
@@ -337,7 +337,7 @@ def cmd_fetch_imdb(args):
 
 def cmd_server(args):
     """Start the local dev server and open the movies page in browser."""
-    serve_script = Path(__file__).parent / "scripts" / "serve.py"
+    serve_script = Path(__file__).parent.parent / "scripts" / "serve.py"
     if not serve_script.exists():
         print(f"serve.py not found at {serve_script}")
         return 1
@@ -366,7 +366,7 @@ def cmd_page(args):
 
 def cmd_push(args):
     """Commit and push movies.log changes to GitHub."""
-    repo_dir = Path(__file__).parent
+    repo_dir = Path(__file__).parent.parent
 
     # Check if movies.log has changes
     result = subprocess.run(

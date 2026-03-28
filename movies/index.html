@@ -290,7 +290,7 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
 <div id="hdr">
   <h1>Movies</h1>
   <div class="search-row">
-    <input type="search" id="search" placeholder="Search title, director, country, review…" autocomplete="off">
+    <input type="search" id="search" placeholder="Search… (genre:comedy, director:nolan, title:dark, review:brilliant)" autocomplete="off">
     <button id="filter-toggle" onclick="toggleSidebar()">Filters</button>
   </div>
 </div>
@@ -623,15 +623,63 @@ function matches(m) {
   }
 
   if (!sq) return true;
-  const q = sq.toLowerCase();
-  const hay = [
-    m.title, m.section, m.subsection,
-    m.props.director, m.props.review, m.props.notes,
-    m.props.country, m.props.genres, m.props.recommender,
-    m.props.year, m.props.synopsis, m.props.tag,
-    (m.props.cast || []).join(' ')
-  ].filter(Boolean).join(' ').toLowerCase();
-  return hay.includes(q);
+  return advancedSearch(m, sq);
+}
+
+function parseMovieSearchQuery(query) {
+  const filters = [];
+  let freeText = '';
+  const fieldRe = /(\w+):"([^"]+)"|(\w+):(\S+)/g;
+  let lastEnd = 0;
+  let match;
+  while ((match = fieldRe.exec(query)) !== null) {
+    const before = query.slice(lastEnd, match.index).trim();
+    if (before) freeText += (freeText ? ' ' : '') + before;
+    lastEnd = match.index + match[0].length;
+    const field = (match[1] || match[3]).toLowerCase();
+    const value = (match[2] || match[4]).toLowerCase();
+    filters.push({ field, value });
+  }
+  const remaining = query.slice(lastEnd).trim();
+  if (remaining) freeText += (freeText ? ' ' : '') + remaining;
+  return { filters, freeText: freeText.toLowerCase() };
+}
+
+function advancedSearch(m, query) {
+  const { filters, freeText } = parseMovieSearchQuery(query);
+  const p = m.props;
+  const fieldMap = {
+    title: m.title,
+    name: m.title,
+    director: p.director,
+    genre: p.genres,
+    genres: p.genres,
+    country: p.country,
+    year: p.year,
+    review: [p.review, p.notes].filter(Boolean).join(' '),
+    rating: p.rating,
+    cast: (p.cast || []).join(' '),
+    synopsis: p.synopsis,
+    tag: p.tag,
+    recommender: p.recommender,
+    section: m.section,
+    duration: p.duration,
+  };
+  for (const { field, value } of filters) {
+    const content = (fieldMap[field] || '').toLowerCase();
+    if (!content || !content.includes(value)) return false;
+  }
+  if (freeText) {
+    const hay = [
+      m.title, m.section, m.subsection,
+      p.director, p.review, p.notes,
+      p.country, p.genres, p.recommender,
+      p.year, p.synopsis, p.tag,
+      (p.cast || []).join(' ')
+    ].filter(Boolean).join(' ').toLowerCase();
+    if (!hay.includes(freeText)) return false;
+  }
+  return true;
 }
 
 // ── Render ───────────────────────────────────────────────────────────────────

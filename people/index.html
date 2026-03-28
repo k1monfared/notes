@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>People</title>
+<link rel="stylesheet" href="../shared/loglog-viewer.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="../shared/loglog-viewer.js"></script>
+<script>
+createLoglogViewer(document.getElementById('app'), {
+  title: 'People',
+  dataFile: '../people.log',
+  checkboxes: false,
+  reviewFields: [],
+  linkFields: ['blog', 'website', 'twitter', 'youtube'],
+});
+</script>
+</body>
+</html>
