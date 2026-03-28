@@ -474,9 +474,56 @@ def build(local=False):
             '</aside>'
         )
 
+    # --- Timeline sidebar ---
+    MONTH_NAMES = [
+        "", "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December",
+    ]
+    from collections import defaultdict as _dd
+    year_month = _dd(lambda: _dd(list))
+    for p in posts_data:
+        y = p["date"].year
+        m = p["date"].month
+        year_month[y][m].append(p)
+
+    timeline_parts = []
+    for year in sorted(year_month.keys(), reverse=True):
+        months = year_month[year]
+        year_count = sum(len(posts) for posts in months.values())
+        month_parts = []
+        for month in sorted(months.keys(), reverse=True):
+            month_posts = months[month]
+            post_links = "\n".join(
+                f'<a href="{p["url_slug"]}/" class="timeline-link" target="_blank" rel="noopener">'
+                f'{html.escape(p["title"])}'
+                f'<span class="timeline-date">{p["date"].day}</span></a>'
+                for p in month_posts
+            )
+            month_parts.append(
+                f'<details>\n'
+                f'<summary><span class="timeline-label">{MONTH_NAMES[month]}'
+                f' <span class="tag-count">{len(month_posts)}</span></span></summary>\n'
+                f'{post_links}\n'
+                f'</details>'
+            )
+        timeline_parts.append(
+            f'<details>\n'
+            f'<summary><span class="timeline-label">{year}'
+            f' <span class="tag-count">{year_count}</span></span></summary>\n'
+            f'{"".join(month_parts)}\n'
+            f'</details>'
+        )
+
+    timeline_sidebar_html = (
+        '<aside class="timeline-sidebar" id="timeline-sidebar">\n'
+        '  <div class="timeline-sidebar-header"><h3>Timeline</h3></div>\n'
+        f'  {"".join(timeline_parts)}\n'
+        '</aside>'
+    ) if timeline_parts else ""
+
     # Write post pages (deferred so sidebar is available)
     for p in posts_data:
-        page_html = render_template(base_tmpl, title=p["title"], content=p["post_html"], sidebar=tag_sidebar_html)
+        page_html = render_template(base_tmpl, title=p["title"], content=p["post_html"], sidebar=tag_sidebar_html, timeline_sidebar=timeline_sidebar_html)
         post_dir = SITE_DIR / p["url_slug"]
         post_dir.mkdir(parents=True, exist_ok=True)
         (post_dir / "index.html").write_text(page_html, encoding="utf-8")
@@ -515,7 +562,7 @@ def build(local=False):
         index_tmpl,
         posts=make_post_list(posts_data, page_size=PAGE_SIZE),
     )
-    index_html = render_template(base_tmpl, title="Blog", content=index_content, sidebar=tag_sidebar_html)
+    index_html = render_template(base_tmpl, title="Blog", content=index_content, sidebar=tag_sidebar_html, timeline_sidebar=timeline_sidebar_html)
     (SITE_DIR / "index.html").write_text(index_html, encoding="utf-8")
 
     # Generate tag pages
@@ -528,7 +575,7 @@ def build(local=False):
                 posts=make_post_list(tag_posts),
             )
             tag_html = render_template(
-                base_tmpl, title=f"Posts tagged: {tag}", content=tag_content, sidebar=tag_sidebar_html
+                base_tmpl, title=f"Posts tagged: {tag}", content=tag_content, sidebar=tag_sidebar_html, timeline_sidebar=timeline_sidebar_html
             )
             tag_dir = SITE_DIR / "tag" / tag
             tag_dir.mkdir(parents=True, exist_ok=True)
