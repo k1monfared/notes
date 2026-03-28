@@ -13,6 +13,15 @@ import yaml
 import markdown
 from pygments.formatters import HtmlFormatter
 
+try:
+    from PIL import Image
+    HAS_PIL = True
+except ImportError:
+    HAS_PIL = False
+
+THUMB_HEIGHT = 80  # px, fixed height for thumbnails
+THUMB_DIR_NAME = "thumbs"
+
 # --- Config ---
 BLOG_DIR = Path(__file__).parent
 SITE_DIR = BLOG_DIR / "_site"
@@ -49,6 +58,27 @@ def parse_filename(filename):
     slug = slug.replace("_", "-")
     date = datetime(int(date_str[:4]), int(date_str[4:6]), int(date_str[6:8]))
     return date, slug, f"{date_str[:8]}-{slug}"
+
+
+def generate_thumbnail(src_path, thumb_path, height=THUMB_HEIGHT):
+    """Generate a small PNG thumbnail with fixed height, preserving aspect ratio."""
+    if not HAS_PIL:
+        return False
+    if thumb_path.exists():
+        # Only regenerate if source is newer
+        if thumb_path.stat().st_mtime >= src_path.stat().st_mtime:
+            return True
+    try:
+        with Image.open(src_path) as img:
+            ratio = height / img.height
+            width = int(img.width * ratio)
+            img = img.resize((width, height), Image.LANCZOS)
+            img = img.convert("RGB")
+            thumb_path.parent.mkdir(parents=True, exist_ok=True)
+            img.save(thumb_path, "PNG", optimize=True)
+        return True
+    except Exception:
+        return False
 
 
 def parse_frontmatter(text):
@@ -355,6 +385,18 @@ def build(local=False):
         )
 
         thumbnail = meta.get("thumbnail", "")
+
+        # Generate small thumbnail for photoblog posts
+        if thumbnail and "photoblog" in tags:
+            src_img = BLOG_DIR / thumbnail
+            if src_img.exists():
+                # e.g. files/photoblog/2022-01-14_photo_01.jpg -> files/thumbs/2022-01-14_photo_01.png
+                thumb_name = Path(thumbnail).stem + ".png"
+                thumb_rel = f"files/{THUMB_DIR_NAME}/{thumb_name}"
+                thumb_path = BLOG_DIR / thumb_rel
+                if generate_thumbnail(src_img, thumb_path):
+                    thumbnail = thumb_rel
+                    all_assets.add(thumb_rel)
 
         posts_data.append({
             "title": title,
