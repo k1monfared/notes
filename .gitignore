@@ -5,3 +5,4 @@ blog/**/*.log
 blog/_site/
 blog/*.draft
 blog/__pycache__/
+blog/.build_cache.json
