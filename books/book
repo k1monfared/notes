@@ -1,0 +1,491 @@
+#!/usr/bin/env python3
+"""CLI tool for managing books.log."""
+
+import argparse
+import csv
+import json
+import os
+import re
+import subprocess
+import sys
+import urllib.request
+from pathlib import Path
+
+BOOKS_FILE = Path(__file__).parent.parent / "books.log"
+TODO_RE = re.compile(r"^(\s*)\[([x\-? ]?)\]\s*(.+?)\s*:?\s*$", re.IGNORECASE)
+
+
+# ── File helpers ──────────────────────────────────────────────────────────────
+
+def read_lines():
+    return BOOKS_FILE.read_text(encoding="utf-8").splitlines(keepends=True)
+
+
+def write_lines(lines):
+    BOOKS_FILE.write_text("".join(lines), encoding="utf-8")
+
+
+def normalize(title):
+    """Normalize title for matching: lowercase, strip punctuation/subtitles."""
+    t = title.lower().strip().rstrip(":")
+    # Remove series info like "(Three Men, #1)"
+    t = re.sub(r"\s*\([^)]*#\d+[^)]*\)", "", t)
+    # Remove subtitle after colon for matching
+    short = t.split(":")[0].strip()
+    return t, short
+
+
+def find_book(lines, title):
+    """Find a book line by title (fuzzy). Returns (index, indent, match) or None."""
+    full, short = normalize(title)
+    for i, line in enumerate(lines):
+        m = TODO_RE.match(line.rstrip("\n"))
+        if m:
+            book_full, book_short = normalize(m.group(3))
+            if book_full == full or book_short == short or full == book_short:
+                return i, len(m.group(1)), m
+    return None
+
+
+def find_section(lines, section_name):
+    """Find a top-level section by name. Returns line index or None."""
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped and not stripped.startswith("[") and not stripped.startswith("-"):
+            if stripped.rstrip(":").lower() == section_name.lower():
+                return i
+    return None
+
+
+def find_insert_after(lines, item_idx, item_indent):
+    """Find the index after an item's existing children."""
+    idx = item_idx + 1
+    while idx < len(lines):
+        stripped = lines[idx].rstrip("\n")
+        if not stripped.strip():
+            idx += 1
+            continue
+        line_indent = len(stripped) - len(stripped.lstrip())
+        if line_indent > item_indent:
+            idx += 1
+        else:
+            break
+    return idx
+
+
+def find_section_end(lines, section_idx):
+    """Find the last content line index of a section (before next top-level section)."""
+    idx = section_idx + 1
+    while idx < len(lines):
+        stripped = lines[idx].strip()
+        # Next top-level section (non-indented, non-empty, not a checkbox item)
+        if stripped and not stripped.startswith("[") and not stripped.startswith("-") and not lines[idx].startswith(" "):
+            return idx
+        idx += 1
+    return idx
+
+
+def has_property(lines, item_idx, item_indent, prop_name):
+    """Check if a book entry already has a given property."""
+    idx = item_idx + 1
+    while idx < len(lines):
+        stripped = lines[idx].rstrip("\n")
+        if not stripped.strip():
+            idx += 1
+            continue
+        line_indent = len(stripped) - len(stripped.lstrip())
+        if line_indent <= item_indent:
+            break
+        if re.match(rf"\s*-?\s*{re.escape(prop_name)}\s*:", stripped, re.IGNORECASE):
+            return True
+        # Also check without leading dash (some entries have "Author: X" without dash)
+        if stripped.strip().lower().startswith(prop_name.lower()):
+            return True
+        idx += 1
+    return False
+
+
+def clean_review(text):
+    """Clean Goodreads review HTML."""
+    if not text:
+        return ""
+    # Replace <br/> and <br> with space
+    text = re.sub(r"<br\s*/?>", " ", text)
+    # Strip remaining HTML tags
+    text = re.sub(r"<[^>]+>", "", text)
+    # Collapse multiple spaces
+    text = re.sub(r"  +", " ", text)
+    # Replace "" with " (Goodreads CSV escaping)
+    text = text.replace('""', '"')
+    return text.strip()
+
+
+def clean_isbn(raw):
+    """Clean ISBN from Goodreads CSV format like =\"0123456789\"."""
+    if not raw:
+        return ""
+    return raw.strip().replace('="', "").replace('"', "").strip()
+
+
+def goodreads_url(book_id):
+    """Build Goodreads URL from book ID."""
+    return f"https://www.goodreads.com/book/show/{book_id}"
+
+
+# ── Import Goodreads ─────────────────────────────────────────────────────────
+
+def cmd_import_goodreads(args):
+    """Import Goodreads CSV export into books.log."""
+    csv_path = Path(args.csv).expanduser()
+    if not csv_path.exists():
+        print(f"File not found: {csv_path}")
+        return 1
+
+    # Parse CSV
+    books = []
+    with open(csv_path, encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            books.append(row)
+
+    print(f"Parsed {len(books)} books from Goodreads CSV")
+
+    lines = read_lines()
+
+    # Categorize
+    existing_matched = 0
+    new_read = []
+    new_toread = []
+
+    for row in books:
+        title = row["Title"].strip()
+        author = row["Author"].strip()
+        shelf = row["Exclusive Shelf"].strip()
+        avg_rating = row["Average Rating"].strip()
+        year = row.get("Original Publication Year", "").strip()
+        book_id = row["Book Id"].strip()
+        review = clean_review(row.get("My Review", ""))
+        gr_url = goodreads_url(book_id)
+
+        result = find_book(lines, title)
+
+        if result:
+            # Existing book — enrich with missing fields
+            idx, indent, m = result
+            insert_at = find_insert_after(lines, idx, indent)
+            pad = " " * (indent + 4)
+            added = []
+
+            if author and not has_property(lines, idx, indent, "author"):
+                lines.insert(insert_at, f"{pad}- author: {author}\n")
+                insert_at += 1
+                added.append("author")
+
+            if year and not has_property(lines, idx, indent, "year"):
+                lines.insert(insert_at, f"{pad}- year: {year}\n")
+                insert_at += 1
+                added.append("year")
+
+            if gr_url and not has_property(lines, idx, indent, "goodreads"):
+                lines.insert(insert_at, f"{pad}- goodreads: {gr_url}\n")
+                insert_at += 1
+                added.append("goodreads")
+
+            if avg_rating and not has_property(lines, idx, indent, "goodreads rating"):
+                lines.insert(insert_at, f"{pad}- goodreads rating: {avg_rating}\n")
+                insert_at += 1
+                added.append("goodreads rating")
+
+            if added:
+                print(f"  updated: {m.group(3).strip()} (+{', '.join(added)})")
+            existing_matched += 1
+
+        elif shelf in ("read", "skipped", "currently-reading"):
+            new_read.append({
+                "title": title, "author": author, "year": year,
+                "goodreads": gr_url, "avg_rating": avg_rating,
+                "review": review, "shelf": shelf,
+            })
+        elif shelf == "to-read":
+            new_toread.append({
+                "title": title, "author": author, "goodreads": gr_url,
+            })
+
+    print(f"  {existing_matched} existing books matched/enriched")
+    print(f"  {len(new_read)} new read/skipped books")
+    print(f"  {len(new_toread)} new to-read books")
+
+    # Insert "imported from goodreads" section before "reading list"
+    if new_read:
+        reading_list_idx = find_section(lines, "reading list")
+        if reading_list_idx is None:
+            # Append at end
+            reading_list_idx = len(lines)
+
+        insert_lines = ["imported from goodreads\n"]
+        for book in new_read:
+            checkbox = "[x]" if book["shelf"] == "read" else "[-]"
+            insert_lines.append(f"    {checkbox} {book['title']}\n")
+            if book["author"]:
+                insert_lines.append(f"        - author: {book['author']}\n")
+            if book["year"]:
+                insert_lines.append(f"        - year: {book['year']}\n")
+            if book["goodreads"]:
+                insert_lines.append(f"        - goodreads: {book['goodreads']}\n")
+            if book["avg_rating"]:
+                insert_lines.append(f"        - goodreads rating: {book['avg_rating']}\n")
+            if book["review"]:
+                insert_lines.append(f"        - review:\n")
+                insert_lines.append(f"            {book['review']}\n")
+
+        lines[reading_list_idx:reading_list_idx] = insert_lines
+
+    # Append new to-read books to reading list
+    if new_toread:
+        # Re-find reading list since we may have inserted above
+        reading_list_idx = find_section(lines, "reading list")
+        if reading_list_idx is not None:
+            end_idx = find_section_end(lines, reading_list_idx)
+            insert_lines = []
+            for book in new_toread:
+                insert_lines.append(f"    [] {book['title']}\n")
+                if book["author"]:
+                    insert_lines.append(f"        - author: {book['author']}\n")
+            lines[end_idx:end_idx] = insert_lines
+            print(f"  {len(new_toread)} books added to reading list")
+
+    write_lines(lines)
+    print(f"\nDone. books.log updated.")
+    return 0
+
+
+# ── Enrich ───────────────────────────────────────────────────────────────────
+
+def cmd_enrich(args):
+    """Fetch Open Library data for a book and insert into books.log."""
+    lines = read_lines()
+    result = find_book(lines, args.title)
+
+    if not result:
+        print(f"Book '{args.title}' not found in books.log")
+        return 1
+
+    idx, indent, m = result
+    title = m.group(3).strip()
+    print(f"Found: {title} (line {idx + 1})")
+
+    # Try to find ISBN in existing properties
+    isbn = None
+    prop_idx = idx + 1
+    while prop_idx < len(lines):
+        stripped = lines[prop_idx].rstrip("\n")
+        if not stripped.strip():
+            prop_idx += 1
+            continue
+        line_indent = len(stripped) - len(stripped.lstrip())
+        if line_indent <= indent:
+            break
+        isbn_match = re.match(r"\s*-?\s*isbn\s*:\s*(.+)", stripped, re.IGNORECASE)
+        if isbn_match:
+            isbn = isbn_match.group(1).strip()
+        prop_idx += 1
+
+    # Search Open Library by title if no ISBN
+    data = None
+    if isbn:
+        print(f"Looking up ISBN {isbn}...")
+        data = ol_fetch_isbn(isbn)
+    if not data:
+        print(f"Searching Open Library for '{title}'...")
+        data = ol_search(title)
+
+    if not data:
+        print("No results found on Open Library")
+        return 1
+
+    # Build property lines
+    insert_at = find_insert_after(lines, idx, indent)
+    pad = " " * (indent + 4)
+    new_lines = []
+
+    if data.get("pages") and not has_property(lines, idx, indent, "pages"):
+        new_lines.append(f"{pad}- pages: {data['pages']}\n")
+
+    if data.get("subjects") and not has_property(lines, idx, indent, "genres"):
+        genres = ", ".join(data["subjects"][:6])
+        new_lines.append(f"{pad}- genres: {genres}\n")
+
+    if data.get("description") and not has_property(lines, idx, indent, "description"):
+        desc = data["description"][:200]
+        new_lines.append(f"{pad}- description: {desc}\n")
+
+    if not new_lines:
+        print("No new data to add (all fields already present)")
+        return 0
+
+    for line in new_lines:
+        print(f"  + {line.strip()}")
+
+    lines[insert_at:insert_at] = new_lines
+    write_lines(lines)
+    print(f"\n{len(new_lines)} lines added")
+    return 0
+
+
+def ol_fetch_isbn(isbn):
+    """Fetch book data from Open Library by ISBN."""
+    url = f"https://openlibrary.org/isbn/{isbn}.json"
+    try:
+        with urllib.request.urlopen(url, timeout=10) as resp:
+            data = json.loads(resp.read())
+    except Exception:
+        return None
+
+    result = {"pages": data.get("number_of_pages")}
+
+    # Fetch work for subjects and description
+    works = data.get("works", [])
+    if works:
+        work_key = works[0].get("key", "")
+        if work_key:
+            result.update(ol_fetch_work(work_key))
+
+    return result
+
+
+def ol_fetch_work(work_key):
+    """Fetch work details from Open Library."""
+    url = f"https://openlibrary.org{work_key}.json"
+    try:
+        with urllib.request.urlopen(url, timeout=10) as resp:
+            data = json.loads(resp.read())
+    except Exception:
+        return {}
+
+    result = {}
+    subjects = data.get("subjects", [])
+    if subjects:
+        result["subjects"] = subjects[:8]
+
+    desc = data.get("description", "")
+    if isinstance(desc, dict):
+        desc = desc.get("value", "")
+    if desc:
+        result["description"] = desc.replace("\n", " ").strip()
+
+    return result
+
+
+def ol_search(title):
+    """Search Open Library and return first match data."""
+    import urllib.parse
+    params = urllib.parse.urlencode({"title": title, "limit": 1})
+    url = f"https://openlibrary.org/search.json?{params}"
+    try:
+        with urllib.request.urlopen(url, timeout=15) as resp:
+            data = json.loads(resp.read())
+    except Exception as e:
+        print(f"Search failed: {e}")
+        return None
+
+    docs = data.get("docs", [])
+    if not docs:
+        return None
+
+    doc = docs[0]
+    result = {}
+
+    if doc.get("number_of_pages_median"):
+        result["pages"] = doc["number_of_pages_median"]
+
+    subjects = doc.get("subject", [])
+    if subjects:
+        result["subjects"] = subjects[:8]
+
+    # Try to get description from work
+    work_key = doc.get("key", "")
+    if work_key:
+        result.update(ol_fetch_work(work_key))
+
+    return result if result else None
+
+
+# ── Push ─────────────────────────────────────────────────────────────────────
+
+def cmd_push(args):
+    """Commit and push books.log changes to GitHub."""
+    repo_dir = Path(__file__).parent.parent
+
+    result = subprocess.run(
+        ["git", "diff", "--name-only", "books.log"],
+        capture_output=True, text=True, cwd=repo_dir,
+    )
+    staged = subprocess.run(
+        ["git", "diff", "--cached", "--name-only", "books.log"],
+        capture_output=True, text=True, cwd=repo_dir,
+    )
+
+    if not result.stdout.strip() and not staged.stdout.strip():
+        print("No changes to books.log")
+        return 0
+
+    subprocess.run(["git", "add", "books.log"], cwd=repo_dir, check=True)
+    subprocess.run(
+        ["git", "commit", "-m", "Update books.log"],
+        cwd=repo_dir, check=True,
+    )
+    print("Pushing to GitHub...")
+    subprocess.run(["git", "push"], cwd=repo_dir, check=True)
+    print("Done.")
+    return 0
+
+
+# ── Help ─────────────────────────────────────────────────────────────────────
+
+def cmd_help(args):
+    print("""book - Manage books.log
+
+Commands:
+  import-goodreads CSV   Import a Goodreads CSV export into books.log
+                         Merges with existing entries, adds new ones
+
+  enrich TITLE           Fetch Open Library data (genres, pages, description)
+                         and insert into books.log
+
+  push                   Commit and push books.log changes to GitHub
+
+  help                   Show this help
+
+Examples:
+  book import-goodreads ~/Downloads/goodreads_library_export.csv
+  book enrich "Crime and Punishment"
+  book push""")
+    return 0
+
+
+# ── CLI ───────────────────────────────────────────────────────────────────────
+
+def main():
+    parser = argparse.ArgumentParser(prog="book", description="Manage books.log")
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    p = sub.add_parser("import-goodreads", help="Import Goodreads CSV export")
+    p.add_argument("csv", help="Path to goodreads_library_export.csv")
+
+    p = sub.add_parser("enrich", help="Fetch Open Library data for a book")
+    p.add_argument("title", help="Book title")
+
+    sub.add_parser("push", help="Commit and push books.log changes")
+    sub.add_parser("help", help="Show detailed help")
+
+    args = parser.parse_args()
+    commands = {
+        "import-goodreads": cmd_import_goodreads,
+        "enrich": cmd_enrich,
+        "push": cmd_push,
+        "help": cmd_help,
+    }
+    sys.exit(commands[args.command](args))
+
+
+if __name__ == "__main__":
+    main()
