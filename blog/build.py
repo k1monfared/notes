@@ -619,7 +619,8 @@ def build(local=False, force=False):
             nxt = posts_data[i - 1]
             next_link = (
                 f'<a href="{nxt["url_slug"]}/" class="post-nav-next">'
-                f'{html.escape(nxt["title"])} &rsaquo;</a>'
+                f'<span class="post-nav-label">newer ▶</span>'
+                f'<span class="post-nav-title">{html.escape(nxt["title"])}</span></a>'
             )
         else:
             next_link = ""
@@ -628,7 +629,8 @@ def build(local=False, force=False):
             prv = posts_data[i + 1]
             prev_link = (
                 f'<a href="{prv["url_slug"]}/" class="post-nav-prev">'
-                f'&lsaquo; {html.escape(prv["title"])}</a>'
+                f'<span class="post-nav-label">◀ older</span>'
+                f'<span class="post-nav-title">{html.escape(prv["title"])}</span></a>'
             )
         else:
             prev_link = ""
