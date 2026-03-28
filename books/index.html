@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Books</title>
+<link rel="stylesheet" href="../shared/loglog-viewer.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="../shared/loglog-viewer.js"></script>
+<script>
+createLoglogViewer(document.getElementById('app'), {
+  title: 'Books',
+  dataFile: '../books.log',
+  checkboxes: true,
+  tiers: [
+    'I highly recommend',
+    'I recommend',
+    "I think it's a nice one",
+    "There's something in it",
+    'Good entertainment/fun and/or story is nice',
+    "I've read it",
+    'Not a good one',
+    'I highly discourage',
+    'Never finished/started',
+    'reading list',
+  ],
+  summaryField: 'author',
+  reviewFields: ['review'],
+  linkFields: ['goodreads'],
+  propertyRenderers: {
+    goodreads: v => `<a href="${v}" target="_blank" rel="noopener">Goodreads</a>`,
+  },
+});
+</script>
+</body>
+</html>

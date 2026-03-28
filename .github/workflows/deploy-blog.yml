@@ -6,8 +6,15 @@ on:
     paths:
       - 'index.html'
       - 'blog/**'
+      - 'shared/**'
       - 'movies/**'
-      - 'movies.log'
+      - 'books/**'
+      - 'people/**'
+      - 'places/**'
+      - 'podcasts/**'
+      - 'products/**'
+      - 'shopping/**'
+      - '*.log'
       - '.github/workflows/deploy-blog.yml'
   workflow_dispatch:
 
@@ -67,8 +74,12 @@ jobs:
           mkdir -p _deploy/blog
           cp index.html _deploy/index.html
           cp -r blog/_site/* _deploy/blog/
-          mkdir -p _deploy/movies
-          cp movies/index.html _deploy/movies/index.html
+          cp -r shared _deploy/shared
+          cp *.log _deploy/
+          for dir in movies books people places podcasts products shopping; do
+            mkdir -p _deploy/$dir
+            cp $dir/index.html _deploy/$dir/index.html
+          done
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
