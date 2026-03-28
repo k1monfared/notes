@@ -4,164 +4,193 @@
 # single-key dicts (sub-groups that expand further).
 # Tags not listed here go into "Other".
 
+People:
+    - gilbert strang
+    - arnold
+
 math:
-  - linear algebra:
-      - eigenvalue
-      - eigenspace
-      - inverse eigenvalue problem
-      - matrix
-      - permanent
-      - spectrum
-      - spectral analysis
-      - laplacian
-      - signed
-      - transversal intersection
-      - jacobian method
-      - gilbert strang
-      - perturbation
-      - multiplicity
-  - statistics:
-      - probability
-      - probability distribution
-      - bayes
-      - t-test
-      - regression
-      - clustering
-      - mcmc
-      - random
-      - stochastic
-      - entropy
-      - information
-  - combinatorics:
-      - graph
-      - matching
-      - conjecture
-  - geometry:
-      - fractal
-      - tesselation
-      - escher
-  - dynamical systems:
-      - kuramoto
-      - spde
-      - stochastic partial differential equations
-      - signal
-  - number theory:
-      - fermat
-      - langland's program
-  - calculus
-  - analysis
-  - fields
-  - infinity
-  - polynomial
-  - function
-  - paradox
-  - abstract
-  - algorithm
-  - multiplication
-  - recursion
+    - linear algebra:
+        - eigenvalue
+        - eigenspace
+        - matrix
+        - permanent
+        - spectrum
+        - spectral analysis
+        - laplacian
+        - signed
+        - transversal intersection
+        - jacobian method
+        - multiplicity
+        - perturbation
+        - iep
+    - statistics:
+        - probability
+        - probability distribution
+        - bayes
+        - t-test
+        - regression
+        - clustering
+        - mcmc
+        - random
+        - stochastic
+        - entropy
+        - information
+        - simulation
+    - combinatorics:
+        - graph
+        - matching
+        - conjecture
+    - geometry:
+        - fractal
+        - tesselation
+        - escher
+    - dynamical systems:
+        - kuramoto
+        - spde
+        - stochastic partial differential equations
+        - signal
+    - number theory:
+        - fermat
+        - langland's program
+    - analysis:
+        - calculus
+        - inverse eigenvalue problem
+    - algebra:
+        - fields
+    - infinity
+    - polynomial
+    - function
+    - paradox
+    - abstract
+    - algorithm
+    - multiplication
+    - recursion
 
-music:
-  - concert
-  - cello
-  - classical
-  - minimalism
-  - piano
-  - folk
-  - persian traditional music
-  - nava
-  - arnold
-  - world
-
-linux:
-  - bash
-  - shell
-  - terminal
-  - python
-  - customization
-  - keyboard
-  - sftp
-  - latex
-  - pdf
-  - online-editor
-  - database
-  - automation
-  - windows
-  - android
-  - tablet
-  - plot
-  - interactive
-  - computer science
+computer:
+    - hardware:
+        - keyboard
+        - customization
+        - tablet
+    - Operating systems:
+        - linux:
+            - terminal:
+                - bash
+                - shell
+                - sftp
+        - programming:
+            - python
+            - computer science
+            - database
+        - tools:
+            - latex
+            - pdf
+            - online-editor
+            - plot
+            - interactive
+            - automation
+        - windows
+        - android
 
 teaching:
-  - education
-  - sage
-  - feedback
-  - evaluation
-  - motivation
-  - slides
-  - stem
-  - diversity
-  - inclusive
-  - girls
-  - women
-  - iep
+    - education
+    - sage
+    - feedback
+    - evaluation
+    - motivation
+    - slides
+    - diversity:
+        - stem
+        - inclusive
+        - girls
+        - women
 
 life:
-  - poetry:
-      - poem
-      - fiction
-      - story
-  - philosophy
-  - observation
-  - love
-  - depression
-  - anxiety
-  - stress
-  - food
-  - art
-  - painting
-  - history
-  - book
-  - movie
-  - animation
-  - parenting
-  - health
-  - privacy
+    - creative writing:
+        - poetry:
+            - poem
+        - fiction
+        - story
+    - mental health:
+        - depression
+        - anxiety
+        - stress
+    - arts & media:
+        - movie
+        - animation
+        - book
+        - art
+        - painting
+        - music:
+            - concert
+            - nava
+            - instruments:
+                - cello
+                - piano
+            - genres:
+                - classical
+                - minimalism
+                - folk
+                - persian traditional music
+                - world
+    - philosophy
+    - observation
+    - love
+    - food
+    - history
+    - parenting
+    - health
+    - privacy
 
 politics:
-  - racism
-  - alienization
-  - double standards
-  - community
-  - immigration
+    - racism
+    - alienization
+    - double standards
+    - community
+    - immigration
 
 publication:
-  - paper
-  - talk
-  - conference
-  - symposium
-  - dissertation:
-      - dissertation defense
-      - defense
-  - phd
-  - article
-  - workshop
-  - biology
-  - neuroscience
-  - geophysics
-  - ipam
-  - academia:
-      - graduation
-      - work
-      - uofc
-      - uwyo
-      - calgary
-      - laramie
-      - utah
-      - wyoming
+    - papers:
+        - paper
+        - article
+    - events:
+        - talk
+        - conference
+        - symposium
+        - workshop
+        - ipam
+    - phd:
+        - dissertation:
+            - dissertation defense
+            - defense
+    - research fields:
+        - biology
+        - neuroscience
+        - geophysics
+
+work:
+    - academia:
+        - graduation
+
+locations:
+    - USA:
+        - wyoming:
+            - laramie:
+                - uwyo
+        - utah
+    - Canada:
+        - Alberta:
+            - calgary:
+                - uofc
 
 finance:
-  - personal-finance
-  - income-tax
-  - tax-brackets
-  - taxes
+    - personal-finance
+    - taxes
+        - income-tax
+        - tax-brackets
+
+old blogs:
+    - photoblog
+    - تپه‌های‌جنوبی:
+        - the_southern_hills
+    - از لنگرود تا لنگفورد:
+        - from Langroud to Langford

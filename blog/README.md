@@ -28,7 +28,7 @@ python build.py --local  # local preview (serve _site/ with any HTTP server)
 
 | Action | How |
 |--------|-----|
-| **Draft** | Name the file `YYYYMMDD_slug.draft` — it's gitignored and excluded from builds |
+| **Draft** | Name the file `YYYYMMDD_slug.draft` — committed to git but excluded from builds |
 | **Publish** | Rename `.draft` to `.md`, commit, and push |
 | **Unpublish** | Rename `.md` back to `.draft`, commit, and push |
 
