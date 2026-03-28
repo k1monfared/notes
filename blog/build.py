@@ -567,8 +567,30 @@ def build(local=False):
     ) if timeline_parts else ""
 
     # Write post pages (deferred so sidebar is available)
-    for p in posts_data:
-        page_html = render_template(base_tmpl, title=p["title"], content=p["post_html"], sidebar=tag_sidebar_html, timeline_sidebar=timeline_sidebar_html)
+    # posts_data is sorted newest-first, so i-1 = newer, i+1 = older
+    for i, p in enumerate(posts_data):
+        # Newer post (previous in list order)
+        if i > 0:
+            nxt = posts_data[i - 1]
+            next_link = (
+                f'<a href="{nxt["url_slug"]}/" class="post-nav-next">'
+                f'{html.escape(nxt["title"])} &rarr;</a>'
+            )
+        else:
+            next_link = ""
+
+        # Older post (next in list order)
+        if i < len(posts_data) - 1:
+            prv = posts_data[i + 1]
+            prev_link = (
+                f'<a href="{prv["url_slug"]}/" class="post-nav-prev">'
+                f'&larr; {html.escape(prv["title"])}</a>'
+            )
+        else:
+            prev_link = ""
+
+        post_content = p["post_html"].replace("{{prev_link}}", prev_link).replace("{{next_link}}", next_link)
+        page_html = render_template(base_tmpl, title=p["title"], content=post_content, sidebar=tag_sidebar_html, timeline_sidebar=timeline_sidebar_html)
         post_dir = SITE_DIR / p["url_slug"]
         post_dir.mkdir(parents=True, exist_ok=True)
         (post_dir / "index.html").write_text(page_html, encoding="utf-8")
