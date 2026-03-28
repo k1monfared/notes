@@ -72,6 +72,7 @@ jobs:
           key: blog-build-${{ hashFiles('blog/build.py', 'blog/templates/**', 'blog/static/**') }}-${{ hashFiles('blog/**/*.md') }}
           restore-keys: |
             blog-build-${{ hashFiles('blog/build.py', 'blog/templates/**', 'blog/static/**') }}-
+            blog-build-
 
       - name: Force full rebuild if build tools changed
         if: steps.build-cache.outputs.cache-hit != 'true'
