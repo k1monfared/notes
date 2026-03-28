@@ -25,7 +25,7 @@
     var dt = Date.now() - startT;
     startX = null;
     if (dt > 600 || Math.abs(dx) < 100) return;
-    if (dx > 0 && prev) window.location.href = prev.href;
-    if (dx < 0 && next) window.location.href = next.href;
+    if (dx > 0 && next) window.location.href = next.href;
+    if (dx < 0 && prev) window.location.href = prev.href;
   }, { passive: true });
 })();
