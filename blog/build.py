@@ -2,6 +2,8 @@
 """Static blog builder. Converts markdown posts to HTML with index and RSS."""
 
 import argparse
+import hashlib
+import json
 import re
 import shutil
 import html
@@ -287,12 +289,32 @@ def load_comments(url_slug):
     return "\n".join(parts)
 
 
-def build(local=False):
+CACHE_FILE = BLOG_DIR / ".build_cache.json"
+
+
+def content_hash(text):
+    """Fast hash of post content for change detection."""
+    return hashlib.md5(text.encode()).hexdigest()
+
+
+def load_cache():
+    try:
+        return json.loads(CACHE_FILE.read_text())
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+
+def save_cache(cache):
+    CACHE_FILE.write_text(json.dumps(cache), encoding="utf-8")
+
+
+def build(local=False, force=False):
     """Main build function."""
-    # Clean output
-    if SITE_DIR.exists():
-        shutil.rmtree(SITE_DIR)
-    SITE_DIR.mkdir(parents=True)
+    cache = {} if force else load_cache()
+    new_cache = {}
+
+    # Don't wipe _site/ — keep existing files for incremental builds
+    SITE_DIR.mkdir(parents=True, exist_ok=True)
 
     # Collect all post files
     md_files = sorted(BLOG_DIR.glob("*.md"))
@@ -321,82 +343,100 @@ def build(local=False):
 
     # Copy static files and append Pygments CSS to style.css
     static_out = SITE_DIR / "static"
+    if static_out.exists():
+        shutil.rmtree(static_out)
     shutil.copytree(STATIC_DIR, static_out)
     with open(static_out / "style.css", "a") as f:
         f.write(f"\n{pygments_css}")
 
-    # Process posts
+    # Process posts — two-pass: fast metadata, then expensive rendering only if changed
     all_assets = set()
     posts_data = []
+    rendered_count = 0
+    cached_count = 0
 
     for filename, date, slug, url_slug in posts:
         filepath = BLOG_DIR / filename
         raw = filepath.read_text(encoding="utf-8")
+        raw_hash = content_hash(raw)
 
-        # Parse frontmatter
+        # Parse frontmatter (fast)
         meta, body = parse_frontmatter(raw)
 
-        # Extract title
+        # Extract title (fast)
         title = meta.get("title")
         if title:
             content = body
         else:
             title, content = extract_title(body)
 
-        # Extract excerpt before processing
+        # Extract excerpt (fast)
         excerpt = extract_excerpt(content)
 
-        # Convert WordPress embeds
-        content = convert_embeds(content)
-
-        # Rewrite GitHub cross-links
-        content = rewrite_github_links(content, slug_map)
-
-        # Find referenced assets (before markdown rendering)
-        for match in re.finditer(r'(?<![a-z/])files/([^"\')\s]+)', content):
-            all_assets.add(f"files/{match.group(1)}")
-
-        # Render markdown
-        body_html = add_target_blank(render_markdown(content))
-
-        # Load comments
-        comments_html = load_comments(url_slug)
-
-        # Parse tags from frontmatter
+        # Parse tags (fast)
         tags = []
         raw_tags = meta.get("tags", "")
         if raw_tags:
             tags = [t.strip().lower() for t in raw_tags.split(",") if t.strip()]
 
-        # Build tag chips for post page
-        tag_chips_html = ""
-        if tags:
-            chips = " ".join(
-                f'<a href="tag/{t}/" class="tag">{html.escape(t)}</a>' for t in tags
-            )
-            tag_chips_html = f'<span class="tag-chips">{chips}</span>'
-
-        # Render post content (final page written after sidebar is built)
-        date_str = date.strftime("%B %d, %Y")
-        post_html = render_template(
-            post_tmpl, title=title, date=date_str, body=body_html,
-            comments=comments_html, comment_endpoint=COMMENT_ENDPOINT,
-            post_slug=url_slug, tag_chips=tag_chips_html,
-        )
-
         thumbnail = meta.get("thumbnail", "")
 
-        # Generate small thumbnail for photoblog posts
+        # Generate thumbnails (cached by mtime already)
         if thumbnail and "photoblog" in tags:
             src_img = BLOG_DIR / thumbnail
             if src_img.exists():
-                # e.g. files/photoblog/2022-01-14_photo_01.jpg -> files/thumbs/2022-01-14_photo_01.png
                 thumb_name = Path(thumbnail).stem + ".png"
                 thumb_rel = f"files/{THUMB_DIR_NAME}/{thumb_name}"
                 thumb_path = BLOG_DIR / thumb_rel
                 if generate_thumbnail(src_img, thumb_path):
                     thumbnail = thumb_rel
                     all_assets.add(thumb_rel)
+
+        # Check cache — skip expensive rendering if unchanged
+        cached_entry = cache.get(filename)
+        post_dir = SITE_DIR / url_slug
+        post_html_path = post_dir / "index.html"
+
+        if (cached_entry
+                and cached_entry.get("hash") == raw_hash
+                and post_html_path.exists()
+                and not force):
+            # Use cached post — still need post_html placeholder for prev/next rewriting later
+            post_html = cached_entry.get("post_html", "")
+            cached_count += 1
+        else:
+            # Expensive: convert embeds, rewrite links, render markdown, load comments
+            content = convert_embeds(content)
+            content = rewrite_github_links(content, slug_map)
+
+            for match in re.finditer(r'(?<![a-z/])files/([^"\')\s]+)', content):
+                all_assets.add(f"files/{match.group(1)}")
+
+            body_html = add_target_blank(render_markdown(content))
+            comments_html = load_comments(url_slug)
+
+            tag_chips_html = ""
+            if tags:
+                chips = " ".join(
+                    f'<a href="tag/{t}/" class="tag">{html.escape(t)}</a>' for t in tags
+                )
+                tag_chips_html = f'<span class="tag-chips">{chips}</span>'
+
+            date_str_full = date.strftime("%B %d, %Y")
+            post_html = render_template(
+                post_tmpl, title=title, date=date_str_full, body=body_html,
+                comments=comments_html, comment_endpoint=COMMENT_ENDPOINT,
+                post_slug=url_slug, tag_chips=tag_chips_html,
+            )
+            rendered_count += 1
+
+        # Find assets from raw content (fast, no markdown needed)
+        for match in re.finditer(r'(?<![a-z/])files/([^"\')\s]+)', raw):
+            all_assets.add(f"files/{match.group(1)}")
+
+        date_str = date.strftime("%B %d, %Y")
+
+        new_cache[filename] = {"hash": raw_hash, "post_html": post_html}
 
         posts_data.append({
             "title": title,
@@ -568,8 +608,13 @@ def build(local=False):
 
     # Write post pages (deferred so sidebar is available)
     # posts_data is sorted newest-first, so i-1 = newer, i+1 = older
+    written_count = 0
+    skipped_count = 0
     for i, p in enumerate(posts_data):
         # Newer post (previous in list order)
+        prev_slug = posts_data[i + 1]["url_slug"] if i < len(posts_data) - 1 else ""
+        next_slug = posts_data[i - 1]["url_slug"] if i > 0 else ""
+
         if i > 0:
             nxt = posts_data[i - 1]
             next_link = (
@@ -579,7 +624,6 @@ def build(local=False):
         else:
             next_link = ""
 
-        # Older post (next in list order)
         if i < len(posts_data) - 1:
             prv = posts_data[i + 1]
             prev_link = (
@@ -589,11 +633,29 @@ def build(local=False):
         else:
             prev_link = ""
 
-        post_content = p["post_html"].replace("{{prev_link}}", prev_link).replace("{{next_link}}", next_link)
-        page_html = render_template(base_tmpl, title=p["title"], content=post_content, sidebar=tag_sidebar_html, timeline_sidebar=timeline_sidebar_html)
+        # Check if we can skip writing this post
         post_dir = SITE_DIR / p["url_slug"]
-        post_dir.mkdir(parents=True, exist_ok=True)
-        (post_dir / "index.html").write_text(page_html, encoding="utf-8")
+        post_html_path = post_dir / "index.html"
+        fn = [k for k, v in new_cache.items() if v.get("post_html") == p["post_html"]]
+        fn_key = fn[0] if fn else ""
+        cached_entry = cache.get(fn_key, {}) if fn_key else {}
+        if (not force
+                and post_html_path.exists()
+                and cached_entry.get("prev_slug") == prev_slug
+                and cached_entry.get("next_slug") == next_slug
+                and cached_entry.get("hash") == new_cache.get(fn_key, {}).get("hash")):
+            skipped_count += 1
+        else:
+            post_content = p["post_html"].replace("{{prev_link}}", prev_link).replace("{{next_link}}", next_link)
+            page_html = render_template(base_tmpl, title=p["title"], content=post_content, sidebar=tag_sidebar_html, timeline_sidebar=timeline_sidebar_html)
+            post_dir.mkdir(parents=True, exist_ok=True)
+            (post_dir / "index.html").write_text(page_html, encoding="utf-8")
+            written_count += 1
+
+        # Update cache with neighbor info
+        if fn_key:
+            new_cache[fn_key]["prev_slug"] = prev_slug
+            new_cache[fn_key]["next_slug"] = next_slug
 
     def make_tag_chips(tags):
         """Generate tag chip HTML for a post listing."""
@@ -618,8 +680,8 @@ def build(local=False):
             items.append(
                 f'  <li{hidden} data-year="date-{date_y}" data-month="date-{date_ym}">\n'
                 f'    <a href="{p["url_slug"]}/" target="_blank" rel="noopener">\n'
-                f'      {thumb_html}\n'
                 f'      <span class="post-title">{html.escape(p["title"])}</span>\n'
+                f'      {thumb_html}\n'
                 f'      <span class="post-date">{p["date_str"]}</span>\n'
                 f'      {excerpt_html}\n'
                 f'    </a>\n'
@@ -668,12 +730,16 @@ def build(local=False):
             shutil.copy2(src, dst)
             copied_assets += 1
 
-    print(f"Built {len(posts_data)} posts to {SITE_DIR.relative_to(BLOG_DIR)}")
+    # Save build cache
+    save_cache(new_cache)
+
+    print(f"Built {len(posts_data)} posts to {SITE_DIR.relative_to(BLOG_DIR)} ({rendered_count} rendered, {cached_count} cached, {written_count} written, {skipped_count} skipped)")
     print(f"Copied {copied_assets} referenced assets")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Build the blog")
     parser.add_argument("--local", action="store_true", help="Build for local preview (no base href)")
+    parser.add_argument("--force", action="store_true", help="Force full rebuild (ignore cache)")
     args = parser.parse_args()
-    build(local=args.local)
+    build(local=args.local, force=args.force)
