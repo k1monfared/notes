@@ -722,11 +722,19 @@ def build(local=False, force=False):
     rss_xml = generate_rss(posts_data)
     (SITE_DIR / "feed.xml").write_text(rss_xml, encoding="utf-8")
 
-    # Copy only referenced assets
+    # Copy only referenced assets (skip LFS pointer files)
     copied_assets = 0
     for asset in all_assets:
         src = BLOG_DIR / asset
         if src.exists():
+            # Skip LFS pointer files (small text files starting with "version https://git-lfs")
+            if src.stat().st_size < 200:
+                try:
+                    head = src.read_bytes()[:40]
+                    if head.startswith(b"version https://git-lfs"):
+                        continue
+                except Exception:
+                    pass
             dst = SITE_DIR / asset
             dst.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(src, dst)
