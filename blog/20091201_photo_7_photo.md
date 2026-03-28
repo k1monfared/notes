@@ -9,4 +9,3 @@ thumbnail: files/photoblog/2009-12-01_photo_7_01.jpg
 
 ![-](files/photoblog/2009-12-01_photo_7_02.jpg)
 
-![-](files/photoblog/2009-12-01_photo_7_03.gif)

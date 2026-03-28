@@ -11,8 +11,6 @@ thumbnail: files/photoblog/2009-10-09_photo_01.jpg
 
 ![](files/photoblog/2009-10-09_photo_03.jpg)
 
-![](files/photoblog/2009-10-09_photo_04.gif)
-
 First performance, Nima's Birthday
 Asarsh's apt., Laramie, WY
 

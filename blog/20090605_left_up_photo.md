@@ -11,4 +11,3 @@ thumbnail: files/photoblog/2009-06-05_left_up_01.jpg
 
 ![Left up](files/photoblog/2009-06-05_left_up_03.jpg)
 
-![Left up](files/photoblog/2009-06-05_left_up_04.gif)
