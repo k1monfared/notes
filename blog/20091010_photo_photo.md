@@ -12,3 +12,8 @@ thumbnail: files/photoblog/2009-10-10_photo_01.jpg
 ![](files/photoblog/2009-10-10_photo_03.jpg)
 
 ![](files/photoblog/2009-10-10_photo_04.gif)
+
+The 3rd snow,
+Laramie, WY
+
+It just resembles that snowy night on Keshavarz Boulevard, in my mind.

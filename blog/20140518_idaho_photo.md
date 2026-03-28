@@ -24,3 +24,9 @@ thumbnail: files/photoblog/2014-05-18_idaho_01.jpg
 ![Idaho](files/photoblog/2014-05-18_idaho_09.jpg)
 
 ![Idaho](files/photoblog/2014-05-18_idaho_10.jpg)
+
+A trip to the Bear Lake
+
+ 
+
+This reminds me of home!

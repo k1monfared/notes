@@ -12,3 +12,5 @@ thumbnail: files/photoblog/2009-05-25_photo_01.jpg
 ![-](files/photoblog/2009-05-25_photo_03.jpg)
 
 ![-](files/photoblog/2009-05-25_photo_04.gif)
+
+Why should I give a title to every photo that I post here?

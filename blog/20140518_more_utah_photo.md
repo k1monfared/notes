@@ -76,3 +76,21 @@ thumbnail: files/photoblog/2014-05-18_more_utah_01.jpg
 ![More Utah](files/photoblog/2014-05-18_more_utah_35.jpg)
 
 ![More Utah](files/photoblog/2014-05-18_more_utah_36.jpg)
+
+NSF-CBMS conference at Sundance
+
+ Still selfies!
+
+ A moose!
+
+ Stewart Falls
+
+ Bridal Veil Falls
+
+ Burgers
+
+ Black Diamond
+
+ Bencg
+
+Supposedly a surround shot
