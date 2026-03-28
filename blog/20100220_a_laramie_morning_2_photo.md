@@ -1,0 +1,12 @@
+---
+tags: photoblog
+thumbnail: files/photoblog/2010-02-20_a_laramie_morning_2_01.jpg
+---
+
+# A laramie morning - photo
+
+![A laramie morning](files/photoblog/2010-02-20_a_laramie_morning_2_01.jpg)
+
+![A laramie morning](files/photoblog/2010-02-20_a_laramie_morning_2_02.jpg)
+
+*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2010/02/laeamie-morning.html)*

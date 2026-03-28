@@ -1,0 +1,10 @@
+---
+tags: photoblog
+thumbnail: files/photoblog/2010-06-03_way_to_championship_2_01.jpg
+---
+
+# Way to championship - photo
+
+![Way to championship](files/photoblog/2010-06-03_way_to_championship_2_01.jpg)
+
+*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2010/06/way-to-championship.html)*

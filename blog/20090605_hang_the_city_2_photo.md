@@ -1,0 +1,12 @@
+---
+tags: photoblog
+thumbnail: files/photoblog/2009-06-05_hang_the_city_2_01.jpg
+---
+
+# Hang the City - photo
+
+![Hang the City](files/photoblog/2009-06-05_hang_the_city_2_01.jpg)
+
+![Hang the City](files/photoblog/2009-06-05_hang_the_city_2_02.jpg)
+
+*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2009/06/hang-city.html)*

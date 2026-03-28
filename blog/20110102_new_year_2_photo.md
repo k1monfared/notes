@@ -1,0 +1,10 @@
+---
+tags: photoblog
+thumbnail: files/photoblog/2011-01-02_new_year_2_01.jpg
+---
+
+# New Year - photo
+
+![New Year](files/photoblog/2011-01-02_new_year_2_01.jpg)
+
+*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2011/01/new-year.html)*
