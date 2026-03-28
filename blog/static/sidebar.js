@@ -103,3 +103,62 @@ if (toggle && sidebar) {
     });
   }
 }
+
+// --- Timeline sidebar ---
+const tlToggle = document.getElementById('timeline-sidebar-toggle');
+const tlSidebar = document.getElementById('timeline-sidebar');
+if (tlToggle && tlSidebar) {
+  const TL_KEY = 'timeline-sidebar-state';
+
+  function tlSave() {
+    const state = {
+      open: tlSidebar.classList.contains('open'),
+      details: Array.from(tlSidebar.querySelectorAll('details')).map(d => d.open),
+    };
+    sessionStorage.setItem(TL_KEY, JSON.stringify(state));
+  }
+
+  // Restore
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(TL_KEY));
+    if (saved) {
+      if (saved.open) tlSidebar.classList.add('open');
+      const details = tlSidebar.querySelectorAll('details');
+      saved.details.forEach((isOpen, i) => {
+        if (details[i]) details[i].open = isOpen;
+      });
+    }
+  } catch (e) {}
+
+  tlToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    tlSidebar.classList.toggle('open');
+    // Close tag sidebar if open
+    if (sidebar && tlSidebar.classList.contains('open')) {
+      sidebar.classList.remove('open');
+      if (typeof saveState === 'function') saveState();
+    }
+    tlSave();
+  });
+
+  // Close tag sidebar when timeline opens, and vice versa
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      if (tlSidebar.classList.contains('open')) {
+        tlSidebar.classList.remove('open');
+        tlSave();
+      }
+    });
+  }
+
+  document.addEventListener('click', (e) => {
+    if (tlSidebar.classList.contains('open') && !tlSidebar.contains(e.target) && e.target !== tlToggle) {
+      tlSidebar.classList.remove('open');
+      tlSave();
+    }
+  });
+
+  tlSidebar.querySelectorAll('details').forEach(d => {
+    d.addEventListener('toggle', tlSave);
+  });
+}
