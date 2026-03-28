@@ -10,5 +10,3 @@ thumbnail: files/photoblog/2009-12-01_photo_8_01.jpg
 ![-](files/photoblog/2009-12-01_photo_8_02.jpg)
 
 ![-](files/photoblog/2009-12-01_photo_8_03.gif)
-
-*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2009/12/blog-post_1001.html)*

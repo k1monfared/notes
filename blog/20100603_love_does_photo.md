@@ -6,5 +6,3 @@ thumbnail: files/photoblog/2010-06-03_love_does_01.jpg
 # Love Does - photo
 
 ![Love Does](files/photoblog/2010-06-03_love_does_01.jpg)
-
-*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2010/06/love-does.html)*

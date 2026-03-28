@@ -6,5 +6,3 @@ thumbnail: files/photoblog/2010-10-27_fall_01.jpg
 # fall - photo
 
 ![fall](files/photoblog/2010-10-27_fall_01.jpg)
-
-*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2010/10/fall.html)*

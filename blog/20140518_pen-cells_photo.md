@@ -16,5 +16,3 @@ thumbnail: files/photoblog/2014-05-18_pen-cells_01.jpg
 ![Pen-cells](files/photoblog/2014-05-18_pen-cells_05.jpg)
 
 ![Pen-cells](files/photoblog/2014-05-18_pen-cells_06.jpg)
-
-*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2014/05/pen-cells.html)*

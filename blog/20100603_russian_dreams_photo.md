@@ -6,5 +6,3 @@ thumbnail: files/photoblog/2010-06-03_russian_dreams_01.jpg
 # Russian Dreams - photo
 
 ![Russian Dreams](files/photoblog/2010-06-03_russian_dreams_01.jpg)
-
-*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2010/06/russian-dreams.html)*

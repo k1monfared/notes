@@ -7,7 +7,7 @@ import re
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 
-MOVIES_FILE = Path(__file__).parent / "movies.log"
+MOVIES_FILE = Path(__file__).parent.parent / "movies.log"
 PORT = 8787
 
 

@@ -10,5 +10,3 @@ thumbnail: files/photoblog/2011-01-02_be_me_beauty_p_01.jpg
 ![Be Me Beauty :p](files/photoblog/2011-01-02_be_me_beauty_p_02.jpg)
 
 ![Be Me Beauty :p](files/photoblog/2011-01-02_be_me_beauty_p_03.gif)
-
-*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2011/01/be-me-beuaty-p.html)*

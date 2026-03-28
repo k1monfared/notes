@@ -9,8 +9,8 @@ set -e
 
 MOVIES_FILE="movies.log"
 ENRICH_SCRIPT="/home/k1/public/imdb_helper/scripts/enrich_new_movies.py"
-ENRICH_ALL_SCRIPT="enrich_all.py"
-FIX_RECOMMENDERS="fix_recommenders.py"
+ENRICH_ALL_SCRIPT="scripts/enrich_all.py"
+FIX_RECOMMENDERS="scripts/fix_recommenders.py"
 
 # Check if the movies file is staged for commit
 if git diff --cached --name-only | grep -q "^${MOVIES_FILE}$"; then

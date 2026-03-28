@@ -8,5 +8,3 @@ thumbnail: files/photoblog/2009-03-06_the_roof_01.jpg
 ![The Roof](files/photoblog/2009-03-06_the_roof_01.jpg)
 
 ![The Roof](files/photoblog/2009-03-06_the_roof_02.jpg)
-
-*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2009/03/roof.html)*

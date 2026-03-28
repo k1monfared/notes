@@ -15,7 +15,7 @@ import urllib.request
 import urllib.parse
 from pathlib import Path
 
-MOVIES_FILE = Path(__file__).parent / "movies.log"
+MOVIES_FILE = Path(__file__).parent.parent / "movies.log"
 OMDB_URL = "http://www.omdbapi.com/"
 TODO_RE = re.compile(r"^(\s*)\[([x\-? ]?)\]\s*(.+?)\s*$", re.IGNORECASE)
 DELAY = 0.2  # seconds between movies

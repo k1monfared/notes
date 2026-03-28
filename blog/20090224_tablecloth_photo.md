@@ -8,5 +8,3 @@ thumbnail: files/photoblog/2009-02-24_tablecloth_01.jpg
 ![Tablecloth](files/photoblog/2009-02-24_tablecloth_01.jpg)
 
 ![Tablecloth](files/photoblog/2009-02-24_tablecloth_02.jpg)
-
-*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2009/02/tablecloth.html)*

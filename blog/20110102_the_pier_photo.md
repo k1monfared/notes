@@ -6,5 +6,3 @@ thumbnail: files/photoblog/2011-01-02_the_pier_01.jpg
 # The pier - photo
 
 ![The pier](files/photoblog/2011-01-02_the_pier_01.jpg)
-
-*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2011/01/pier.html)*

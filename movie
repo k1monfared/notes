@@ -337,7 +337,7 @@ def cmd_fetch_imdb(args):
 
 def cmd_server(args):
     """Start the local dev server and open the movies page in browser."""
-    serve_script = Path(__file__).parent / "serve.py"
+    serve_script = Path(__file__).parent / "scripts" / "serve.py"
     if not serve_script.exists():
         print(f"serve.py not found at {serve_script}")
         return 1

@@ -8,5 +8,3 @@ thumbnail: files/photoblog/2009-03-06_order_01.jpg
 ![Order](files/photoblog/2009-03-06_order_01.jpg)
 
 ![Order](files/photoblog/2009-03-06_order_02.jpg)
-
-*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2009/03/order.html)*

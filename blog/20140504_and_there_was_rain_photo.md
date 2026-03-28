@@ -8,5 +8,3 @@ thumbnail: files/photoblog/2014-05-04_and_there_was_rain_01.jpg
 ![... and there was rain](files/photoblog/2014-05-04_and_there_was_rain_01.jpg)
 
 ![... and there was rain](files/photoblog/2014-05-04_and_there_was_rain_02.jpg)
-
-*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2014/05/and-there-was-rain.html)*

@@ -6,5 +6,3 @@ thumbnail: files/photoblog/2011-03-13_life_01.jpg
 # life - photo
 
 ![life](files/photoblog/2011-03-13_life_01.jpg)
-
-*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2011/03/life.html)*
