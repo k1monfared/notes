@@ -11,4 +11,3 @@ thumbnail: files/photoblog/2009-06-05_hijab_01.jpg
 
 ![Hijab!](files/photoblog/2009-06-05_hijab_03.jpg)
 
-![Hijab!](files/photoblog/2009-06-05_hijab_04.gif)

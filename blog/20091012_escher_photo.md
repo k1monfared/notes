@@ -15,4 +15,3 @@ thumbnail: files/photoblog/2009-10-12_escher_01.jpg
 
 ![Escher](files/photoblog/2009-10-12_escher_05.jpg)
 
-![Escher](files/photoblog/2009-10-12_escher_06.gif)

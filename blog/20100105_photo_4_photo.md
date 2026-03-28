@@ -11,4 +11,3 @@ thumbnail: files/photoblog/2010-01-05_photo_4_01.jpg
 
 ![-](files/photoblog/2010-01-05_photo_4_03.jpg)
 
-![-](files/photoblog/2010-01-05_photo_4_04.gif)

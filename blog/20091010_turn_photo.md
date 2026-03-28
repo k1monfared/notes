@@ -11,4 +11,3 @@ thumbnail: files/photoblog/2009-10-10_turn_01.jpg
 
 ![Turn](files/photoblog/2009-10-10_turn_03.jpg)
 
-![Turn](files/photoblog/2009-10-10_turn_04.gif)
