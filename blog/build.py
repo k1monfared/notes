@@ -504,14 +504,14 @@ def build(local=False):
             )
             month_parts.append(
                 f'<details>\n'
-                f'<summary><span class="timeline-label">{MONTH_NAMES[month]}'
+                f'<summary><span class="timeline-label" data-scroll="date-{year}-{month:02d}">{MONTH_NAMES[month]}'
                 f' <span class="tag-count">{len(month_posts)}</span></span></summary>\n'
                 f'{post_links}\n'
                 f'</details>'
             )
         timeline_parts.append(
             f'<details>\n'
-            f'<summary><span class="timeline-label">{year}'
+            f'<summary><span class="timeline-label" data-scroll="date-{year}">{year}'
             f' <span class="tag-count">{year_count}</span></span></summary>\n'
             f'{"".join(month_parts)}\n'
             f'</details>'
@@ -549,8 +549,10 @@ def build(local=False):
             thumb = p.get("thumbnail", "")
             thumb_html = f'<img class="post-thumbnail" src="{html.escape(thumb)}" alt="" loading="lazy">' if thumb else ""
             hidden = ' hidden' if page_size and i >= page_size else ''
+            date_y = p["date"].strftime("%Y")
+            date_ym = p["date"].strftime("%Y-%m")
             items.append(
-                f'  <li{hidden}>\n'
+                f'  <li{hidden} data-year="date-{date_y}" data-month="date-{date_ym}">\n'
                 f'    <a href="{p["url_slug"]}/" target="_blank" rel="noopener">\n'
                 f'      {thumb_html}\n'
                 f'      <span class="post-title">{html.escape(p["title"])}</span>\n'

@@ -161,4 +161,28 @@ if (tlToggle && tlSidebar) {
   tlSidebar.querySelectorAll('details').forEach(d => {
     d.addEventListener('toggle', tlSave);
   });
+
+  // Click on timeline label text -> scroll to that date on the index page
+  // The triangle (::before on summary) still toggles fold/unfold normally
+  tlSidebar.querySelectorAll('.timeline-label[data-scroll]').forEach(label => {
+    label.style.cursor = 'pointer';
+    label.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const target = label.dataset.scroll;
+      // data-scroll="date-2024" or "date-2024-03"
+      const isMonth = target.split('-').length === 3;
+      const attr = isMonth ? 'data-month' : 'data-year';
+      const li = document.querySelector(`li[${attr}="${target}"]`);
+      if (li) {
+        // Unhide all posts (pagination may be hiding them)
+        document.querySelectorAll('.post-list li[hidden]').forEach(el => el.removeAttribute('hidden'));
+        const showMore = document.getElementById('show-more');
+        if (showMore) showMore.style.display = 'none';
+
+        li.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
 }
