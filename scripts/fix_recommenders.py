@@ -8,7 +8,7 @@ have a "- Recommender: Anton K" property. This script adds it if missing.
 import re
 from pathlib import Path
 
-MOVIES_FILE = Path(__file__).parent / "movies.log"
+MOVIES_FILE = Path(__file__).parent.parent / "movies.log"
 TODO_RE = re.compile(r"^(\s*)\[([x\-? ]?)\]\s*(.+?)\s*$", re.IGNORECASE)
 
 

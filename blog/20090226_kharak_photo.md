@@ -8,5 +8,3 @@ thumbnail: files/photoblog/2009-02-26_kharak_01.jpg
 ![Kharak](files/photoblog/2009-02-26_kharak_01.jpg)
 
 ![Kharak](files/photoblog/2009-02-26_kharak_02.jpg)
-
-*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2009/02/kharak.html)*

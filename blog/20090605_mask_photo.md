@@ -8,5 +8,3 @@ thumbnail: files/photoblog/2009-06-05_mask_01.jpg
 ![mASK](files/photoblog/2009-06-05_mask_01.jpg)
 
 ![mASK](files/photoblog/2009-06-05_mask_02.jpg)
-
-*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2009/06/mask_05.html)*

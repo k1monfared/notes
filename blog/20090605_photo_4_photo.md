@@ -8,5 +8,3 @@ thumbnail: files/photoblog/2009-06-05_photo_4_01.jpg
 ![](files/photoblog/2009-06-05_photo_4_01.jpg)
 
 ![](files/photoblog/2009-06-05_photo_4_02.jpg)
-
-*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2009/06/its-my-shaddow-on-earth.html)*

@@ -76,5 +76,3 @@ thumbnail: files/photoblog/2014-05-18_more_utah_01.jpg
 ![More Utah](files/photoblog/2014-05-18_more_utah_35.jpg)
 
 ![More Utah](files/photoblog/2014-05-18_more_utah_36.jpg)
-
-*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2014/05/more-utah.html)*

@@ -354,6 +354,8 @@ def build(local=False):
             post_slug=url_slug, tag_chips=tag_chips_html,
         )
 
+        thumbnail = meta.get("thumbnail", "")
+
         posts_data.append({
             "title": title,
             "date": date,
@@ -361,6 +363,7 @@ def build(local=False):
             "url_slug": url_slug,
             "excerpt": excerpt,
             "tags": tags,
+            "thumbnail": thumbnail,
             "post_html": post_html,
         })
 
@@ -543,10 +546,13 @@ def build(local=False):
         for i, p in enumerate(post_list):
             excerpt_html = f'<p class="post-excerpt">{html.escape(p["excerpt"])}</p>' if p["excerpt"] else ""
             chips_html = make_tag_chips(p["tags"])
+            thumb = p.get("thumbnail", "")
+            thumb_html = f'<img class="post-thumbnail" src="{html.escape(thumb)}" alt="" loading="lazy">' if thumb else ""
             hidden = ' hidden' if page_size and i >= page_size else ''
             items.append(
                 f'  <li{hidden}>\n'
                 f'    <a href="{p["url_slug"]}/" target="_blank" rel="noopener">\n'
+                f'      {thumb_html}\n'
                 f'      <span class="post-title">{html.escape(p["title"])}</span>\n'
                 f'      <span class="post-date">{p["date_str"]}</span>\n'
                 f'      {excerpt_html}\n'

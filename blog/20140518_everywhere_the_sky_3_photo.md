@@ -82,5 +82,3 @@ thumbnail: files/photoblog/2014-05-18_everywhere_the_sky_3_01.jpg
 ![Everywhere the sky](files/photoblog/2014-05-18_everywhere_the_sky_3_38.jpg)
 
 ![Everywhere the sky](files/photoblog/2014-05-18_everywhere_the_sky_3_39.jpg)
-
-*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2014/05/everywhere-sky_18.html)*

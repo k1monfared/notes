@@ -8,5 +8,3 @@ thumbnail: files/photoblog/2014-06-08_still_01.jpg
 ![Still](files/photoblog/2014-06-08_still_01.jpg)
 
 ![Still](files/photoblog/2014-06-08_still_02.jpg)
-
-*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2014/06/still.html)*

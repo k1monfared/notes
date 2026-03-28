@@ -10,5 +10,3 @@ thumbnail: files/photoblog/2009-12-01_moon_01.jpg
 ![Moon](files/photoblog/2009-12-01_moon_02.jpg)
 
 ![Moon](files/photoblog/2009-12-01_moon_03.gif)
-
-*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2009/12/blog-post_6743.html)*

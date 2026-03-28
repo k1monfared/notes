@@ -8,5 +8,3 @@ thumbnail: files/photoblog/2009-09-27_the_first_one_01.jpg
 ![The first one](files/photoblog/2009-09-27_the_first_one_01.jpg)
 
 ![The first one](files/photoblog/2009-09-27_the_first_one_02.jpg)
-
-*Originally published on [Daily Photos](https://k1-photo.blogspot.com/2009/09/first-one.html)*
