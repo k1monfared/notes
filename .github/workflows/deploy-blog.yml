@@ -62,8 +62,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r blog/requirements.txt
 
-      - name: Restore build cache
-        id: build-cache
+      - name: Restore blog build cache
+        id: blog-build-cache
         uses: actions/cache@v4
         with:
           path: |
@@ -74,8 +74,8 @@ jobs:
             blog-build-${{ hashFiles('blog/build.py', 'blog/templates/**', 'blog/static/**') }}-
             blog-build-
 
-      - name: Force full rebuild if build tools changed
-        if: steps.build-cache.outputs.cache-hit != 'true'
+      - name: Force full blog rebuild if build tools changed
+        if: steps.blog-build-cache.outputs.cache-hit != 'true'
         run: rm -f blog/.build_cache.json
 
       - name: Build blog
