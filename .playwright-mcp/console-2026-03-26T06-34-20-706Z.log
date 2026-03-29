@@ -1,2 +1,0 @@
-[    4120ms] [ERROR] Access to fetch at 'https://api.rlcdn.com/api/identity/envelope?pid=13310' from origin 'https://www.imdb.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ https://www.imdb.com/title/tt0887235/:0
-[    4121ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://api.rlcdn.com/api/identity/envelope?pid=13310:0
