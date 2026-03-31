@@ -15,6 +15,7 @@ on:
       - 'products/**'
       - 'shopping/**'
       - '*.log'
+      - 'blog-writer/**'
       - '.github/workflows/deploy-blog.yml'
   workflow_dispatch:
 
@@ -93,6 +94,7 @@ jobs:
           cp -r blog/_site/* _deploy/blog/
           cp -r shared _deploy/shared
           cp *.log _deploy/
+          cp -r blog-writer _deploy/blog-writer
           for dir in movies books people places podcasts products shopping; do
             mkdir -p _deploy/$dir
             cp $dir/index.html _deploy/$dir/index.html
