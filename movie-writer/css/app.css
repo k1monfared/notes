@@ -51,7 +51,18 @@ body {
   border-bottom: 1px solid var(--border);
 }
 .app-header h1, .app-header h2 { font-size: 1.2rem; font-weight: 600; }
-.header-actions { display: flex; gap: 8px; }
+.header-actions { display: flex; gap: 8px; align-items: center; }
+
+.sync-badge {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+.sync-badge.synced { background: #16a34a; color: white; }
+.sync-badge.pending { background: #f59e0b; color: #1a1a1a; }
+.sync-badge.syncing { background: var(--accent); color: white; animation: pulse 1s infinite; }
+@keyframes pulse { 50% { opacity: 0.5; } }
 
 .btn {
   display: inline-flex;
