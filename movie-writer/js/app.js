@@ -1,13 +1,21 @@
-// Movie Writer PWA - Main app controller
+// Movie Writer PWA - Local-first with background sync
 
 import { isAuthenticated, getToken, setToken, clearToken, validateToken } from './auth.js';
 import { getFile, createCommit } from './github.js';
-import { setCache, getCache } from './storage.js';
-import { parseMovies, findMovie, findInsertAfter, findToWatchInsert, buildMovieEntry, markWatched, setReview, setProperty } from './movies.js';
+import {
+  getLocalMovies, setLocalMovies,
+  isDirty, setDirty,
+  addPendingMessage, getPendingMessages, clearPendingMessages,
+} from './storage.js';
+import {
+  parseMovies, findMovie, findInsertAfter, findToWatchInsert,
+  buildMovieEntry, markWatched, setReview, setProperty,
+} from './movies.js';
 
 const app = document.getElementById('app');
-let moviesText = null;  // raw text of movies.log
-let moviesList = null;  // parsed movies
+let moviesText = null;  // current local text
+let moviesList = null;  // parsed from moviesText
+let syncInProgress = false;
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -17,9 +25,114 @@ function esc(str) {
   return d.innerHTML;
 }
 
-function showLoading(msg = 'Loading...') {
-  app.innerHTML = `<div class="screen"><div class="loading">${esc(msg)}</div></div>`;
+function splitLines(text) {
+  // Split into lines preserving newlines for modification
+  return text.split('\n').map((l, i, arr) => i < arr.length - 1 ? l + '\n' : (l ? l + '\n' : ''));
 }
+
+function joinLines(lines) {
+  return lines.join('').replace(/\n$/, '');
+}
+
+// ── Local State ──────────────────────────────────────────────────────────────
+
+async function loadLocal() {
+  moviesText = await getLocalMovies();
+  if (moviesText) {
+    moviesList = parseMovies(moviesText);
+    return true;
+  }
+  return false;
+}
+
+async function saveLocal(text, commitMessage) {
+  moviesText = text;
+  moviesList = parseMovies(text);
+  await setLocalMovies(text);
+  await setDirty(true);
+  await addPendingMessage(commitMessage);
+  updateSyncBadge();
+  triggerSync();
+}
+
+async function fetchFromGitHub() {
+  const file = await getFile('movies.log');
+  moviesText = file.content;
+  moviesList = parseMovies(moviesText);
+  // Only overwrite local if not dirty (don't lose unpushed changes)
+  const dirty = await isDirty();
+  if (!dirty) {
+    await setLocalMovies(moviesText);
+  }
+  return true;
+}
+
+// ── Background Sync ──────────────────────────────────────────────────────────
+
+let syncTimeout = null;
+
+function triggerSync() {
+  if (syncTimeout) clearTimeout(syncTimeout);
+  // Small delay to batch rapid changes
+  syncTimeout = setTimeout(() => doSync(), 1500);
+}
+
+async function doSync() {
+  if (syncInProgress) return;
+  const dirty = await isDirty();
+  if (!dirty || !moviesText) return;
+
+  syncInProgress = true;
+  updateSyncBadge();
+
+  try {
+    const messages = await getPendingMessages();
+    const message = messages.length === 1
+      ? messages[0]
+      : messages.slice(0, 5).join('; ') + (messages.length > 5 ? ` (+${messages.length - 5} more)` : '');
+
+    await createCommit(
+      [{ path: 'movies.log', content: moviesText }],
+      message || 'Update movies'
+    );
+
+    await setDirty(false);
+    await clearPendingMessages();
+  } catch (err) {
+    console.error('Sync failed:', err);
+    // Will retry on next triggerSync or app focus
+  } finally {
+    syncInProgress = false;
+    updateSyncBadge();
+  }
+}
+
+function updateSyncBadge() {
+  const badge = document.getElementById('sync-badge');
+  if (!badge) return;
+  if (syncInProgress) {
+    badge.textContent = 'syncing...';
+    badge.className = 'sync-badge syncing';
+  } else {
+    isDirty().then(dirty => {
+      if (!badge.isConnected) return;
+      if (dirty) {
+        badge.textContent = 'pending';
+        badge.className = 'sync-badge pending';
+      } else {
+        badge.textContent = 'synced';
+        badge.className = 'sync-badge synced';
+      }
+    });
+  }
+}
+
+// Retry sync on app focus
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && isAuthenticated()) {
+    isDirty().then(dirty => { if (dirty) triggerSync(); });
+  }
+});
 
 // ── Setup Screen ─────────────────────────────────────────────────────────────
 
@@ -74,7 +187,8 @@ async function showMovieList(forceRefresh = false) {
       <header class="app-header">
         <h1>Movies</h1>
         <div class="header-actions">
-          <button id="refresh-btn" class="btn icon" title="Refresh">&#8635;</button>
+          <span id="sync-badge" class="sync-badge"></span>
+          <button id="refresh-btn" class="btn icon" title="Pull from GitHub">&#8635;</button>
           <button id="settings-btn" class="btn icon" title="Settings">&#9881;</button>
         </div>
       </header>
@@ -93,7 +207,18 @@ async function showMovieList(forceRefresh = false) {
   `;
 
   app.querySelector('#add-btn').addEventListener('click', () => showAddEdit());
-  app.querySelector('#refresh-btn').addEventListener('click', () => showMovieList(true));
+  app.querySelector('#refresh-btn').addEventListener('click', async () => {
+    const listEl = app.querySelector('#movie-list');
+    if (listEl) listEl.innerHTML = '<div class="loading">Pulling from GitHub...</div>';
+    try {
+      await fetchFromGitHub();
+      await setLocalMovies(moviesText);
+    } catch (err) {
+      if (listEl) listEl.innerHTML = `<div class="error">Pull failed: ${esc(err.message)}</div>`;
+      return;
+    }
+    renderList();
+  });
   app.querySelector('#settings-btn').addEventListener('click', showSettings);
 
   // Tabs
@@ -115,7 +240,7 @@ async function showMovieList(forceRefresh = false) {
     const listEl = app.querySelector('#movie-list');
     if (!listEl || !moviesList) return;
 
-    const query = (searchInput.value || '').toLowerCase().trim();
+    const query = (searchInput ? searchInput.value : '').toLowerCase().trim();
     let filtered = moviesList.filter(m => m.section === activeTab);
     if (query) {
       filtered = filtered.filter(m =>
@@ -162,7 +287,6 @@ async function showMovieList(forceRefresh = false) {
       </div>
     `).join('');
 
-    // Expand/collapse
     listEl.querySelectorAll('.movie-header').forEach(header => {
       header.addEventListener('click', () => {
         const details = header.nextElementSibling;
@@ -172,7 +296,6 @@ async function showMovieList(forceRefresh = false) {
       });
     });
 
-    // Actions
     listEl.querySelectorAll('.action-watched').forEach(btn => {
       btn.addEventListener('click', (e) => { e.stopPropagation(); doMarkWatched(btn.dataset.title); });
     });
@@ -187,102 +310,63 @@ async function showMovieList(forceRefresh = false) {
     });
   }
 
-  await loadMovies(forceRefresh);
-  renderList();
-}
+  // Load data: local first, then GitHub if needed
+  const hasLocal = await loadLocal();
+  if (hasLocal && !forceRefresh) {
+    renderList();
+    updateSyncBadge();
+    return;
+  }
 
-async function loadMovies(force = false) {
+  // No local data: fetch from GitHub
   try {
-    if (!force) {
-      const cached = await getCache('moviesText');
-      if (cached) {
-        moviesText = cached;
-        moviesList = parseMovies(moviesText);
-        return;
-      }
-    }
-
-    const file = await getFile('movies.log');
-    moviesText = file.content;
-    moviesList = parseMovies(moviesText);
-    await setCache('moviesText', moviesText);
+    await fetchFromGitHub();
+    await setLocalMovies(moviesText);
+    renderList();
+    updateSyncBadge();
   } catch (err) {
     const listEl = app.querySelector('#movie-list');
     if (listEl) listEl.innerHTML = `<div class="error">Failed to load: ${esc(err.message)}</div>`;
   }
 }
 
-// ── Mark Watched ─────────────────────────────────────────────────────────────
+// ── Local mutations (instant, no waiting for GitHub) ─────────────────────────
+
+function mutateLocal(mutateFn, commitMessage) {
+  let lines = splitLines(moviesText);
+  lines = mutateFn(lines);
+  const newText = joinLines(lines);
+  saveLocal(newText, commitMessage);
+}
 
 async function doMarkWatched(title) {
-  if (!confirm(`Mark "${title}" as watched?`)) return;
-
-  // Prompt for optional review
   const review = prompt('Add a review? (optional, press Cancel to skip)');
 
-  showLoading('Updating...');
-  try {
-    // Re-fetch to avoid conflicts
-    const file = await getFile('movies.log');
-    let lines = file.content.split('\n').map(l => l + '\n');
-    // Fix last line
-    if (lines.length > 0 && lines[lines.length - 1] === '\n') lines.pop();
-
+  mutateLocal((lines) => {
     const found = findMovie(lines, title);
-    if (!found) throw new Error(`Movie "${title}" not found`);
-
+    if (!found) { alert(`"${title}" not found`); return lines; }
     markWatched(lines, found.index);
-    if (review) {
-      setReview(lines, found.index, found.indent, review);
-    }
+    if (review) setReview(lines, found.index, found.indent, review);
+    return lines;
+  }, `Mark watched: ${title}`);
 
-    const newContent = lines.join('').replace(/\n$/, '');
-    await createCommit(
-      [{ path: 'movies.log', content: newContent }],
-      `Mark watched: ${title}`
-    );
-
-    moviesText = null; // invalidate cache
-    await showMovieList(true);
-  } catch (err) {
-    alert('Failed: ' + err.message);
-    showMovieList();
-  }
+  showMovieList();
 }
 
 async function doMarkUnwatched(title) {
-  if (!confirm(`Mark "${title}" as unwatched?`)) return;
-
-  showLoading('Updating...');
-  try {
-    const file = await getFile('movies.log');
-    let lines = file.content.split('\n').map(l => l + '\n');
-    if (lines.length > 0 && lines[lines.length - 1] === '\n') lines.pop();
-
+  mutateLocal((lines) => {
     const found = findMovie(lines, title);
-    if (!found) throw new Error(`Movie "${title}" not found`);
-
-    // Replace [x] with []
+    if (!found) { alert(`"${title}" not found`); return lines; }
     lines[found.index] = lines[found.index].replace(/\[[x\-? ]?\]/i, '[]');
+    return lines;
+  }, `Mark unwatched: ${title}`);
 
-    const newContent = lines.join('').replace(/\n$/, '');
-    await createCommit(
-      [{ path: 'movies.log', content: newContent }],
-      `Mark unwatched: ${title}`
-    );
-
-    moviesText = null;
-    await showMovieList(true);
-  } catch (err) {
-    alert('Failed: ' + err.message);
-    showMovieList();
-  }
+  showMovieList();
 }
 
 // ── Review Dialog ────────────────────────────────────────────────────────────
 
 function showReviewDialog(title) {
-  // Find existing review
   const movie = moviesList.find(m => m.title.toLowerCase() === title.toLowerCase());
   const existing = movie ? (movie.review || '') : '';
 
@@ -299,37 +383,18 @@ function showReviewDialog(title) {
   `;
 
   app.querySelector('#back-btn').addEventListener('click', () => showMovieList());
-  app.querySelector('#save-btn').addEventListener('click', async () => {
+  app.querySelector('#save-btn').addEventListener('click', () => {
     const text = app.querySelector('#review-text').value.trim();
     if (!text) { alert('Please write a review'); return; }
 
-    const btn = app.querySelector('#save-btn');
-    btn.disabled = true;
-    btn.textContent = 'Saving...';
-
-    try {
-      const file = await getFile('movies.log');
-      let lines = file.content.split('\n').map(l => l + '\n');
-      if (lines.length > 0 && lines[lines.length - 1] === '\n') lines.pop();
-
+    mutateLocal((lines) => {
       const found = findMovie(lines, title);
-      if (!found) throw new Error(`Movie "${title}" not found`);
-
+      if (!found) { alert(`"${title}" not found`); return lines; }
       setReview(lines, found.index, found.indent, text);
+      return lines;
+    }, `Add review: ${title}`);
 
-      const newContent = lines.join('').replace(/\n$/, '');
-      await createCommit(
-        [{ path: 'movies.log', content: newContent }],
-        `Add review: ${title}`
-      );
-
-      moviesText = null;
-      showMovieList(true);
-    } catch (err) {
-      alert('Failed: ' + err.message);
-      btn.disabled = false;
-      btn.textContent = 'Save';
-    }
+    showMovieList();
   });
 }
 
@@ -375,7 +440,7 @@ function showAddEdit(editTitle = null) {
   `;
 
   app.querySelector('#back-btn').addEventListener('click', () => showMovieList());
-  app.querySelector('#save-btn').addEventListener('click', async () => {
+  app.querySelector('#save-btn').addEventListener('click', () => {
     const title = app.querySelector('#field-title').value.trim();
     if (!title) { alert('Please enter a title'); return; }
 
@@ -384,50 +449,30 @@ function showAddEdit(editTitle = null) {
     const recommender = app.querySelector('#field-recommender').value.trim();
     const review = app.querySelector('#field-review').value.trim();
 
-    const btn = app.querySelector('#save-btn');
-    btn.disabled = true;
-    btn.textContent = isEdit ? 'Updating...' : 'Adding...';
-
-    try {
-      // Re-fetch fresh copy
-      const file = await getFile('movies.log');
-      let lines = file.content.split('\n').map(l => l + '\n');
-      if (lines.length > 0 && lines[lines.length - 1] === '\n') lines.pop();
-
-      if (isEdit && existing) {
-        // Update existing movie properties
+    if (isEdit && existing) {
+      mutateLocal((lines) => {
         const found = findMovie(lines, editTitle);
-        if (!found) throw new Error(`Movie "${editTitle}" not found`);
-
+        if (!found) { alert(`"${editTitle}" not found`); return lines; }
         if (director) setProperty(lines, found.index, found.indent, 'Director', director);
         if (year) setProperty(lines, found.index, found.indent, 'Year', year);
         if (recommender) setProperty(lines, found.index, found.indent, 'Recommender', recommender);
         if (review) setReview(lines, found.index, found.indent, review);
-
-        // Update title if changed
         if (title !== editTitle) {
           lines[found.index] = lines[found.index].replace(editTitle, title);
         }
+        return lines;
+      }, `Update movie: ${title}`);
+    } else {
+      // Check duplicate
+      if (findMovie(splitLines(moviesText), title)) {
+        alert(`"${title}" already exists in your movie list.`);
+        return;
+      }
 
-        const newContent = lines.join('').replace(/\n$/, '');
-        await createCommit(
-          [{ path: 'movies.log', content: newContent }],
-          `Update movie: ${title}`
-        );
-      } else {
-        // Check for duplicates
-        if (findMovie(lines, title)) {
-          alert(`"${title}" already exists in your movie list.`);
-          btn.disabled = false;
-          btn.textContent = 'Add';
-          return;
-        }
-
-        // Find insert position
+      mutateLocal((lines) => {
         const insert = findToWatchInsert(lines, recommender);
-        if (!insert) throw new Error('Could not find insertion point in To Watch section');
+        if (!insert) { alert('Could not find insertion point'); return lines; }
 
-        // If we need to create new subsection lines first
         let insertIdx = insert.index;
         if (insert.newLines) {
           for (let i = 0; i < insert.newLines.length; i++) {
@@ -436,26 +481,15 @@ function showAddEdit(editTitle = null) {
           insertIdx += insert.newLines.length;
         }
 
-        // Build and insert the movie entry
         const entry = buildMovieEntry(title, { recommender, director, year, review }, insert.indent);
         for (let i = 0; i < entry.length; i++) {
           lines.splice(insertIdx + i, 0, entry[i]);
         }
-
-        const newContent = lines.join('').replace(/\n$/, '');
-        await createCommit(
-          [{ path: 'movies.log', content: newContent }],
-          `Add movie: ${title}`
-        );
-      }
-
-      moviesText = null;
-      showMovieList(true);
-    } catch (err) {
-      alert('Failed: ' + err.message);
-      btn.disabled = false;
-      btn.textContent = isEdit ? 'Update' : 'Add';
+        return lines;
+      }, `Add movie: ${title}`);
     }
+
+    showMovieList();
   });
 }
 
@@ -475,7 +509,10 @@ function showSettings() {
           <button id="disconnect-btn" class="btn danger">Disconnect</button>
         </div>
         <div class="form-group">
-          <p class="muted">Movie Writer PWA for k1monfared/notes. Edits movies.log directly on the main branch. IMDb enrichment runs automatically via GitHub Actions after each push.</p>
+          <button id="force-sync-btn" class="btn full-width">Force Sync Now</button>
+        </div>
+        <div class="form-group">
+          <p class="muted">Movie Writer PWA. Changes are saved locally and synced to GitHub in the background. IMDb enrichment runs automatically via GitHub Actions after sync.</p>
         </div>
       </div>
     </div>
@@ -487,6 +524,15 @@ function showSettings() {
       clearToken();
       showSetup();
     }
+  });
+  app.querySelector('#force-sync-btn').addEventListener('click', async () => {
+    const btn = app.querySelector('#force-sync-btn');
+    btn.disabled = true;
+    btn.textContent = 'Syncing...';
+    await doSync();
+    btn.disabled = false;
+    btn.textContent = 'Force Sync Now';
+    alert(await isDirty() ? 'Sync failed, will retry.' : 'Synced!');
   });
 }
 

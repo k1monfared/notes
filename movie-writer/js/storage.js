@@ -1,7 +1,7 @@
-// Simple cache for movies.log content
+// Local-first storage for movies.log with sync state tracking
 
 const DB_NAME = 'movie-writer';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 let db = null;
 
 function open() {
@@ -10,8 +10,12 @@ function open() {
     const req = indexedDB.open(DB_NAME, DB_VERSION);
     req.onupgradeneeded = (e) => {
       const d = e.target.result;
-      if (!d.objectStoreNames.contains('cache')) {
-        d.createObjectStore('cache', { keyPath: 'key' });
+      if (!d.objectStoreNames.contains('state')) {
+        d.createObjectStore('state', { keyPath: 'key' });
+      }
+      // Clean up old stores from v1
+      if (d.objectStoreNames.contains('cache')) {
+        d.deleteObjectStore('cache');
       }
     };
     req.onsuccess = (e) => { db = e.target.result; resolve(db); };
@@ -19,27 +23,55 @@ function open() {
   });
 }
 
-export async function setCache(key, value) {
+async function put(key, value) {
   const d = await open();
   return new Promise((resolve, reject) => {
-    const tx = d.transaction('cache', 'readwrite');
-    tx.objectStore('cache').put({ key, value, timestamp: Date.now() });
+    const tx = d.transaction('state', 'readwrite');
+    tx.objectStore('state').put({ key, value });
     tx.oncomplete = () => resolve();
     tx.onerror = () => reject(tx.error);
   });
 }
 
-export async function getCache(key, maxAge = 5 * 60 * 1000) {
+async function get(key) {
   const d = await open();
   return new Promise((resolve, reject) => {
-    const tx = d.transaction('cache', 'readonly');
-    const req = tx.objectStore('cache').get(key);
-    req.onsuccess = () => {
-      const item = req.result;
-      if (!item) { resolve(null); return; }
-      if (Date.now() - item.timestamp > maxAge) { resolve(null); return; }
-      resolve(item.value);
-    };
+    const tx = d.transaction('state', 'readonly');
+    const req = tx.objectStore('state').get(key);
+    req.onsuccess = () => resolve(req.result ? req.result.value : null);
     req.onerror = () => reject(req.error);
   });
+}
+
+// Movies.log text
+export async function getLocalMovies() {
+  return get('moviesText');
+}
+
+export async function setLocalMovies(text) {
+  await put('moviesText', text);
+}
+
+// Dirty flag: local changes not yet pushed
+export async function isDirty() {
+  return (await get('dirty')) === true;
+}
+
+export async function setDirty(val) {
+  await put('dirty', val);
+}
+
+// Pending commit messages (accumulated while offline or between syncs)
+export async function getPendingMessages() {
+  return (await get('pendingMessages')) || [];
+}
+
+export async function addPendingMessage(msg) {
+  const msgs = await getPendingMessages();
+  msgs.push(msg);
+  await put('pendingMessages', msgs);
+}
+
+export async function clearPendingMessages() {
+  await put('pendingMessages', []);
 }
