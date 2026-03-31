@@ -89,6 +89,36 @@
       font-size: 0.9rem;
       color: var(--text-muted);
     }
+    .card-split {
+      display: flex;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: border-color 0.15s;
+    }
+    .card-split:hover {
+      border-color: var(--link);
+    }
+    .card-split a {
+      flex: 1;
+      display: block;
+      padding: 1.25rem 1.5rem;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .card-split a:first-child {
+      border-right: 1px solid var(--border);
+    }
+    .card-split a:hover {
+      background: var(--border);
+    }
+    .card-split .card-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+    }
   </style>
 </head>
 <body>
@@ -100,18 +130,30 @@
   <main class="container">
     <h1>Notes</h1>
     <div class="cards">
-      <a class="card" href="blog/">
-        <div class="card-title">Blog</div>
-        <div class="card-desc">Posts on math, tech, life, and everything in between.</div>
-      </a>
+      <div class="card-split">
+        <a href="blog/">
+          <div class="card-title">Blog</div>
+          <div class="card-label">View</div>
+        </a>
+        <a href="blog-writer/">
+          <div class="card-title">Blog</div>
+          <div class="card-label">Edit</div>
+        </a>
+      </div>
       <a class="card" href="https://k1monfared.github.io/photoblog/">
         <div class="card-title">Photoblog</div>
         <div class="card-desc">A visual journal.</div>
       </a>
-      <a class="card" href="movies/">
-        <div class="card-title">Movies</div>
-        <div class="card-desc">A log of movies watched, rated, and reviewed.</div>
-      </a>
+      <div class="card-split">
+        <a href="movies/">
+          <div class="card-title">Movies</div>
+          <div class="card-label">View</div>
+        </a>
+        <a href="movie-writer/">
+          <div class="card-title">Movies</div>
+          <div class="card-label">Edit</div>
+        </a>
+      </div>
       <a class="card" href="books/">
         <div class="card-title">Books</div>
         <div class="card-desc">Books read, reviewed, and on the reading list.</div>

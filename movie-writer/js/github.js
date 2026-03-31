@@ -32,43 +32,54 @@ export async function getFile(path) {
 }
 
 // Create a single commit with one or more files (atomic)
+// Retries up to 3 times if the ref moves between fetch and update (e.g. enrichment workflow pushes)
 export async function createCommit(files, message) {
   const repo = getRepo();
+  const refPath = `/repos/${repo}/git/refs/heads/main`;
 
-  const ref = await request(`/repos/${repo}/git/refs/heads/main`);
-  const baseSha = ref.object.sha;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const ref = await request(refPath);
+    const baseSha = ref.object.sha;
 
-  const baseCommit = await request(`/repos/${repo}/git/commits/${baseSha}`);
-  const baseTreeSha = baseCommit.tree.sha;
+    const baseCommit = await request(`/repos/${repo}/git/commits/${baseSha}`);
+    const baseTreeSha = baseCommit.tree.sha;
 
-  const treeItems = [];
-  for (const file of files) {
-    const blobData = await request(`/repos/${repo}/git/blobs`, {
+    const treeItems = [];
+    for (const file of files) {
+      const blobData = await request(`/repos/${repo}/git/blobs`, {
+        method: 'POST',
+        body: JSON.stringify({ content: file.content, encoding: file.encoding || 'utf-8' }),
+      });
+      treeItems.push({
+        path: file.path,
+        mode: '100644',
+        type: 'blob',
+        sha: blobData.sha,
+      });
+    }
+
+    const tree = await request(`/repos/${repo}/git/trees`, {
       method: 'POST',
-      body: JSON.stringify({ content: file.content, encoding: file.encoding || 'utf-8' }),
+      body: JSON.stringify({ base_tree: baseTreeSha, tree: treeItems }),
     });
-    treeItems.push({
-      path: file.path,
-      mode: '100644',
-      type: 'blob',
-      sha: blobData.sha,
+
+    const commit = await request(`/repos/${repo}/git/commits`, {
+      method: 'POST',
+      body: JSON.stringify({ message, tree: tree.sha, parents: [baseSha] }),
     });
+
+    try {
+      await request(refPath, {
+        method: 'PATCH',
+        body: JSON.stringify({ sha: commit.sha }),
+      });
+      return commit;
+    } catch (err) {
+      if (err.message.includes('422') && attempt < 2) {
+        // Ref moved, retry with fresh base
+        continue;
+      }
+      throw err;
+    }
   }
-
-  const tree = await request(`/repos/${repo}/git/trees`, {
-    method: 'POST',
-    body: JSON.stringify({ base_tree: baseTreeSha, tree: treeItems }),
-  });
-
-  const commit = await request(`/repos/${repo}/git/commits`, {
-    method: 'POST',
-    body: JSON.stringify({ message, tree: tree.sha, parents: [baseSha] }),
-  });
-
-  await request(`/repos/${repo}/git/refs/heads/main`, {
-    method: 'PATCH',
-    body: JSON.stringify({ sha: commit.sha }),
-  });
-
-  return commit;
 }
