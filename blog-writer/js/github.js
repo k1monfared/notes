@@ -50,101 +50,103 @@ export async function getFileSha(path) {
 }
 
 // Create a single commit with multiple files (atomic)
+// Retries up to 3 times if the ref moves between fetch and update (e.g. enrichment workflow pushes)
 // files: [{ path: 'blog/file.md', content: 'text or base64', encoding: 'utf-8' | 'base64' }]
 export async function createCommit(files, message) {
   const repo = getRepo();
+  const refPath = `/repos/${repo}/git/refs/heads/main`;
 
-  // 1. Get the current commit SHA for main
-  const ref = await request(`/repos/${repo}/git/refs/heads/main`);
-  const baseSha = ref.object.sha;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const ref = await request(refPath);
+    const baseSha = ref.object.sha;
 
-  // 2. Get the base tree
-  const baseCommit = await request(`/repos/${repo}/git/commits/${baseSha}`);
-  const baseTreeSha = baseCommit.tree.sha;
+    const baseCommit = await request(`/repos/${repo}/git/commits/${baseSha}`);
+    const baseTreeSha = baseCommit.tree.sha;
 
-  // 3. Create blobs for each file
-  const treeItems = [];
-  for (const file of files) {
-    let blobData;
-    if (file.encoding === 'base64') {
-      blobData = await request(`/repos/${repo}/git/blobs`, {
+    const treeItems = [];
+    for (const file of files) {
+      const blobData = await request(`/repos/${repo}/git/blobs`, {
         method: 'POST',
-        body: JSON.stringify({ content: file.content, encoding: 'base64' }),
+        body: JSON.stringify({
+          content: file.content,
+          encoding: file.encoding === 'base64' ? 'base64' : 'utf-8',
+        }),
       });
-    } else {
-      blobData = await request(`/repos/${repo}/git/blobs`, {
-        method: 'POST',
-        body: JSON.stringify({ content: file.content, encoding: 'utf-8' }),
+      treeItems.push({
+        path: file.path,
+        mode: '100644',
+        type: 'blob',
+        sha: blobData.sha,
       });
     }
-    treeItems.push({
-      path: file.path,
-      mode: '100644',
-      type: 'blob',
-      sha: blobData.sha,
+
+    const tree = await request(`/repos/${repo}/git/trees`, {
+      method: 'POST',
+      body: JSON.stringify({ base_tree: baseTreeSha, tree: treeItems }),
     });
+
+    const commit = await request(`/repos/${repo}/git/commits`, {
+      method: 'POST',
+      body: JSON.stringify({ message, tree: tree.sha, parents: [baseSha] }),
+    });
+
+    try {
+      await request(refPath, {
+        method: 'PATCH',
+        body: JSON.stringify({ sha: commit.sha }),
+      });
+      return commit;
+    } catch (err) {
+      if (err.message.includes('422') && attempt < 2) {
+        continue;
+      }
+      throw err;
+    }
   }
-
-  // 4. Create tree
-  const tree = await request(`/repos/${repo}/git/trees`, {
-    method: 'POST',
-    body: JSON.stringify({ base_tree: baseTreeSha, tree: treeItems }),
-  });
-
-  // 5. Create commit
-  const commit = await request(`/repos/${repo}/git/commits`, {
-    method: 'POST',
-    body: JSON.stringify({
-      message,
-      tree: tree.sha,
-      parents: [baseSha],
-    }),
-  });
-
-  // 6. Update ref
-  await request(`/repos/${repo}/git/refs/heads/main`, {
-    method: 'PATCH',
-    body: JSON.stringify({ sha: commit.sha }),
-  });
-
-  return commit;
 }
 
 // Delete a file and create another in one commit (for draft -> publish rename)
 export async function renameFile(oldPath, newPath, content, message) {
   const repo = getRepo();
+  const refPath = `/repos/${repo}/git/refs/heads/main`;
 
-  const ref = await request(`/repos/${repo}/git/refs/heads/main`);
-  const baseSha = ref.object.sha;
-  const baseCommit = await request(`/repos/${repo}/git/commits/${baseSha}`);
-  const baseTreeSha = baseCommit.tree.sha;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const ref = await request(refPath);
+    const baseSha = ref.object.sha;
+    const baseCommit = await request(`/repos/${repo}/git/commits/${baseSha}`);
+    const baseTreeSha = baseCommit.tree.sha;
 
-  // Create blob for new file
-  const blob = await request(`/repos/${repo}/git/blobs`, {
-    method: 'POST',
-    body: JSON.stringify({ content, encoding: 'utf-8' }),
-  });
+    const blob = await request(`/repos/${repo}/git/blobs`, {
+      method: 'POST',
+      body: JSON.stringify({ content, encoding: 'utf-8' }),
+    });
 
-  // Create tree: add new file, delete old file (sha: null with no entry removes it)
-  const treeItems = [
-    { path: newPath, mode: '100644', type: 'blob', sha: blob.sha },
-    { path: oldPath, mode: '100644', type: 'blob', sha: null },
-  ];
+    const treeItems = [
+      { path: newPath, mode: '100644', type: 'blob', sha: blob.sha },
+      { path: oldPath, mode: '100644', type: 'blob', sha: null },
+    ];
 
-  const tree = await request(`/repos/${repo}/git/trees`, {
-    method: 'POST',
-    body: JSON.stringify({ base_tree: baseTreeSha, tree: treeItems }),
-  });
+    const tree = await request(`/repos/${repo}/git/trees`, {
+      method: 'POST',
+      body: JSON.stringify({ base_tree: baseTreeSha, tree: treeItems }),
+    });
 
-  const commit = await request(`/repos/${repo}/git/commits`, {
-    method: 'POST',
-    body: JSON.stringify({ message, tree: tree.sha, parents: [baseSha] }),
-  });
+    const commit = await request(`/repos/${repo}/git/commits`, {
+      method: 'POST',
+      body: JSON.stringify({ message, tree: tree.sha, parents: [baseSha] }),
+    });
 
-  await request(`/repos/${repo}/git/refs/heads/main`, {
-    method: 'PATCH',
-    body: JSON.stringify({ sha: commit.sha }),
-  });
-
-  return commit;
+    try {
+      await request(refPath, {
+        method: 'PATCH',
+        body: JSON.stringify({ sha: commit.sha }),
+      });
+      return commit;
+    } catch (err) {
+      if (err.message.includes('422') && attempt < 2) {
+        continue;
+      }
+      throw err;
+    }
+  }
 }
