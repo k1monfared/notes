@@ -1,0 +1,16 @@
+{
+  "name": "Movie Writer",
+  "short_name": "MovieWriter",
+  "description": "Manage your movie watchlist on GitHub",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#7c3aed",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

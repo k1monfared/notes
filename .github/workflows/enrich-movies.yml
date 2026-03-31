@@ -1,0 +1,42 @@
+name: Enrich Movies
+
+on:
+  push:
+    branches: [main]
+    paths: [movies.log]
+
+permissions:
+  contents: write
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fix recommender properties
+        run: python scripts/fix_recommenders.py
+
+      - name: Enrich movies with IMDb data
+        if: env.OMDB_API_KEY != ''
+        env:
+          OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+        run: python scripts/enrich_all.py
+
+      - name: Commit enriched data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add movies.log
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto-enrich movies with IMDb data"
+            git push
+          fi
