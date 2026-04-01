@@ -1,7 +1,7 @@
 // Main app controller and screen router
 
 import { isAuthenticated, getToken, setToken, clearToken, validateToken } from './auth.js';
-import { fetchPostList, loadPost, publishPost, updatePost, publishDraft } from './posts.js';
+import { fetchPostList, loadPost, publishPost, updatePost, unpublishPost } from './posts.js';
 import { formatDate, parseFilename, displayDate, imageDir } from './naming.js';
 import { buildPostContent, extractFromContent } from './frontmatter.js';
 import { createEditor } from './editor.js';
@@ -131,6 +131,7 @@ async function loadPosts(force = false) {
 // Editor screen
 async function showEditor(existingPath = null) {
   editingPost = null;
+  let editingIsDraft = false;
   attachedImages = [];
   currentDraftId = existingPath || `new_${Date.now()}`;
 
@@ -146,6 +147,7 @@ async function showEditor(existingPath = null) {
         <button id="back-btn" class="btn icon">&larr;</button>
         <div class="header-actions">
           <button id="preview-btn" class="btn">Preview</button>
+          <button id="unpublish-btn" class="btn danger" hidden>Unpublish</button>
           <button id="draft-btn" class="btn">Save Draft</button>
           <button id="publish-btn" class="btn primary">Publish</button>
         </div>
@@ -173,6 +175,7 @@ async function showEditor(existingPath = null) {
     try {
       const post = await loadPost(existingPath);
       editingPost = { originalPath: existingPath };
+      editingIsDraft = existingPath.endsWith('.draft');
       initialTitle = post.title;
       initialTags = post.tags;
       initialBody = post.body;
@@ -186,6 +189,11 @@ async function showEditor(existingPath = null) {
       app.querySelector('#field-title').disabled = false;
       alert('Failed to load post: ' + err.message);
     }
+  }
+
+  // Show unpublish button for published posts
+  if (editingPost && !editingIsDraft) {
+    app.querySelector('#unpublish-btn').hidden = false;
   }
 
   // Set field values
@@ -284,6 +292,39 @@ async function showEditor(existingPath = null) {
   // Publish
   app.querySelector('#publish-btn').addEventListener('click', () => doPublish(false));
 
+  // Unpublish
+  app.querySelector('#unpublish-btn').addEventListener('click', async () => {
+    const title = titleEl.value.trim();
+    const tags = tagsEl.value.trim();
+    const body = editor.value;
+    const date = new Date(dateEl.value + 'T00:00:00');
+
+    if (!title) { alert('Please enter a title'); return; }
+    if (!editingPost) return;
+    if (!confirm(`Unpublish "${title}"? It will become a draft and be removed from the site.`)) return;
+
+    const unpublishBtn = app.querySelector('#unpublish-btn');
+    const publishBtn = app.querySelector('#publish-btn');
+    const draftBtn = app.querySelector('#draft-btn');
+    unpublishBtn.disabled = true;
+    publishBtn.disabled = true;
+    draftBtn.disabled = true;
+    unpublishBtn.textContent = 'Unpublishing...';
+
+    try {
+      await unpublishPost(editingPost.originalPath, title, tags, body, date);
+      await deleteDraft(currentDraftId);
+      alert('Post unpublished. It is now a draft.');
+      showPostList();
+    } catch (err) {
+      alert('Failed: ' + err.message);
+      unpublishBtn.disabled = false;
+      publishBtn.disabled = false;
+      draftBtn.disabled = false;
+      unpublishBtn.textContent = 'Unpublish';
+    }
+  });
+
   // Auto-save local draft every 30s
   const autoSaveInterval = setInterval(async () => {
     if (!app.querySelector('#field-title')) { clearInterval(autoSaveInterval); return; }
@@ -334,6 +375,7 @@ async function doPublish(isDraft) {
         originalPath: editingPost.originalPath,
         title, tags, body, date,
         newImages: attachedImages,
+        isDraft,
       });
     } else {
       await publishPost({

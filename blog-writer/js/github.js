@@ -106,7 +106,8 @@ export async function createCommit(files, message) {
 }
 
 // Delete a file and create another in one commit (for draft -> publish rename)
-export async function renameFile(oldPath, newPath, content, message) {
+// extraFiles: optional array of { path, content, encoding } for images etc.
+export async function renameFile(oldPath, newPath, content, message, extraFiles = []) {
   const repo = getRepo();
   const refPath = `/repos/${repo}/git/refs/heads/main`;
 
@@ -125,6 +126,17 @@ export async function renameFile(oldPath, newPath, content, message) {
       { path: newPath, mode: '100644', type: 'blob', sha: blob.sha },
       { path: oldPath, mode: '100644', type: 'blob', sha: null },
     ];
+
+    for (const file of extraFiles) {
+      const extraBlob = await request(`/repos/${repo}/git/blobs`, {
+        method: 'POST',
+        body: JSON.stringify({
+          content: file.content,
+          encoding: file.encoding === 'base64' ? 'base64' : 'utf-8',
+        }),
+      });
+      treeItems.push({ path: file.path, mode: '100644', type: 'blob', sha: extraBlob.sha });
+    }
 
     const tree = await request(`/repos/${repo}/git/trees`, {
       method: 'POST',

@@ -67,20 +67,16 @@ export async function publishPost({ title, tags, body, date, images, isDraft = f
   return createCommit(files, message);
 }
 
-export async function updatePost({ originalPath, title, tags, body, date, newImages }) {
+export async function updatePost({ originalPath, title, tags, body, date, newImages, isDraft = false }) {
   const dateStr = formatDate(date);
-  const filename = generateFilename(date, title, false);
+  const filename = generateFilename(date, title, isDraft);
   const content = buildPostContent(title, tags, body);
   const newPath = `blog/${filename}`;
 
-  const files = [
-    { path: newPath, content, encoding: 'utf-8' },
-  ];
-
-  // Add new images
+  const imageFiles = [];
   if (newImages && newImages.length > 0) {
     for (const img of newImages) {
-      files.push({
+      imageFiles.push({
         path: `blog/${imageDir(dateStr)}/${img.name}`,
         content: img.base64,
         encoding: 'base64',
@@ -88,17 +84,16 @@ export async function updatePost({ originalPath, title, tags, body, date, newIma
     }
   }
 
-  // If the filename changed (different date or slug), we need to delete the old file
+  const action = isDraft ? 'Save draft' : 'Update blog post';
+  const message = `${action}: ${title}`;
+
   if (originalPath !== newPath) {
-    // The old file will be overwritten only if same path, otherwise it stays
-    // We use renameFile for this case, but for simplicity with images, use createCommit
-    // and add a delete entry
-    // Actually, Git Trees API: setting sha to null removes a file
-    // But createCommit doesn't support that yet. For now, just create the new file.
-    // The old file could be manually cleaned up. This is a rare edge case.
+    // Path changed (different date, slug, or draft status). Delete old file atomically.
+    return renameFile(originalPath, newPath, content, message, imageFiles);
   }
 
-  const message = `Update blog post: ${title}`;
+  // Same path, just update in place
+  const files = [{ path: newPath, content, encoding: 'utf-8' }, ...imageFiles];
   return createCommit(files, message);
 }
 
@@ -107,4 +102,11 @@ export async function publishDraft(draftPath, title, tags, body, date) {
   const filename = generateFilename(date, title, false);
   const newPath = `blog/${filename}`;
   return renameFile(draftPath, newPath, content, `Publish draft: ${title}`);
+}
+
+export async function unpublishPost(publishedPath, title, tags, body, date) {
+  const content = buildPostContent(title, tags, body);
+  const filename = generateFilename(date, title, true);
+  const newPath = `blog/${filename}`;
+  return renameFile(publishedPath, newPath, content, `Unpublish: ${title}`);
 }
