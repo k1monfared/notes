@@ -1,0 +1,545 @@
+/* Edit-online: inline editor layer for the blog viewer */
+
+/* Lock/unlock button */
+#edit-lock {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+#edit-lock:hover {
+  border-color: var(--text-muted);
+  color: var(--link);
+}
+
+#edit-lock::before {
+  content: "\1F512";
+}
+
+body.edit-mode #edit-lock::before {
+  content: "\1F513";
+}
+
+/* Auth dialog */
+.edit-auth-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-auth-dialog {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  width: 90%;
+  max-width: 420px;
+}
+
+.edit-auth-dialog h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.edit-auth-dialog p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0 0 1rem;
+}
+
+.edit-auth-dialog p a {
+  color: var(--link);
+}
+
+.edit-auth-dialog input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
+}
+
+.edit-auth-dialog input:focus {
+  outline: none;
+  border-color: var(--link);
+}
+
+.edit-auth-error {
+  color: #d32f2f;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+  display: none;
+}
+
+.edit-auth-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.edit-auth-buttons button {
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: var(--bg);
+}
+
+.edit-auth-buttons button:hover {
+  border-color: var(--text-muted);
+}
+
+.edit-auth-buttons .btn-primary {
+  background: var(--link);
+  color: #fff;
+  border-color: var(--link);
+}
+
+.edit-auth-buttons .btn-primary:hover {
+  background: var(--link-hover);
+  border-color: var(--link-hover);
+}
+
+.edit-auth-buttons .btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Edit controls: hidden by default, shown in edit mode */
+.edit-only {
+  display: none !important;
+}
+
+body.edit-mode .edit-only {
+  display: inline-flex !important;
+}
+
+/* Edit button (pencil) next to post title */
+.edit-post-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.2rem 0.45rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.edit-post-btn:hover {
+  color: var(--link);
+  border-color: var(--link);
+}
+
+/* New post button */
+.new-post-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.8rem;
+  background: var(--link);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.new-post-btn:hover {
+  background: var(--link-hover);
+}
+
+/* Draft items in post list */
+.draft-item {
+  border-left: 3px solid #f0ad4e !important;
+  padding-left: 1rem !important;
+}
+
+.draft-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #f0ad4e;
+  color: #fff;
+  padding: 0.1em 0.4em;
+  border-radius: 3px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+}
+
+/* Editor overlay */
+.editor-overlay {
+  padding-top: 0.5rem;
+}
+
+.editor-overlay .editor-field {
+  margin-bottom: 0.75rem;
+}
+
+.editor-overlay label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.editor-overlay input[type="text"],
+.editor-overlay input[type="date"] {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.editor-overlay input:focus {
+  outline: none;
+  border-color: var(--link);
+}
+
+.editor-tags-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.editor-tags-row .editor-field {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.editor-tags-row .suggest-btn {
+  padding: 0.5rem 0.75rem;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  margin-bottom: 0;
+}
+
+.editor-tags-row .suggest-btn:hover {
+  color: var(--link);
+  border-color: var(--link);
+}
+
+.tag-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-bottom: 0.75rem;
+}
+
+.tag-suggestions .tag-chip {
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 0.15em 0.55em;
+  background: var(--code-bg);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.tag-suggestions .tag-chip:hover {
+  color: var(--link);
+  border-color: var(--link);
+}
+
+/* Toolbar */
+.editor-toolbar {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.4rem;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+}
+
+.editor-toolbar button {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+.editor-toolbar button:hover {
+  background: var(--bg);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+/* Textarea */
+.editor-overlay textarea {
+  width: 100%;
+  min-height: 50vh;
+  padding: 0.75rem;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0 0 4px 4px;
+  resize: vertical;
+}
+
+.editor-overlay textarea:focus {
+  outline: none;
+  border-color: var(--link);
+}
+
+/* Preview pane */
+.editor-preview {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1rem;
+  min-height: 50vh;
+  line-height: 1.7;
+}
+
+.editor-preview img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Image thumbnails */
+.editor-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.editor-images .img-thumb {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.editor-images .img-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.editor-images .img-thumb .remove-img {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* Action buttons row */
+.editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.editor-actions button {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: var(--bg);
+}
+
+.editor-actions button:hover {
+  border-color: var(--text-muted);
+}
+
+.editor-actions .btn-publish {
+  background: #28a745;
+  color: #fff;
+  border-color: #28a745;
+}
+
+.editor-actions .btn-publish:hover {
+  background: #218838;
+  border-color: #218838;
+}
+
+.editor-actions .btn-save {
+  background: var(--link);
+  color: #fff;
+  border-color: var(--link);
+}
+
+.editor-actions .btn-save:hover {
+  background: var(--link-hover);
+  border-color: var(--link-hover);
+}
+
+.editor-actions .btn-unpublish {
+  background: #f0ad4e;
+  color: #fff;
+  border-color: #f0ad4e;
+}
+
+.editor-actions .btn-unpublish:hover {
+  background: #ec971f;
+  border-color: #ec971f;
+}
+
+.editor-actions .btn-danger {
+  color: #d32f2f;
+  border-color: #d32f2f;
+}
+
+.editor-actions .btn-danger:hover {
+  background: #d32f2f;
+  color: #fff;
+}
+
+.editor-actions .btn-cancel {
+  margin-left: auto;
+}
+
+/* Toast notifications */
+.edit-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #fff;
+  background: #333;
+  z-index: 3000;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+  max-width: 360px;
+}
+
+.edit-toast.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.edit-toast.toast-success {
+  background: #28a745;
+}
+
+.edit-toast.toast-error {
+  background: #d32f2f;
+  cursor: pointer;
+}
+
+.edit-toast.toast-info {
+  background: var(--link, #0366d6);
+}
+
+/* Loading spinner for draft fetching */
+.edit-loading {
+  text-align: center;
+  padding: 1rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* Edit icon on index post items */
+.post-list li .edit-item-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  padding: 0.1rem 0.3rem;
+  vertical-align: middle;
+  display: none;
+}
+
+body.edit-mode .post-list li .edit-item-btn {
+  display: inline;
+}
+
+.post-list li .edit-item-btn:hover {
+  color: var(--link);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .edit-auth-dialog {
+    width: 95%;
+    padding: 1rem;
+  }
+
+  .editor-overlay textarea {
+    min-height: 40vh;
+  }
+
+  .editor-actions {
+    flex-direction: column;
+  }
+
+  .editor-actions .btn-cancel {
+    margin-left: 0;
+  }
+
+  .edit-toast {
+    left: 1rem;
+    right: 1rem;
+    max-width: none;
+  }
+}
