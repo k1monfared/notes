@@ -1,6 +1,13 @@
 :root {
-  --bg: #fff;
-  --text: #222;
+  --bg-light: #fff;
+  --text-light: #222;
+  --bg-dark: #1a1a2e;
+  --text-dark: #e0e0e0;
+
+  --bg: var(--bg-light);
+  --text: var(--text-light);
+  --toggle-bg: var(--bg-dark);
+  --toggle-text: var(--text-dark);
   --text-muted: #666;
   --link: #0366d6;
   --link-hover: #0550ae;
@@ -12,8 +19,10 @@
 }
 
 [data-theme="dark"] {
-  --bg: #1a1a2e;
-  --text: #e0e0e0;
+  --bg: var(--bg-dark);
+  --text: var(--text-dark);
+  --toggle-bg: var(--bg-light);
+  --toggle-text: var(--text-light);
   --text-muted: #999;
   --link: #58a6ff;
   --link-hover: #79c0ff;
@@ -86,7 +95,9 @@ nav {
 nav button, nav .nav-icon {
   background: none;
   border: none;
-  padding: 8px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
   cursor: pointer;
   color: var(--text);
   border-radius: 6px;
@@ -103,8 +114,8 @@ nav button:hover, nav .nav-icon:hover {
 #theme-toggle {
   font-size: 1rem;
   line-height: 1;
-  background: var(--text);
-  color: var(--bg);
+  background: var(--toggle-bg);
+  color: var(--toggle-text);
 }
 
 #theme-toggle:hover {
