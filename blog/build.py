@@ -49,6 +49,13 @@ GITHUB_LINK_RE = re.compile(
     r"https://github\.com/k1monfared/notes/blob/main/blog/(\d{8}_[^)\"'\s]+\.md)"
 )
 
+CDN_BASE_URL = "https://raw.githubusercontent.com/k1monfared/notes/main/blog"
+
+
+def rewrite_cdn_urls(html_text, cdn_base):
+    """Rewrite relative files/ paths to absolute CDN URLs."""
+    return re.sub(r'((?:src|href)=["\'])files/', rf'\1{cdn_base}/files/', html_text)
+
 
 def parse_filename(filename):
     """Extract date and slug from YYYYMMDD_slug.md filename."""
@@ -308,8 +315,8 @@ def save_cache(cache):
     CACHE_FILE.write_text(json.dumps(cache), encoding="utf-8")
 
 
-def build(local=False, force=False):
-    """Main build function."""
+def build(local=False, force=False, cdn=None):
+    """Main build function. cdn=URL base rewrites files/ paths to external URLs."""
     cache = {} if force else load_cache()
     new_cache = {}
 
@@ -649,6 +656,8 @@ def build(local=False, force=False):
             skipped_count += 1
         else:
             post_content = p["post_html"].replace("{{prev_link}}", prev_link).replace("{{next_link}}", next_link)
+            if cdn:
+                post_content = rewrite_cdn_urls(post_content, cdn)
             page_html = render_template(base_tmpl, title=p["title"], content=post_content, sidebar=tag_sidebar_html, timeline_sidebar=timeline_sidebar_html)
             post_dir.mkdir(parents=True, exist_ok=True)
             (post_dir / "index.html").write_text(page_html, encoding="utf-8")
@@ -699,6 +708,8 @@ def build(local=False, force=False):
         posts=make_post_list(posts_data, page_size=PAGE_SIZE),
     )
     index_html = render_template(base_tmpl, title="Blog", content=index_content, sidebar=tag_sidebar_html, timeline_sidebar=timeline_sidebar_html)
+    if cdn:
+        index_html = rewrite_cdn_urls(index_html, cdn)
     (SITE_DIR / "index.html").write_text(index_html, encoding="utf-8")
 
     # Generate tag pages
@@ -713,6 +724,8 @@ def build(local=False, force=False):
             tag_html = render_template(
                 base_tmpl, title=f"Posts tagged: {tag}", content=tag_content, sidebar=tag_sidebar_html, timeline_sidebar=timeline_sidebar_html
             )
+            if cdn:
+                tag_html = rewrite_cdn_urls(tag_html, cdn)
             tag_dir = SITE_DIR / "tag" / tag
             tag_dir.mkdir(parents=True, exist_ok=True)
             (tag_dir / "index.html").write_text(tag_html, encoding="utf-8")
@@ -722,23 +735,30 @@ def build(local=False, force=False):
     rss_xml = generate_rss(posts_data)
     (SITE_DIR / "feed.xml").write_text(rss_xml, encoding="utf-8")
 
-    # Copy only referenced assets (skip LFS pointer files)
+    # Copy only referenced assets (skip when using CDN)
     copied_assets = 0
-    for asset in all_assets:
-        src = BLOG_DIR / asset
-        if src.exists():
-            # Skip LFS pointer files (small text files starting with "version https://git-lfs")
-            if src.stat().st_size < 200:
-                try:
-                    head = src.read_bytes()[:40]
-                    if head.startswith(b"version https://git-lfs"):
-                        continue
-                except Exception:
-                    pass
-            dst = SITE_DIR / asset
-            dst.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(src, dst)
-            copied_assets += 1
+    if cdn:
+        # Clean cached assets from _site/files/ since CDN serves them
+        files_out = SITE_DIR / "files"
+        if files_out.exists():
+            shutil.rmtree(files_out)
+        print(f"CDN mode: serving files from {cdn}")
+    else:
+        for asset in all_assets:
+            src = BLOG_DIR / asset
+            if src.exists():
+                # Skip LFS pointer files (small text files starting with "version https://git-lfs")
+                if src.stat().st_size < 200:
+                    try:
+                        head = src.read_bytes()[:40]
+                        if head.startswith(b"version https://git-lfs"):
+                            continue
+                    except Exception:
+                        pass
+                dst = SITE_DIR / asset
+                dst.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(src, dst)
+                copied_assets += 1
 
     # Save build cache
     save_cache(new_cache)
@@ -751,5 +771,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Build the blog")
     parser.add_argument("--local", action="store_true", help="Build for local preview (no base href)")
     parser.add_argument("--force", action="store_true", help="Force full rebuild (ignore cache)")
+    parser.add_argument("--cdn", nargs="?", const=CDN_BASE_URL, default=None,
+                        help="Serve files/ from CDN instead of bundling (default: raw GitHub URLs)")
     args = parser.parse_args()
-    build(local=args.local, force=args.force)
+    build(local=args.local, force=args.force, cdn=args.cdn)

@@ -41,19 +41,6 @@ jobs:
         with:
           lfs: false
 
-      - name: Restore LFS cache
-        uses: actions/cache@v4
-        with:
-          path: .git/lfs
-          key: lfs-${{ hashFiles('.lfs-assets-id') }}
-          restore-keys: lfs-
-
-      - name: Pull LFS media files
-        run: |
-          git lfs install
-          git lfs pull --include="*.png,*.jpg,*.jpeg,*.gif,*.svg,*.mp4" || echo "::warning::LFS pull failed — using cached blog build"
-          git rev-parse HEAD > .lfs-assets-id
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -71,17 +58,25 @@ jobs:
           path: |
             blog/_site
             blog/.build_cache.json
+            blog/.build_tools_hash
           key: blog-build-${{ hashFiles('blog/build.py', 'blog/templates/**', 'blog/static/**') }}-${{ hashFiles('blog/**/*.md') }}
           restore-keys: |
             blog-build-${{ hashFiles('blog/build.py', 'blog/templates/**', 'blog/static/**') }}-
             blog-build-
 
-      - name: Force full blog rebuild if build tools changed
-        if: steps.blog-build-cache.outputs.cache-hit != 'true'
-        run: rm -f blog/.build_cache.json
+      - name: Force full rebuild only if build tools changed
+        run: |
+          TOOLS_HASH="${{ hashFiles('blog/build.py', 'blog/templates/**', 'blog/static/**') }}"
+          if [ -f blog/.build_tools_hash ] && [ "$(cat blog/.build_tools_hash)" = "$TOOLS_HASH" ]; then
+            echo "Build tools unchanged, keeping incremental cache"
+          else
+            echo "Build tools changed, forcing full rebuild"
+            rm -f blog/.build_cache.json
+          fi
+          echo "$TOOLS_HASH" > blog/.build_tools_hash
 
       - name: Build blog
-        run: python blog/build.py
+        run: python blog/build.py --cdn
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
