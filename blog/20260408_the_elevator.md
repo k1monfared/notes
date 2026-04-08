@@ -7,7 +7,7 @@ There are a few people in my life (mostly in the role of an advisor/mentor) that
 
 ---
 
-## Two Load-Bearing Points
+## Load-Bearing Points
 
 Before anything else, a few things need to be stated clearly because they run through everything that follows.
 
