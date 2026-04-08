@@ -80,32 +80,29 @@ header a:hover {
 nav {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 4px;
 }
 
-nav a {
-  font-weight: 400;
-  font-size: 0.9rem;
-  color: var(--text-muted);
+nav button, nav .nav-icon {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  color: var(--text);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
 }
 
-nav a:hover {
-  color: var(--link);
+nav button:hover, nav .nav-icon:hover {
+  background: var(--border);
 }
 
 #theme-toggle {
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 0.3rem 0.5rem;
-  cursor: pointer;
   font-size: 1rem;
-  color: var(--text);
   line-height: 1;
-}
-
-#theme-toggle:hover {
-  border-color: var(--text-muted);
 }
 
 /* Main content */
@@ -542,21 +539,8 @@ footer {
   color: var(--link);
 }
 
-/* Tags button in nav */
-#tag-sidebar-toggle {
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 0.3rem 0.5rem;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 400;
-  color: var(--text-muted);
-  line-height: 1;
-}
-
-#tag-sidebar-toggle:hover {
-  border-color: var(--text-muted);
+/* Tags button in nav - active state */
+#tag-sidebar-toggle.active {
   color: var(--link);
 }
 
@@ -710,19 +694,9 @@ footer {
   margin: 0;
 }
 
-#timeline-sidebar-toggle {
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 0.3rem 0.5rem;
-  cursor: pointer;
-  font-size: 0.9rem;
-  color: var(--text-muted);
-}
-
-#timeline-sidebar-toggle:hover {
+/* Timeline button in nav - active state */
+#timeline-sidebar-toggle.active {
   color: var(--link);
-  border-color: var(--link);
 }
 
 .timeline-sidebar details {
