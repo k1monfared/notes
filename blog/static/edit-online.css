@@ -1,28 +1,20 @@
 /* Edit-online: inline editor layer for the blog viewer */
 
-/* Lock/unlock button */
-#edit-lock {
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 0.3rem 0.5rem;
-  cursor: pointer;
-  font-size: 1rem;
-  color: var(--text-muted);
-  line-height: 1;
+/* Lock/unlock button - SVG icon toggling */
+#edit-lock .lock-open {
+  display: none;
 }
 
-#edit-lock:hover {
-  border-color: var(--text-muted);
+body.edit-mode #edit-lock .lock-closed {
+  display: none;
+}
+
+body.edit-mode #edit-lock .lock-open {
+  display: inline;
+}
+
+body.edit-mode #edit-lock {
   color: var(--link);
-}
-
-#edit-lock::before {
-  content: "\1F512";
-}
-
-body.edit-mode #edit-lock::before {
-  content: "\1F513";
 }
 
 /* Auth dialog */
