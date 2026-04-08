@@ -1,5 +1,5 @@
 ---
-tags: math, observation
+tags: math, observation, society, relationship, communication
 ---
 # The Elevator
 
