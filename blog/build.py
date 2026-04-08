@@ -519,6 +519,7 @@ def build(local=False, force=False, cdn=None):
     tags_yml_path = BLOG_DIR / "tags.yml"
     grouped_tags = set()
     tag_sidebar_html = ""
+    descendant_map = {}  # tag -> set of all descendant tag names
 
     if tag_map:
         hierarchy = {}
@@ -530,6 +531,19 @@ def build(local=False, force=False, cdn=None):
             grouped_tags.add(parent)
             if children:
                 grouped_tags.update(collect_tree_tags(children))
+
+        # Build descendant map: parent tag -> all descendant tags (recursive)
+        def build_descendants(items):
+            for item in items:
+                if isinstance(item, dict):
+                    for parent, children in item.items():
+                        if children:
+                            descendant_map[parent] = collect_tree_tags(children)
+                            build_descendants(children)
+        for parent, children in hierarchy.items():
+            if children:
+                descendant_map[parent] = collect_tree_tags(children)
+                build_descendants(children)
 
         # Render grouped tags as nested details
         top_items = [{k: v} for k, v in hierarchy.items()]
@@ -712,14 +726,23 @@ def build(local=False, force=False, cdn=None):
         index_html = rewrite_cdn_urls(index_html, cdn)
     (SITE_DIR / "index.html").write_text(index_html, encoding="utf-8")
 
-    # Generate tag pages
+    # Generate tag pages (parent tags include all descendant posts)
     if tag_map:
         tag_tmpl = load_template("tag.html")
         for tag, tag_posts in tag_map.items():
+            all_posts = list(tag_posts)
+            if tag in descendant_map:
+                seen = {p["url_slug"] for p in all_posts}
+                for desc_tag in descendant_map[tag]:
+                    for p in tag_map.get(desc_tag, []):
+                        if p["url_slug"] not in seen:
+                            all_posts.append(p)
+                            seen.add(p["url_slug"])
+                all_posts.sort(key=lambda p: p["date"], reverse=True)
             tag_content = render_template(
                 tag_tmpl,
                 tag=html.escape(tag),
-                posts=make_post_list(tag_posts),
+                posts=make_post_list(all_posts),
             )
             tag_html = render_template(
                 base_tmpl, title=f"Posts tagged: {tag}", content=tag_content, sidebar=tag_sidebar_html, timeline_sidebar=timeline_sidebar_html
