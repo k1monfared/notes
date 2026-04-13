@@ -21,18 +21,18 @@ title from a [song](https://www.youtube.com/watch?v=S-7vMQyr_LI) by Tom Waits
 <details>
 <summary>Lyrics</summary>
 
-Hell above and Heaven below\
-All the trees are gone\
-The rain makes such a lovely sound\
-To those who are six feet under ground\
-The leaves will bury every year\
-And no one knows I'm gone
-
-Live me golden tell me dark\
-Hide from Graveyard John\
-The moon is full here every night\
-And I can bathe here in his light\
-The leaves will bury every year\
+Hell above and Heaven below<br>
+All the trees are gone<br>
+The rain makes such a lovely sound<br>
+To those who are six feet under ground<br>
+The leaves will bury every year<br>
+And no one knows I'm gone<br>
+<br>
+Live me golden tell me dark<br>
+Hide from Graveyard John<br>
+The moon is full here every night<br>
+And I can bathe here in his light<br>
+The leaves will bury every year<br>
 And no one knows I'm gone
 
 </details>
