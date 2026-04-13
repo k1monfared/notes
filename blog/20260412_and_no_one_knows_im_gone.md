@@ -1,5 +1,5 @@
 ---
-tags: politics, racism
+tags: politics, racism, iran, future, history
 ---
 # And No One Knows I'm Gone[^1]
 
