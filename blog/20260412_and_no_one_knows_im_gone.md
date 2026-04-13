@@ -1,7 +1,7 @@
 ---
 tags: politics, racism, iran, future, history
 ---
-# And No One Knows I'm Gone[^1]
+# And No One Knows I'm Gone
 
 [Warning: this is a very sad and upsetting post.]
 
@@ -16,7 +16,7 @@ Second, I don't think anything good comes out of the current situation. Since th
 The problem is that every time I want to write about this my brain shuts down, as if I'm in danger, a feeling of not being safe. I don't even feel safe writing what I have written above, and that might be partly the reason that voices like mine don't exist. So, I'm going to leave it at this so that at least there is not a complete absence of this. And to add to that, since last June, I, like many others, have absolutely no clue what the best thing that should happen is, what I hope for, and what I wish for. Until then, I had ideas, but now I have none. I've encouraged anyone who can get out to get out, sooner or later. All I see is darkness and misery for decades to come.
 
 ---
-[^1]: title from a [song](https://www.youtube.com/watch?v=S-7vMQyr_LI) by Tom Waits
+title from a [song](https://www.youtube.com/watch?v=S-7vMQyr_LI) by Tom Waits
 
 <details>
 <summary>Lyrics</summary>
