@@ -10,6 +10,7 @@ import sys
 import urllib.request
 import urllib.parse
 import webbrowser
+from collections import defaultdict
 from pathlib import Path
 
 MOVIES_FILE = Path(__file__).parent.parent / "movies.log"
@@ -394,6 +395,820 @@ def cmd_push(args):
     return 0
 
 
+# ── Pipeline: shared helpers ─────────────────────────────────────────────────
+
+PROP_KEY_RE = re.compile(r'^(\s*-?\s*)([A-Za-z][\w \-/&]*?)(\s*:\s*)(.*?)\s*$')
+
+
+def _norm_title(t):
+    return re.sub(r'\W+', '', t.lower()).strip()
+
+
+def extract_imdb_id(text):
+    """Return the canonical tt\\d+ from any string containing one, else None."""
+    if not text:
+        return None
+    m = re.search(r'tt\d+', text)
+    return m.group(0) if m else None
+
+
+def parse_entries(lines):
+    """Parse all checkbox entries with their section/category/subsection context.
+
+    Each entry is a dict:
+        line_index   — 0-based start (the [x]/[]/etc. line)
+        end_index    — 0-based exclusive end (line after last child)
+        indent       — checkbox-line indent in spaces
+        title        — text after the checkbox
+        status       — 'x', '-', '?', '' (lower-cased; '' for unwatched)
+        section, category, subsection — strings or None
+        raw_block    — the original lines [start:end_index], including newlines
+    """
+    entries = []
+    section = category = subsection = None
+    i = 0
+    while i < len(lines):
+        s = lines[i].rstrip('\n')
+        if not s.strip():
+            i += 1
+            continue
+        indent = len(s) - len(s.lstrip())
+        m = TODO_RE.match(s)
+
+        # Section header at indent 0
+        if indent == 0 and s.lstrip().startswith('- ') and m is None:
+            section = s.strip()[2:].rstrip(':').strip()
+            category = subsection = None
+            i += 1
+            continue
+        # Category header at indent 4 (non-todo)
+        if indent == 4 and s.lstrip().startswith('- ') and m is None:
+            category = s.strip()[2:].rstrip(':').strip()
+            subsection = None
+            i += 1
+            continue
+        # Subsection header at indent 8 (non-todo)
+        if indent == 8 and s.lstrip().startswith('- ') and m is None:
+            subsection = s.strip()[2:].rstrip(':').strip()
+            i += 1
+            continue
+        # Movie entry
+        if m is not None:
+            mi = len(m.group(1))
+            status = m.group(2).strip().lower()
+            title = m.group(3).strip()
+            j = i + 1
+            while j < len(lines):
+                cs = lines[j].rstrip('\n')
+                if not cs.strip():
+                    j += 1
+                    continue
+                ci = len(cs) - len(cs.lstrip())
+                if ci <= mi:
+                    break
+                j += 1
+            entries.append({
+                'line_index': i,
+                'end_index': j,
+                'indent': mi,
+                'title': title,
+                'status': status,
+                'section': section,
+                'category': category,
+                'subsection': subsection,
+                'raw_block': lines[i:j],
+            })
+            i = j
+            continue
+        i += 1
+    return entries
+
+
+def entry_imdb_id(entry):
+    for line in entry['raw_block']:
+        tt = extract_imdb_id(line)
+        if tt:
+            return tt
+    return None
+
+
+def entry_year(entry):
+    for line in entry['raw_block']:
+        m = re.match(r'^\s*-?\s*Year\s*:\s*(\d{4})', line, re.IGNORECASE)
+        if m:
+            return m.group(1)
+    return None
+
+
+def entry_has_review(entry):
+    for line in entry['raw_block'][1:]:
+        if re.match(r'^\s*-?\s*review\s*:', line, re.IGNORECASE):
+            return True
+    return False
+
+
+def entry_recommender_values(entry):
+    """Return the value strings of every Recommender line on this entry."""
+    out = []
+    for line in entry['raw_block'][1:]:
+        m = re.match(r'^\s*-?\s*Recommender\s*:\s*(.*?)\s*$', line, re.IGNORECASE)
+        if m:
+            out.append(m.group(1))
+    return out
+
+
+def find_section_category_end(lines, section_name, category_name=None):
+    """Locate the end of <section> or <section> > <category>.
+
+    Returns (insert_idx, placeholder_idx_or_None). insert_idx is the line
+    where new children should be inserted (one past the last existing child).
+    placeholder_idx points at the lone '- ' placeholder if one exists, so the
+    caller can splice it out on the first real insert.
+    """
+    section_lower = section_name.lower()
+    cat_lower = category_name.lower() if category_name else None
+
+    section_start = section_end = -1
+    for i, line in enumerate(lines):
+        s = line.rstrip('\n')
+        if not s.strip():
+            continue
+        indent = len(s) - len(s.lstrip())
+        if indent == 0 and s.lstrip().startswith('- '):
+            name = s.strip()[2:].rstrip(':').strip()
+            if section_start >= 0:
+                section_end = i
+                break
+            if name.lower() == section_lower:
+                section_start = i
+    if section_start < 0:
+        return None, None
+    if section_end < 0:
+        section_end = len(lines)
+
+    if not cat_lower:
+        # Find placeholder anywhere in the section's children
+        placeholder = None
+        for i in range(section_start + 1, section_end):
+            s = lines[i].rstrip('\n')
+            if s.strip() == '-':
+                placeholder = i
+                break
+        # insert_idx: just before the line that ended the section
+        insert_idx = section_end
+        # Trim trailing blank lines so we insert before them
+        while insert_idx > section_start + 1 and not lines[insert_idx - 1].strip():
+            insert_idx -= 1
+        return insert_idx, placeholder
+
+    # Find the named category inside the section
+    cat_start = cat_end = -1
+    for i in range(section_start + 1, section_end):
+        s = lines[i].rstrip('\n')
+        if not s.strip():
+            continue
+        indent = len(s) - len(s.lstrip())
+        if indent == 4 and s.lstrip().startswith('- ') and not TODO_RE.match(s):
+            name = s.strip()[2:].rstrip(':').strip()
+            if cat_start >= 0:
+                cat_end = i
+                break
+            if name.lower() == cat_lower:
+                cat_start = i
+    if cat_start < 0:
+        return None, None
+    if cat_end < 0:
+        cat_end = section_end
+
+    placeholder = None
+    for i in range(cat_start + 1, cat_end):
+        s = lines[i].rstrip('\n')
+        if s.strip() == '-':
+            placeholder = i
+            break
+    insert_idx = cat_end
+    while insert_idx > cat_start + 1 and not lines[insert_idx - 1].strip():
+        insert_idx -= 1
+    return insert_idx, placeholder
+
+
+def reindent_block(block_lines, old_indent, new_indent):
+    """Shift every non-empty line by (new - old) spaces; preserve blanks."""
+    delta = new_indent - old_indent
+    if delta == 0:
+        return list(block_lines)
+    out = []
+    for line in block_lines:
+        if not line.strip():
+            out.append(line)
+            continue
+        if delta > 0:
+            out.append(' ' * delta + line)
+        else:
+            # Strip up to |delta| leading spaces, but never past the content
+            n = abs(delta)
+            stripped = 0
+            j = 0
+            while j < len(line) and line[j] == ' ' and stripped < n:
+                j += 1
+                stripped += 1
+            out.append(line[j:])
+    return out
+
+
+# ── Pipeline: stage 1 — strip-imdb ───────────────────────────────────────────
+
+def stage_strip_imdb(lines):
+    """Remove (IMDb) annotations. Returns (new_lines, report, counts)."""
+    new_lines = []
+    report = []
+    n_trailing = 0
+    n_header = 0
+    trailing_re = re.compile(r'\s*\([Ii][Mm][Dd][Bb]\)\s*$')
+    header_re = re.compile(r'(\s*-?\s*[\w &/-]+?)\s*\([Ii][Mm][Dd][Bb]\)(\s*:)')
+    for i, line in enumerate(lines):
+        had_newline = line.endswith('\n')
+        body = line[:-1] if had_newline else line
+        new_body = body
+        if header_re.search(new_body):
+            new_body2 = header_re.sub(r'\1\2', new_body)
+            if new_body2 != new_body:
+                n_header += 1
+                new_body = new_body2
+        if trailing_re.search(new_body):
+            new_body2 = trailing_re.sub('', new_body)
+            if new_body2 != new_body:
+                n_trailing += 1
+                new_body = new_body2
+        new_line = new_body + ('\n' if had_newline else '')
+        new_lines.append(new_line)
+        if new_line != line:
+            report.append(f'  STRIP L{i + 1}: {body.rstrip()!r}')
+    counts = {'trailing': n_trailing, 'header': n_header}
+    return new_lines, report, counts
+
+
+def cmd_strip_imdb(args):
+    lines = read_lines()
+    new_lines, report, counts = stage_strip_imdb(lines)
+    print(f'── strip-imdb ──')
+    if report and getattr(args, 'verbose', False):
+        for r in report[:50]:
+            print(r)
+        if len(report) > 50:
+            print(f'  ... (+{len(report) - 50} more)')
+    total = counts['trailing'] + counts['header']
+    print(f'STRIPPED  {total} lines  ({counts["trailing"]} trailing, {counts["header"]} header)')
+    if args.apply and total > 0:
+        write_lines(new_lines)
+        print(f'wrote {MOVIES_FILE}')
+    return 0
+
+
+# ── Pipeline: stage 2 — normalize-keys ───────────────────────────────────────
+
+KEY_NORMALIZE = {
+    'recommended by': 'Recommender',
+    'recommmender': 'Recommender',
+    'receommender': 'Recommender',
+    'directors': 'Director',
+}
+
+
+def stage_normalize_keys(lines):
+    new_lines = list(lines)
+    report = []
+    counts = {}
+    for i, line in enumerate(new_lines):
+        m = PROP_KEY_RE.match(line.rstrip('\n'))
+        if not m:
+            continue
+        lead, key, sep, value = m.group(1), m.group(2), m.group(3), m.group(4)
+        key_lower = key.strip().lower()
+        new_key = None
+        if key_lower in KEY_NORMALIZE:
+            new_key = KEY_NORMALIZE[key_lower]
+        elif key_lower == 'rating' and re.match(r'^\d+(\.\d+)?\s*/\s*10', value):
+            new_key = 'IMDB Rating'
+        if new_key and new_key != key:
+            had_newline = line.endswith('\n')
+            rebuilt = f'{lead}{new_key}{sep}{value}'
+            new_lines[i] = rebuilt + ('\n' if had_newline else '')
+            counts[key_lower] = counts.get(key_lower, 0) + 1
+            report.append(f'  RENAME L{i + 1}: {key!r} → {new_key!r}')
+    return new_lines, report, counts
+
+
+def cmd_normalize_keys(args):
+    lines = read_lines()
+    new_lines, report, counts = stage_normalize_keys(lines)
+    print(f'── normalize-keys ──')
+    if report and getattr(args, 'verbose', False):
+        for r in report[:50]:
+            print(r)
+        if len(report) > 50:
+            print(f'  ... (+{len(report) - 50} more)')
+    total = sum(counts.values())
+    parts = ', '.join(f'{k}={v}' for k, v in sorted(counts.items()))
+    print(f'RENAMED   {total} lines  ({parts or "none"})')
+    if args.apply and total > 0:
+        write_lines(new_lines)
+        print(f'wrote {MOVIES_FILE}')
+    return 0
+
+
+# ── Pipeline: stage 3 — dedupe ───────────────────────────────────────────────
+
+# Status rank: higher wins. None section means orphan; deprioritised.
+_SECTION_RANK = {
+    'watched': 5,
+    'to review': 4,
+    'skipped': 3,
+    'to watch': 2,
+}
+
+_RATED_CATEGORIES = {
+    'i highly recommend', 'i recommend', "i think it's a nice one",
+    "there's something in it", 'good entertainment/fun and/or well-made',
+    'not a good one', 'i highly discourage',
+}
+
+
+def _entry_rank(e):
+    """Tuple ranking — bigger is stronger. Used to pick a merge winner."""
+    section_score = _SECTION_RANK.get((e['section'] or '').lower(), 0)
+    cat = (e['category'] or '').lower()
+    if section_score == 5 and cat in _RATED_CATEGORIES:
+        cat_score = 3
+    elif section_score == 5 and cat == "i've watched it":
+        cat_score = 2
+    elif section_score == 5 and cat == 'to categorize':
+        cat_score = 1
+    else:
+        cat_score = 0
+    status_rank = {'x': 3, '-': 2, '?': 1}.get(e['status'], 0)
+    return (section_score, cat_score, status_rank, len(e['raw_block']))
+
+
+def _collect_props(entry):
+    """Return {key_lower: (orig_key, value, lead, sep, line_idx_in_block)} from entry block, in order."""
+    props = []
+    block = entry['raw_block']
+    for idx, line in enumerate(block[1:], start=1):
+        m = PROP_KEY_RE.match(line.rstrip('\n'))
+        if not m:
+            continue
+        lead, key, sep, value = m.group(1), m.group(2), m.group(3), m.group(4)
+        props.append({
+            'key_lower': key.strip().lower(),
+            'orig_key': key,
+            'lead': lead,
+            'sep': sep,
+            'value': value,
+            'line': line,
+            'block_idx': idx,
+        })
+    return props
+
+
+def _merge_blocks(winner, losers):
+    """Build a merged block from winner + losers, preserving all distinct
+    Recommender and review lines."""
+    out = list(winner['raw_block'])
+    win_props = _collect_props(winner)
+    win_key_set = {(p['key_lower'], p['value'].strip().lower()) for p in win_props}
+
+    # Where to insert new property lines: after the last existing property line
+    # in the winner, but before any deeper sub-bullets that belong to the last
+    # property (e.g. a Cast list). To keep this simple, we append at the end.
+    indent = winner['indent']
+    pad = ' ' * (indent + 4)
+    deep_pad = ' ' * (indent + 8)
+
+    # Collect added recommender values + reviews (with provenance)
+    added_recommenders = set(v.strip().lower() for v in entry_recommender_values(winner))
+    added_reviews = set()
+    for line in winner['raw_block'][1:]:
+        m = re.match(r'^\s*-?\s*review\s*:\s*(.*?)\s*$', line, re.IGNORECASE)
+        if m:
+            added_reviews.add(m.group(1).strip().lower())
+
+    new_recommender_lines = []
+    new_review_lines = []
+    new_other_lines = []
+    new_cast_members = []  # list of names to merge into Cast
+
+    # Existing winner cast (so we can dedupe)
+    existing_cast = set()
+    in_cast = False
+    win_cast_indent = None
+    for line in winner['raw_block'][1:]:
+        m = re.match(r'^(\s*)-?\s*cast\s*:', line, re.IGNORECASE)
+        if m:
+            in_cast = True
+            win_cast_indent = len(m.group(1))
+            continue
+        if in_cast:
+            stripped = line.rstrip('\n')
+            if not stripped.strip():
+                continue
+            li = len(stripped) - len(stripped.lstrip())
+            if li > win_cast_indent and stripped.lstrip().startswith('- '):
+                existing_cast.add(stripped.strip()[2:].strip().lower())
+            else:
+                in_cast = False
+
+    for loser in losers:
+        loser_props = _collect_props(loser)
+        prov = loser['section'] or '?'
+        if loser['category']:
+            prov += f' > {loser["category"]}'
+        if loser['subsection']:
+            prov += f' > {loser["subsection"]}'
+        # Recommenders
+        for v in entry_recommender_values(loser):
+            key = v.strip().lower()
+            if key and key not in added_recommenders:
+                added_recommenders.add(key)
+                new_recommender_lines.append(f'{pad}- Recommender: {v}\n')
+        # Reviews
+        in_review_continuation = False
+        for line in loser['raw_block'][1:]:
+            m = re.match(r'^\s*-?\s*review\s*:\s*(.*?)\s*$', line, re.IGNORECASE)
+            if m:
+                rv = m.group(1).strip()
+                key = rv.lower()
+                if key and key not in added_reviews:
+                    added_reviews.add(key)
+                    suffix = f' [from {prov}]'
+                    new_review_lines.append(f'{pad}- review: {rv}{suffix}\n')
+                    in_review_continuation = True
+                else:
+                    in_review_continuation = False
+                continue
+            # capture review continuation sub-bullets
+            if in_review_continuation:
+                stripped = line.rstrip('\n')
+                if not stripped.strip():
+                    continue
+                li = len(stripped) - len(stripped.lstrip())
+                if li > (indent + 4) and stripped.lstrip().startswith('- '):
+                    rebuilt = ' ' * (indent + 8) + stripped.lstrip()
+                    if rebuilt not in new_review_lines:
+                        new_review_lines.append(rebuilt if rebuilt.endswith('\n') else rebuilt + '\n')
+                    continue
+                in_review_continuation = False
+        # Cast members (from loser)
+        in_cast_l = False
+        l_cast_indent = None
+        for line in loser['raw_block'][1:]:
+            m = re.match(r'^(\s*)-?\s*cast\s*:', line, re.IGNORECASE)
+            if m:
+                in_cast_l = True
+                l_cast_indent = len(m.group(1))
+                continue
+            if in_cast_l:
+                stripped = line.rstrip('\n')
+                if not stripped.strip():
+                    continue
+                li = len(stripped) - len(stripped.lstrip())
+                if li > l_cast_indent and stripped.lstrip().startswith('- '):
+                    name = stripped.strip()[2:].strip()
+                    if name and name.lower() not in existing_cast:
+                        existing_cast.add(name.lower())
+                        new_cast_members.append(name)
+                else:
+                    in_cast_l = False
+        # Other props: only fill in keys missing from winner
+        for p in loser_props:
+            if p['key_lower'] in ('recommender', 'review', 'cast'):
+                continue
+            if any(wp['key_lower'] == p['key_lower'] for wp in win_props):
+                continue
+            new_other_lines.append(p['line'])
+            win_props.append(p)
+
+    # Append additions to the end of the block (after the last non-blank line)
+    insert_at = len(out)
+    while insert_at > 1 and not out[insert_at - 1].strip():
+        insert_at -= 1
+
+    additions = new_other_lines + new_recommender_lines + new_review_lines
+    if new_cast_members:
+        # Append into existing Cast block if present, else create a new one
+        if existing_cast:
+            # find the cast list end in `out` and append
+            cast_end = None
+            for j, line in enumerate(out):
+                if re.match(r'^\s*-?\s*cast\s*:', line, re.IGNORECASE):
+                    # find end
+                    k = j + 1
+                    while k < len(out):
+                        s = out[k].rstrip('\n')
+                        if not s.strip():
+                            k += 1
+                            continue
+                        li = len(s) - len(s.lstrip())
+                        if li <= (indent + 4):
+                            break
+                        k += 1
+                    cast_end = k
+                    break
+            if cast_end is not None:
+                cast_lines = [f'{deep_pad}- {n}\n' for n in new_cast_members]
+                out[cast_end:cast_end] = cast_lines
+                # adjust insert_at if it was past cast_end
+                if insert_at >= cast_end:
+                    insert_at += len(cast_lines)
+        else:
+            additions.append(f'{pad}- Cast:\n')
+            additions.extend(f'{deep_pad}- {n}\n' for n in new_cast_members)
+
+    if additions:
+        out[insert_at:insert_at] = additions
+    return out
+
+
+def stage_dedupe(lines):
+    """Returns (new_lines, report, counts). The new_lines may be shorter."""
+    entries = parse_entries(lines)
+    # Group by identity
+    by_imdb = defaultdict(list)
+    by_title_year = defaultdict(list)
+    by_title_only = defaultdict(list)
+    for e in entries:
+        tt = entry_imdb_id(e)
+        if tt:
+            by_imdb[tt].append(e)
+        else:
+            yr = entry_year(e)
+            key = (_norm_title(e['title']), yr) if yr else None
+            if key:
+                by_title_year[key].append(e)
+            else:
+                by_title_only[_norm_title(e['title'])].append(e)
+
+    report = []
+    counts = {'merged': 0, 'conflicts': 0, 'title_only': 0}
+
+    merge_groups = []
+    for tt, group in by_imdb.items():
+        if len(group) > 1:
+            merge_groups.append(('imdb', tt, group))
+    for key, group in by_title_year.items():
+        if len(group) > 1:
+            merge_groups.append(('title-year', key, group))
+
+    # Process groups
+    deletions = []   # list of (start, end) ranges to remove
+    replacements = []  # list of (start, end, new_block) for the winner
+    for kind, key, group in merge_groups:
+        # Conflict check: all in 'watched' but different categories
+        all_watched = all((e['section'] or '').lower() == 'watched' for e in group)
+        cats = {(e['category'] or '').lower() for e in group}
+        if all_watched and len(cats) > 1:
+            counts['conflicts'] += 1
+            locs = ', '.join(f'L{e["line_index"]+1} {e["section"]} > {e["category"]}' for e in group)
+            report.append(f'  CONFLICT  {group[0]["title"]!r} ({kind}={key})  in [{locs}] — please reconcile manually')
+            continue
+
+        # Pick winner
+        ranked = sorted(group, key=_entry_rank, reverse=True)
+        winner = ranked[0]
+        losers = ranked[1:]
+        merged_block = _merge_blocks(winner, losers)
+        replacements.append((winner['line_index'], winner['end_index'], merged_block))
+        for l in losers:
+            deletions.append((l['line_index'], l['end_index']))
+        counts['merged'] += 1
+        loc_w = f'L{winner["line_index"]+1} {winner["section"]} > {winner["category"]}'
+        report.append(f'  MERGED   {winner["title"]!r} ({kind}={key})  {len(group)}→1  winner={loc_w}')
+
+    for k, group in by_title_only.items():
+        if len(group) > 1:
+            counts['title_only'] += 1
+            locs = ', '.join(f'L{e["line_index"]+1}' for e in group)
+            report.append(f'  WARNING  title-only match {group[0]["title"]!r}  at [{locs}]')
+
+    # Apply replacements + deletions, processed bottom-up so indices stay valid
+    ops = []  # (start, end, new_block_or_empty)
+    for start, end, block in replacements:
+        ops.append((start, end, block))
+    for start, end in deletions:
+        ops.append((start, end, []))
+    ops.sort(key=lambda o: o[0], reverse=True)
+    new_lines = list(lines)
+    for start, end, block in ops:
+        new_lines[start:end] = block
+    return new_lines, report, counts
+
+
+def cmd_dedupe(args):
+    lines = read_lines()
+    new_lines, report, counts = stage_dedupe(lines)
+    print(f'── dedupe ──')
+    if report:
+        for r in report:
+            print(r)
+    print(f'MERGED    {counts["merged"]} groups | CONFLICTS {counts["conflicts"]} | TITLE-ONLY {counts["title_only"]}')
+    if args.apply and counts['merged'] > 0:
+        write_lines(new_lines)
+        print(f'wrote {MOVIES_FILE}')
+    return 0
+
+
+# ── Pipeline: stage 4 — route ────────────────────────────────────────────────
+
+def _derive_recommender(entry):
+    """Return a clean Recommender label from parent context, or None."""
+    sec = (entry['section'] or '').lower()
+    cat = entry['category']
+    sub = entry['subsection']
+    if sec != 'to watch':
+        return None
+    if cat and cat.lower() == 'festivals' and sub:
+        # Strip trailing URL: keep text before the first whitespace+http
+        label = re.sub(r'\s+https?://\S*$', '', sub).strip()
+        return label
+    if cat and cat.lower() == 'recommended by' and sub:
+        return sub.strip()
+    if cat and cat.lower().startswith('because of the director') and sub:
+        # Pull director name = text before first comma
+        name = sub.split(',', 1)[0].strip()
+        return f'Director: {name}'
+    if cat and not sub:
+        # Top-level category like "NYT 2025 top 100"
+        return cat.strip()
+    return None
+
+
+def _decide_destination(entry):
+    """Return ('section', 'category_or_None', target_indent) or None.
+
+    Idempotency rule: an entry is only routed if it's currently in a section
+    that is NOT a valid destination for its status.
+        [x]: valid sections are 'watched' (any category) and 'to review'.
+        [-]: valid section is 'skipped'.
+    """
+    sec = (entry['section'] or '').lower()
+    status = entry['status']
+    if status == 'x' and sec not in ('watched', 'to review'):
+        if entry_has_review(entry):
+            return ('watched', 'to categorize', 8)
+        return ('To review', None, 4)
+    if status == '-' and sec != 'skipped':
+        return ('Skipped', None, 4)
+    return None
+
+
+def stage_route(lines):
+    entries = parse_entries(lines)
+    routed = []
+    for e in entries:
+        dest = _decide_destination(e)
+        if dest is None:
+            continue
+        routed.append((e, dest))
+
+    report = []
+    counts = {'x_to_review': 0, 'x_to_categorize': 0, 'skipped': 0, 'recommender_added': 0}
+
+    if not routed:
+        return list(lines), report, counts
+
+    # Working copy: we'll build a fresh `out` by:
+    # 1. Removing every routed entry's block from the source.
+    # 2. Inserting new blocks under each destination.
+    # All by line index. Process source removals bottom-up so indices stay valid.
+
+    # First, prepare each routed entry's outgoing block (Recommender injected).
+    out_lines = list(lines)
+    grouped = {('watched', 'to categorize'): [], ('To review', None): [], ('Skipped', None): []}
+    for e, dest in routed:
+        sec, cat, target_indent = dest
+        block = list(e['raw_block'])
+        # Inject Recommender line if missing
+        existing = [v.lower() for v in entry_recommender_values(e)]
+        derived = None
+        if not existing:
+            derived = _derive_recommender(e)
+            if derived:
+                pad = ' ' * (e['indent'] + 4)
+                rec_line = f'{pad}- Recommender: {derived}\n'
+                block.insert(1, rec_line)
+                counts['recommender_added'] += 1
+        # Re-indent to destination
+        block = reindent_block(block, e['indent'], target_indent)
+        grouped[(sec, cat)].append((e, block, derived))
+        # Update counts
+        if (sec, cat) == ('watched', 'to categorize'):
+            counts['x_to_categorize'] += 1
+        elif (sec, cat) == ('To review', None):
+            counts['x_to_review'] += 1
+        elif (sec, cat) == ('Skipped', None):
+            counts['skipped'] += 1
+        # Build report line
+        marker = f'[{e["status"] or " "}]'
+        rec_note = ''
+        if derived:
+            rec_note = f' (recommender derived: {derived})'
+        elif existing:
+            rec_note = ' (recommender already set)'
+        dest_label = f'{sec}' + (f' > {cat}' if cat else '')
+        report.append(f'  MOVE  L{e["line_index"]+1:<5} {marker} {e["title"]!r:50} → {dest_label}{rec_note}')
+
+    # Step 1: cut source blocks (bottom-up)
+    cut_ranges = sorted([(e['line_index'], e['end_index']) for e, _ in routed], reverse=True)
+    for start, end in cut_ranges:
+        del out_lines[start:end]
+
+    # Re-locate destination headers in out_lines (since we just edited it).
+    # Insert each group's blocks in turn. After each insert, indices change,
+    # so re-locate destination before each group.
+    placeholder_consumed_by_dest = {}
+    for (sec, cat), items in grouped.items():
+        if not items:
+            continue
+        insert_idx, placeholder = find_section_category_end(out_lines, sec, cat)
+        if insert_idx is None:
+            report.append(f'  ERROR  destination {sec}{" > "+cat if cat else ""} not found — skipping {len(items)} items')
+            continue
+        # Consume placeholder: remove the lone "- " line
+        if placeholder is not None:
+            del out_lines[placeholder]
+            if placeholder < insert_idx:
+                insert_idx -= 1
+        # Splice all blocks in at insert_idx, in original-source order
+        bundle = []
+        for e, block, derived in items:
+            bundle.extend(block)
+        out_lines[insert_idx:insert_idx] = bundle
+
+    return out_lines, report, counts
+
+
+def cmd_route(args):
+    lines = read_lines()
+    new_lines, report, counts = stage_route(lines)
+    print(f'── route ──')
+    if report and getattr(args, 'verbose', False):
+        for r in report[:200]:
+            print(r)
+        if len(report) > 200:
+            print(f'  ... (+{len(report) - 200} more)')
+    total = counts['x_to_review'] + counts['x_to_categorize'] + counts['skipped']
+    print(f'MOVED     {total} entries  '
+          f'([x]→To review={counts["x_to_review"]}, '
+          f'[x]→to categorize={counts["x_to_categorize"]}, '
+          f'[-]→Skipped={counts["skipped"]}, '
+          f'recommenders added={counts["recommender_added"]})')
+    if args.apply and total > 0:
+        write_lines(new_lines)
+        print(f'wrote {MOVIES_FILE}')
+    return 0
+
+
+# ── Pipeline: orchestrator ───────────────────────────────────────────────────
+
+def cmd_cleanup(args):
+    """Run strip-imdb → normalize-keys → dedupe → route in one buffer."""
+    lines = read_lines()
+
+    lines, r1, c1 = stage_strip_imdb(lines)
+    print('── strip-imdb ──')
+    print(f'STRIPPED  {c1["trailing"] + c1["header"]} lines  ({c1["trailing"]} trailing, {c1["header"]} header)')
+
+    lines, r2, c2 = stage_normalize_keys(lines)
+    print('── normalize-keys ──')
+    parts = ', '.join(f'{k}={v}' for k, v in sorted(c2.items()))
+    print(f'RENAMED   {sum(c2.values())} lines  ({parts or "none"})')
+
+    lines, r3, c3 = stage_dedupe(lines)
+    print('── dedupe ──')
+    if r3:
+        for r in r3:
+            print(r)
+    print(f'MERGED    {c3["merged"]} groups | CONFLICTS {c3["conflicts"]} | TITLE-ONLY {c3["title_only"]}')
+
+    lines, r4, c4 = stage_route(lines)
+    print('── route ──')
+    total_moves = c4['x_to_review'] + c4['x_to_categorize'] + c4['skipped']
+    print(f'MOVED     {total_moves} entries  '
+          f'([x]→To review={c4["x_to_review"]}, '
+          f'[x]→to categorize={c4["x_to_categorize"]}, '
+          f'[-]→Skipped={c4["skipped"]}, '
+          f'recommenders added={c4["recommender_added"]})')
+
+    print('── summary ──')
+    total_changes = (c1['trailing'] + c1['header'] + sum(c2.values()) + c3['merged'] + total_moves)
+    print(f'TOTAL  {total_changes} changes ({"will write" if args.apply else "dry-run, no write"})')
+
+    if args.apply and total_changes > 0:
+        write_lines(lines)
+        print(f'wrote {MOVIES_FILE}')
+    return 0
+
+
 def cmd_help(args):
     """Show detailed help for all commands."""
     print("""movie - Manage movies.log
@@ -484,6 +1299,18 @@ def main():
     # help
     sub.add_parser("help", help="Show detailed help for all commands")
 
+    # pipeline stages
+    for name, helptext in [
+        ("strip-imdb", "Stage 1: remove (IMDb) annotations"),
+        ("normalize-keys", "Stage 2: canonicalise property keys"),
+        ("dedupe", "Stage 3: merge duplicate movie entries"),
+        ("route", "Stage 4: move misplaced [x] and [-] entries"),
+        ("cleanup", "Run all four pipeline stages in order"),
+    ]:
+        sp = sub.add_parser(name, help=helptext)
+        sp.add_argument("--apply", action="store_true", help="Write changes (default: dry-run)")
+        sp.add_argument("--verbose", "-v", action="store_true", help="Print per-line report")
+
     # placeholders
     sub.add_parser("list", help="List movies (coming soon)")
     sub.add_parser("move", help="Move a movie between sections (coming soon)")
@@ -503,6 +1330,11 @@ def main():
         "list": cmd_list,
         "move": cmd_move,
         "search": cmd_search,
+        "strip-imdb": cmd_strip_imdb,
+        "normalize-keys": cmd_normalize_keys,
+        "dedupe": cmd_dedupe,
+        "route": cmd_route,
+        "cleanup": cmd_cleanup,
     }
     sys.exit(commands[args.command](args))
 

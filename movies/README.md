@@ -44,6 +44,8 @@ When you add or edit a movie via the app, a GitHub Actions workflow automaticall
 
 This requires the `OMDB_API_KEY` repository secret to be set (Settings > Secrets > Actions).
 
+The enrichment step labels every fetched field with a trailing `(IMDb)`. Run `./movie strip-imdb --apply` (or the full `./movie cleanup --apply`) to remove those markers; the operation is idempotent and safe to re-run any time the file gets re-enriched.
+
 ## CLI Tool
 
 The `movie` script in this directory provides command-line management:
@@ -57,6 +59,33 @@ The `movie` script in this directory provides command-line management:
 ./movie push             # Commit and push changes
 ```
 
+### Cleanup pipeline
+
+A four-stage pipeline normalises and reorganises `movies.log`. Each stage is its own subcommand, defaults to dry-run, and takes `--apply` to write. All stages are idempotent.
+
+```bash
+./movie strip-imdb       # 1. remove "(IMDb)" annotations
+./movie normalize-keys   # 2. canonicalise property keys
+./movie dedupe           # 3. merge duplicate movie entries
+./movie route            # 4. move misplaced [x] and [-] entries
+./movie cleanup          # run all four stages in order
+```
+
+Add `--apply` to write changes, or `-v`/`--verbose` for per-line reports on stages 1, 2, and 4.
+
+What each stage does:
+
+- **strip-imdb** removes every `(IMDb)` suffix from value lines and inside `Cast (IMDb):`-style headers.
+- **normalize-keys** rewrites property keys to a canonical form: `recommended by`, `recommmender`, `receommender` → `Recommender`; `directors` → `Director`; bare `Rating` (when value is `<n>/10`) → `IMDB Rating`. Multi-role keys like `Director and screenwriter` are left untouched.
+- **dedupe** merges duplicate entries (matched by IMDb id, falling back to title + year). The winner is the entry in the strongest section (rated `watched` category > `to categorize` > `I've watched it` > `To review` > `Skipped` > `To Watch`). All distinct reviews and recommenders from every copy are preserved on the merged entry. Two copies *both* in `watched` under different categories are reported as conflicts, never auto-merged.
+- **route** moves every misplaced entry to its proper section:
+  - `[x]` with a review → `watched: > to categorize:`
+  - `[x]` without a review → top-level `- To review`
+  - `[-]` (skipped) → top-level `- Skipped`
+  - When the entry has no `Recommender` line, one is derived from the parent context (e.g. `Festivals > TIFF 2023` → `Recommender: TIFF 2023`; `Because of the director > Damien Chazelle, ...` → `Recommender: Director: Damien Chazelle`; top-level list categories like `NYT 2025 top 100` → that name).
+
+`cleanup` runs `strip-imdb → normalize-keys → dedupe → route` against a single in-memory buffer and writes once at the end (with `--apply`). The order matters: stripping `(IMDb)` lets dedupe see equal-value matches, and normalising keys ensures dedupe treats `recommended by` and `Recommender` as the same field.
+
 ## Data Format
 
 Movies are stored in `movies.log` using a hierarchical text format:
@@ -68,8 +97,14 @@ Movies are stored in `movies.log` using a hierarchical text format:
             - Director: Name
             - Year: 2024
             - review: Your review here
-            - IMDB Rating: 8.5/10 (IMDb)
-            - Genres: Drama, Thriller (IMDb)
+            - IMDB Rating: 8.5/10
+            - Genres: Drama, Thriller
+    - to categorize:
+        [x] Reviewed but not yet rated
+- To review
+    [x] Watched but no review yet
+- Skipped
+    [-] Movie I won't watch
 - To Watch
     - Recommended by
         - Person Name
@@ -78,4 +113,13 @@ Movies are stored in `movies.log` using a hierarchical text format:
                 - Director: Name
 ```
 
-Checkbox status: `[x]` watched, `[]` unwatched, `[-]` in-progress, `[?]` uncertain.
+Checkbox status: `[x]` watched, `[]` unwatched, `[-]` skipped (won't watch), `[?]` uncertain.
+
+Top-level sections:
+
+- **`watched:`** — entries you've watched and rated, organised into categories like `I highly recommend:`, `I recommend:`, `Good entertainment/fun and/or well-made:`, `Not a good one:`, `I highly discourage:`. The `to categorize:` and `I've watched it:` sub-buckets hold reviewed-but-unrated entries.
+- **`To review`** — `[x]` entries that have been watched but don't yet have a `review` line. Move from here into a `watched:` category once you've written a review.
+- **`Skipped`** — `[-]` entries you've decided not to watch.
+- **`To Watch`** — the active queue, grouped by `Festivals`, `Recommended by > <person>`, `Because of the director > <name>`, and ad-hoc list categories like `NYT 2025 top 100`.
+
+The `cleanup` pipeline above keeps these sections in sync: any `[x]` outside `watched:` or `To review` gets routed to its proper home, and any `[-]` outside `Skipped` ends up there.
