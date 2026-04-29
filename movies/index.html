@@ -118,7 +118,7 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
 .si { flex-shrink: 0; font-size: 14px; margin-top: 3px; }
 .si.watched    { color: var(--green); }
 .si.unwatched  { color: var(--txt2); }
-.si.in-progress{ color: var(--ora); }
+.si.skipped    { color: var(--txt2); opacity: 0.6; }
 .si.uncertain  { color: var(--txt2); }
 .mv-info { flex: 1; min-width: 0; }
 .mv-name { font-weight: 500; }
@@ -369,22 +369,48 @@ function parseTodo(tr) {
   if (!m) return null;
   const ch = (m[1] || '').toLowerCase().trim();
   return {
-    status: ch === 'x' ? 'watched' : ch === '-' ? 'in-progress' : ch === '?' ? 'uncertain' : 'unwatched',
+    status: ch === 'x' ? 'watched' : ch === '-' ? 'skipped' : ch === '?' ? 'uncertain' : 'unwatched',
     title: m[2].trim()
   };
 }
 
 function isTodo(tr) { return /^\[[x\-? ]?\]/i.test(tr); }
 
+// Walk every movie in a group tree, yielding each with its enclosing groups.
+function* walkMovies(groups) {
+  for (const g of groups) {
+    for (const m of g.movies) yield m;
+    yield* walkMovies(g.children);
+  }
+}
+
 function parseLog(text) {
   const lines = text.split('\n');
-  const rootSections = [];   // [{name, cats:[]}]
-  // cat = {name, root, movies:[], subs:[{name,movies:[]}]}
-  // movie = {status, title, indent, section, rootSection, subsection, props:{}}
+  // Each Group: { name, depth, indent, movies: [], children: [] }
+  // The data is a forest of top-level groups (depth 0); tabs render those.
+  // A Group can hold movies AND child groups; no "category must exist" rule.
+  const roots = [];
+  // Stack of groups currently in scope, sorted by ascending indent.
+  // stack[0] is the top-level group containing the cursor.
+  const stack = [];
 
-  let root = null, cat = null, sub = null, mov = null, movInd = -1, lastKey = null, collecting = null;
+  let mov = null, movInd = -1, lastKey = null, collecting = null;
 
   function finishMov() { mov = null; movInd = -1; lastKey = null; collecting = null; }
+
+  function popTo(indent) {
+    // Pop groups whose indent >= the line's indent (so we can attach a child).
+    while (stack.length && stack[stack.length - 1].indent >= indent) stack.pop();
+  }
+
+  function pushGroup(name, indent) {
+    const parent = stack.length ? stack[stack.length - 1] : null;
+    const g = { name, indent, depth: parent ? parent.depth + 1 : 0, movies: [], children: [] };
+    if (parent) parent.children.push(g);
+    else roots.push(g);
+    stack.push(g);
+    return g;
+  }
 
   function addProp(rawKey, val) {
     if (!mov) return;
@@ -447,50 +473,42 @@ function parseLog(text) {
     const tr  = raw.trim();
     if (!tr) continue;
 
-    // Root section (indent 0, starts with "- ", not a todo)
-    if (ind === 0 && tr.startsWith('- ') && !isTodo(tr.slice(2))) {
-      const name = tr.slice(2).replace(/:$/, '').trim();
-      root = { name, cats: [] };
-      rootSections.push(root);
-      cat = null; sub = null; finishMov();
-      continue;
+    // Group header: "- name" (or "- name:") that is NOT a todo, at any indent.
+    // We close any movie deeper than this header before opening a new group.
+    if (tr.startsWith('- ') && !isTodo(tr.slice(2))) {
+      // If this header is at or above the current movie's indent, the movie's done.
+      if (mov && ind <= movInd) finishMov();
+      // Only treat as a group header when not inside a movie's property scope.
+      if (!mov || ind <= movInd) {
+        popTo(ind);
+        const name = tr.slice(2).replace(/:$/, '').trim();
+        pushGroup(name, ind);
+        continue;
+      }
+      // else: it's a property-style "- key: value" handled below
     }
 
-    // Category section (indent 4, starts with "- ", not a todo)
-    if (ind === 4 && tr.startsWith('- ') && !isTodo(tr.slice(2))) {
-      const name = tr.slice(2).replace(/:$/, '').trim();
-      cat = { name, root: root?.name || '', movies: [], subs: [] };
-      root?.cats.push(cat);
-      sub = null; finishMov();
-      continue;
-    }
-
-    // Todo line → movie
+    // Todo line → movie, attached to the deepest enclosing group.
     if (isTodo(tr)) {
       const parsed = parseTodo(tr);
-      if (!parsed || !cat) continue;
-      if (ind <= 8) sub = null;          // movie at section level clears subsection
+      if (!parsed) continue;
+      // The movie's parent is the deepest group with indent < this line's indent.
+      popTo(ind);
+      const parent = stack.length ? stack[stack.length - 1] : null;
+      if (!parent) continue;  // top-level movie with no enclosing group — skip
+      // Build legacy section/subsection labels from the group path for search/filters.
+      const path = stack.map(g => g.name);
       mov = {
         status: parsed.status,
         title: parsed.title,
         indent: ind,
-        section: cat.name,
-        rootSection: root?.name || '',
-        subsection: sub?.name || null,
+        rootSection: path[0] || '',
+        section: path[1] || path[0] || '',
+        subsection: path[2] || null,
         props: {}
       };
       movInd = ind; lastKey = null; collecting = null;
-      cat.movies.push(mov);
-      if (sub) sub.movies.push(mov);
-      continue;
-    }
-
-    // Subsection (indent 8, "- ", not todo, and either no current movie or new-section context)
-    if (ind === 8 && tr.startsWith('- ') && cat && (!mov || ind <= movInd)) {
-      const name = tr.slice(2).replace(/:$/, '').trim();
-      sub = { name, movies: [] };
-      cat.subs.push(sub);
-      if (mov && ind <= movInd) finishMov();
+      parent.movies.push(mov);
       continue;
     }
 
@@ -547,12 +565,12 @@ function parseLog(text) {
     }
   }
 
-  return rootSections;
+  return roots;
 }
 
 // ── App state ────────────────────────────────────────────────────────────────
 
-let data  = [];   // rootSections[]
+let data  = [];   // forest of top-level Group nodes (one per tab)
 let rootI = 0;
 let sfilt = 'all';
 let sq    = '';
@@ -686,7 +704,7 @@ function advancedSearch(m, query) {
 // ── Render ───────────────────────────────────────────────────────────────────
 
 function siIcon(status) {
-  const icons = { watched: '✓', unwatched: '○', 'in-progress': '◑', uncertain: '?' };
+  const icons = { watched: '✓', unwatched: '○', skipped: '✗', uncertain: '?' };
   return `<span class="si ${status}">${icons[status] || '○'}</span>`;
 }
 
@@ -756,63 +774,70 @@ function movieRef(el) {
   return movieMap.get(Number(mv.dataset.mid));
 }
 
-function buildSection(cat) {
-  const filtered = cat.movies.filter(matches);
-  if (!filtered.length) return null;
+// Count matching movies recursively in a group (direct + descendants).
+function countMatches(group) {
+  let n = group.movies.filter(matches).length;
+  for (const c of group.children) n += countMatches(c);
+  return n;
+}
 
-  const watched = cat.movies.filter(m => m.status === 'watched').length;
-  const t = tier(cat.name);
+// Count watched (status === 'watched') movies recursively, ignoring filters.
+function countWatched(group) {
+  let n = group.movies.filter(m => m.status === 'watched').length;
+  for (const c of group.children) n += countWatched(c);
+  return n;
+}
 
-  const sec = document.createElement('div');
-  sec.className = 'sec';
-  if (t) sec.dataset.t = t;
+// Render a Group as either a top-level container (level 0, no header — the tab IS the header)
+// or as a collapsible section (.sec for level 1, .subsec for level 2+).
+function buildGroup(group, level) {
+  const matchedMovies = group.movies.filter(matches);
+  const total = countMatches(group);
+  if (!total) return null;
 
-  sec.innerHTML = `
-    <div class="sec-hdr" onclick="toggleSec(this.parentElement)">
-      <div class="sec-title">${esc(cat.name)}</div>
-      <div class="sec-meta">
-        <span>${filtered.length}</span>
+  // Level 0: render directly into a fragment, no surrounding section wrapper.
+  if (level === 0) {
+    const frag = document.createDocumentFragment();
+    for (const m of matchedMovies) frag.appendChild(buildMovieEl(m));
+    for (const child of group.children) {
+      const el = buildGroup(child, 1);
+      if (el) frag.appendChild(el);
+    }
+    return frag;
+  }
+
+  const watched = countWatched(group);
+  const t = tier(group.name);
+
+  const isTop = level === 1;
+  const wrapClass = isTop ? 'sec' : 'subsec';
+  const hdrClass  = isTop ? 'sec-hdr' : 'subsec-hdr';
+  const titleClass= isTop ? 'sec-title' : 'subsec-title';
+  const metaClass = isTop ? 'sec-meta' : 'subsec-meta';
+  const bodyClass = isTop ? 'sec-body' : 'subsec-body';
+
+  const wrap = document.createElement('div');
+  wrap.className = wrapClass;
+  if (t) wrap.dataset.t = t;
+
+  wrap.innerHTML = `
+    <div class="${hdrClass}" onclick="toggleSec(this.parentElement)">
+      <div class="${titleClass}">${esc(group.name)}</div>
+      <div class="${metaClass}">
+        <span>${total}</span>
         ${watched ? `<span style="color:var(--green)">${watched}✓</span>` : ''}
         <span class="arr">▶</span>
       </div>
     </div>
-    <div class="sec-body"></div>`;
+    <div class="${bodyClass}"></div>`;
 
-  const body = sec.querySelector('.sec-body');
-
-  // Group filtered movies preserving original order
-  const subsecMap = new Map();
-  const direct = [];
-
-  for (const m of filtered) {
-    if (m.subsection) {
-      if (!subsecMap.has(m.subsection)) subsecMap.set(m.subsection, []);
-      subsecMap.get(m.subsection).push(m);
-    } else {
-      direct.push(m);
-    }
+  const body = wrap.querySelector('.' + bodyClass);
+  for (const m of matchedMovies) body.appendChild(buildMovieEl(m));
+  for (const child of group.children) {
+    const el = buildGroup(child, level + 1);
+    if (el) body.appendChild(el);
   }
-
-  for (const m of direct) body.appendChild(buildMovieEl(m));
-
-  for (const [subname, smovies] of subsecMap) {
-    const subsec = document.createElement('div');
-    subsec.className = 'subsec';
-    subsec.innerHTML = `
-      <div class="subsec-hdr" onclick="toggleSec(this.parentElement)">
-        <div class="subsec-title">${esc(subname)}</div>
-        <div class="subsec-meta">
-          <span>${smovies.length}</span>
-          <span class="arr">▶</span>
-        </div>
-      </div>
-      <div class="subsec-body"></div>`;
-    const sbody = subsec.querySelector('.subsec-body');
-    for (const m of smovies) sbody.appendChild(buildMovieEl(m));
-    body.appendChild(subsec);
-  }
-
-  return sec;
+  return wrap;
 }
 
 function render() {
@@ -822,14 +847,12 @@ function render() {
   const content = document.getElementById('content');
   content.innerHTML = '';
 
-  const rootSec = data[rootI];
-  if (!rootSec) return;
+  const rootGroup = data[rootI];
+  if (!rootGroup) return;
 
-  let total = 0;
-  for (const cat of rootSec.cats) {
-    const el = buildSection(cat);
-    if (el) { content.appendChild(el); total += cat.movies.filter(matches).length; }
-  }
+  const total = countMatches(rootGroup);
+  const frag = buildGroup(rootGroup, 0);
+  if (frag) content.appendChild(frag);
 
   document.getElementById('stats').textContent =
     `${total} movie${total !== 1 ? 's' : ''}${sq ? ` matching "${sq}"` : ''}`;
@@ -875,17 +898,18 @@ function setFilter(type, value, btn) {
   render();
 }
 
-function collectGenres() {
+function genreCounts() {
   const counts = new Map();
-  for (const rs of data) {
-    for (const cat of rs.cats) {
-      for (const m of cat.movies) {
-        for (const g of parseGenres(m)) {
-          counts.set(g, (counts.get(g) || 0) + 1);
-        }
-      }
+  for (const m of walkMovies(data)) {
+    for (const g of parseGenres(m)) {
+      counts.set(g, (counts.get(g) || 0) + 1);
     }
   }
+  return counts;
+}
+
+function collectGenres() {
+  const counts = genreCounts();
   allGenres = [...counts.keys()].sort();
   selectedGenres = new Set(allGenres);
   renderGenres(counts);
@@ -893,18 +917,7 @@ function collectGenres() {
 
 function renderGenres(counts) {
   const el = document.getElementById('genre-list');
-  if (!counts) {
-    counts = new Map();
-    for (const rs of data) {
-      for (const cat of rs.cats) {
-        for (const m of cat.movies) {
-          for (const g of parseGenres(m)) {
-            counts.set(g, (counts.get(g) || 0) + 1);
-          }
-        }
-      }
-    }
-  }
+  if (!counts) counts = genreCounts();
   el.innerHTML = '';
   for (const g of allGenres) {
     const label = document.createElement('label');
