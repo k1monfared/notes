@@ -1,4 +1,4 @@
-const CACHE_NAME = 'movie-writer-v2';
+const CACHE_NAME = 'movie-writer-v3';
 const ASSETS = [
   './',
   './index.html',
