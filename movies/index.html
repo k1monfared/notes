@@ -143,6 +143,10 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
 .recommended-by .rec-name { color: var(--txt); font-weight: 500; }
 .imdb-link { display: inline-block; margin-top: 8px; color: var(--blue); font-size: 13px; text-decoration: none; }
 .imdb-link:hover { text-decoration: underline; }
+.action-row { display: flex; gap: 14px; margin-top: 8px; align-items: center; flex-wrap: wrap; }
+.action-row .imdb-link { margin-top: 0; }
+.edit-link { color: var(--txt2); font-size: 13px; text-decoration: none; }
+.edit-link:hover { color: var(--acc); text-decoration: underline; }
 
 /* ── Enrich button ── */
 .enrich-btn {
@@ -737,7 +741,12 @@ function movieDetail(m) {
   }
 
   const url = p.imdb && p.imdb.startsWith('http') ? p.imdb : null;
+  const slug = m.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  const editUrl = `../movie-writer/#m=${encodeURIComponent(slug)}`;
+  h += `<div class="action-row">`;
   if (url) h += `<a class="imdb-link" href="${esc(url)}" target="_blank" rel="noopener">View on IMDB ↗</a>`;
+  h += `<a class="edit-link" href="${editUrl}">Edit ↗</a>`;
+  h += `</div>`;
 
   if (needsEnrichment(m)) h += `<button class="enrich-btn" onclick="enrichMovie(this, movieRef(this))">Fetch IMDb info</button>`;
 
