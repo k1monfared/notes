@@ -35,7 +35,20 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
   background: var(--bg); border-bottom: 1px solid var(--bd);
   padding: 10px 14px 8px;
 }
-#hdr h1 { font-size: 1.25rem; color: var(--acc); margin-bottom: 8px; letter-spacing: .5px; }
+.title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+#hdr h1 { font-size: 1.25rem; color: var(--acc); letter-spacing: .5px; }
+.hdr-actions { display: flex; gap: 6px; align-items: center; }
+.hdr-icon-btn {
+  background: transparent; border: none; padding: 6px; cursor: pointer;
+  color: var(--txt2); border-radius: 6px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.hdr-icon-btn:hover { color: var(--txt); background: var(--bg2); }
+.hdr-icon-btn svg { display: block; }
+.hdr-icon-btn .lock-open { display: none; }
+.hdr-icon-btn.unlocked .lock-closed { display: none; }
+.hdr-icon-btn.unlocked .lock-open { display: block; }
+.hdr-icon-btn.unlocked { color: var(--green); }
 .search-row { display: flex; gap: 8px; align-items: center; }
 #search {
   flex: 1; padding: 7px 12px;
@@ -288,12 +301,49 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
   .dk { font-size: 11px; color: var(--acc); margin-top: 4px; }
   #sidebar { width: 100%; }
 }
+
+/* ── Login overlay ── */
+.login-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200; padding: 16px;
+}
+.login-dialog {
+  background: var(--bg); border: 1px solid var(--bd); border-radius: 10px;
+  padding: 18px 18px 14px; width: 100%; max-width: 420px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.3);
+}
+.login-dialog h3 { color: var(--acc); margin-bottom: 8px; }
+.login-dialog p  { font-size: 13px; color: var(--txt2); margin-bottom: 12px; line-height: 1.5; }
+.login-dialog code { background: var(--bg2); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+.login-dialog input[type=password] {
+  width: 100%; padding: 8px 10px; border: 1px solid var(--bd);
+  background: var(--bg2); color: var(--txt); border-radius: 6px; font-size: 14px;
+  margin-bottom: 8px;
+}
+.login-dialog input:focus { outline: none; border-color: var(--acc); }
+.login-error { color: var(--red); font-size: 12px; min-height: 16px; margin-bottom: 8px; }
+.login-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.login-actions button {
+  padding: 7px 14px; border: 1px solid var(--bd); border-radius: 6px;
+  background: var(--bg); color: var(--txt); font-size: 13px; cursor: pointer;
+}
+.login-actions button.primary { background: var(--acc); color: var(--bg); border-color: var(--acc); }
+.login-actions button:disabled { opacity: 0.5; cursor: not-allowed; }
 </style>
 </head>
 <body>
 
 <div id="hdr">
-  <h1>Movies</h1>
+  <div class="title-row">
+    <h1>Movies</h1>
+    <div class="hdr-actions">
+      <button id="edit-lock" class="hdr-icon-btn" aria-label="Edit mode" title="Edit mode">
+        <svg class="lock-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        <svg class="lock-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 019.9-1"/></svg>
+      </button>
+    </div>
+  </div>
   <div class="search-row">
     <input type="search" id="search" placeholder="Search… (genre:comedy, director:nolan, title:dark, review:brilliant)" autocomplete="off">
     <button id="filter-toggle" onclick="toggleSidebar()">Filters</button>
@@ -1247,6 +1297,100 @@ async function init() {
   }
 }
 
+// ── Edit-mode lock (login → redirect to /movie-writer/) ─────────────────────
+
+const TOKEN_KEY = 'gh_token';
+const REPO = 'k1monfared/notes';
+const EDITOR_URL = '../movie-writer/';
+
+function isAuthenticated() { return !!localStorage.getItem(TOKEN_KEY); }
+
+function setLockState() {
+  const btn = document.getElementById('edit-lock');
+  if (!btn) return;
+  btn.classList.toggle('unlocked', isAuthenticated());
+  btn.title = isAuthenticated() ? 'Open editor' : 'Edit mode (sign in)';
+}
+
+async function validateToken(token) {
+  try {
+    const res = await fetch(`https://api.github.com/repos/${REPO}`, {
+      headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github.v3+json' },
+    });
+    if (!res.ok) return { valid: false, error: `HTTP ${res.status}` };
+    const data = await res.json();
+    if (!data.permissions || !data.permissions.push) {
+      return { valid: false, error: 'Token lacks write permission for this repo' };
+    }
+    return { valid: true };
+  } catch (err) {
+    return { valid: false, error: err.message };
+  }
+}
+
+function showLoginDialog() {
+  const overlay = document.createElement('div');
+  overlay.className = 'login-overlay';
+  overlay.innerHTML = `
+    <div class="login-dialog">
+      <h3>Connect to GitHub</h3>
+      <p>Paste a fine-grained Personal Access Token for <code>${REPO}</code> with
+        <strong>Contents read/write</strong> permission.
+        <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Create one</a>.
+      </p>
+      <input type="password" id="login-token" placeholder="github_pat_..." autocomplete="off">
+      <div class="login-error" id="login-error"></div>
+      <div class="login-actions">
+        <button id="login-cancel">Cancel</button>
+        <button id="login-connect" class="primary">Connect</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  const input = overlay.querySelector('#login-token');
+  const err   = overlay.querySelector('#login-error');
+  const cancel = overlay.querySelector('#login-cancel');
+  const connect = overlay.querySelector('#login-connect');
+  input.focus();
+
+  const close = () => overlay.remove();
+  cancel.addEventListener('click', close);
+  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+  document.addEventListener('keydown', function onEsc(e) {
+    if (e.key === 'Escape') { close(); document.removeEventListener('keydown', onEsc); }
+  });
+
+  connect.addEventListener('click', async () => {
+    const token = input.value.trim();
+    if (!token) { err.textContent = 'Please enter a token.'; return; }
+    connect.disabled = true; connect.textContent = 'Validating…';
+    const result = await validateToken(token);
+    if (result.valid) {
+      localStorage.setItem(TOKEN_KEY, token);
+      close();
+      window.location.href = EDITOR_URL;
+    } else {
+      err.textContent = result.error;
+      connect.disabled = false; connect.textContent = 'Connect';
+    }
+  });
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') connect.click(); });
+}
+
+function setupLockButton() {
+  const btn = document.getElementById('edit-lock');
+  if (!btn) return;
+  setLockState();
+  btn.addEventListener('click', () => {
+    if (isAuthenticated()) {
+      window.location.href = EDITOR_URL;
+    } else {
+      showLoginDialog();
+    }
+  });
+}
+
+setupLockButton();
 init();
 </script>
 </body>
