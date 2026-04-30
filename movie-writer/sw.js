@@ -1,4 +1,4 @@
-const CACHE_NAME = 'movie-writer-v1';
+const CACHE_NAME = 'movie-writer-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -7,6 +7,7 @@ const ASSETS = [
   './js/auth.js',
   './js/github.js',
   './js/movies.js',
+  './js/route.js',
   './js/storage.js',
   './manifest.json',
 ];
