@@ -20,8 +20,11 @@ class Handler(SimpleHTTPRequestHandler):
             super().do_GET()
 
     def end_headers(self):
-        if self.path and self.path.endswith(".log"):
-            self.send_header("Cache-Control", "no-store")
+        # In dev, never let the browser cache anything — modules and CSS
+        # need to reflect on-disk edits without manual cache-busting.
+        self.send_header("Cache-Control", "no-store, must-revalidate")
+        self.send_header("Pragma", "no-cache")
+        self.send_header("Expires", "0")
         super().end_headers()
 
     def do_POST(self):

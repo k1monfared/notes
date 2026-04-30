@@ -12,13 +12,16 @@
 //     placeholder line on first insert. Returns the new lines array.
 
 import {
-  findSectionEnd, extractBlock, reindentBlock,
+  findSectionEnd, extractBlock, reindentBlock, findToWatchInsert,
 } from './movies.js';
 
 const TODO_RE = /^(\s*)\[([x\-? ]?)\]\s*(.+?)\s*$/i;
 
 const VALID_X_SECTIONS = new Set(['watched', 'to review']);
 const VALID_DASH_SECTIONS = new Set(['skipped']);
+// Sections from which an entry should be ejected back to To Watch when its
+// status returns to unwatched/uncertain.
+const ACTIVE_HOMES = new Set(['watched', 'to review', 'skipped']);
 
 // Indent at which the entry's checkbox line lives in each destination.
 const DESTINATION_INDENT = {
@@ -32,14 +35,17 @@ function destKey(section, category) {
 }
 
 // Decide where a movie *should* live given its current state. Returns
-// { section, category } or null if the entry is already in a valid spot.
+// { section, category, toWatchEject? } or null if no move is needed.
 //
-// Rules (matching the Python stage):
+// Rules (matching the Python stage + the "back to To Watch" follow-up):
 //   [x] outside watched/To review:
 //     has review → ('watched', 'to categorize')
 //     no review  → ('To review', null)
 //   [-] outside Skipped → ('Skipped', null)
-//   [] or [?] → null (untouched)
+//   [] or [?] currently in watched / To review / Skipped → eject back to
+//     'To Watch' (placement uses findToWatchInsert, honouring an existing
+//     `Recommended by > <name>` subsection if the entry has a Recommender).
+//   otherwise → null
 export function decideDestination(entry) {
   const sec = (entry.section || '').toLowerCase();
   const status = entry.status;
@@ -51,6 +57,9 @@ export function decideDestination(entry) {
   }
   if (status === '-' && !VALID_DASH_SECTIONS.has(sec)) {
     return { section: 'Skipped', category: null };
+  }
+  if ((status === '' || status === '?') && ACTIVE_HOMES.has(sec)) {
+    return { section: 'To Watch', category: null, toWatchEject: true };
   }
   return null;
 }
@@ -107,9 +116,10 @@ function findEndOfBlock(lines, movieIdx, movieIndent) {
 
 // Move an entry's block to (targetSection, targetCategory). Returns the new
 // lines array or null on failure (e.g. destination not found).
+//
+// Special case: `targetSection === 'To Watch'` uses `findToWatchInsert` so
+// we honour the existing subsection structure (Recommended by > <name>).
 export function applyMove(lines, entry, targetSection, targetCategory) {
-  const targetIndent = DESTINATION_INDENT[destKey(targetSection, targetCategory)] ?? 8;
-
   // 1. Extract the entry's block (checkbox line + child lines).
   const block = extractBlock(lines, entry.lineIndex, entry.indent);
   if (block.length === 0) return null;
@@ -119,22 +129,34 @@ export function applyMove(lines, entry, targetSection, targetCategory) {
   const blockEnd = entry.lineIndex + block.length;
   out.splice(entry.lineIndex, blockEnd - entry.lineIndex);
 
-  // 3. Re-indent the block to land at the destination indent.
+  // 3. To-Watch eject: pick the right subsection via findToWatchInsert.
+  if ((targetSection || '').toLowerCase() === 'to watch') {
+    // Use the entry's first recommender as the subsection key, if any.
+    const recRaw = entry.props?.recommenders?.[0]
+      || (entry.props?.recommender ? entry.props.recommender.split(';')[0].trim() : '');
+    const insert = findToWatchInsert(out, recRaw || null);
+    if (!insert) return null;
+    let { index: insertIdx, indent: targetIndent, newLines } = insert;
+    if (newLines) {
+      for (const nl of newLines) out.splice(insertIdx++, 0, nl);
+    }
+    const reindented = reindentBlock(block, entry.indent, targetIndent);
+    out.splice(insertIdx, 0, ...reindented);
+    return out;
+  }
+
+  // 4. Standard destinations (watched > to categorize / To review / Skipped).
+  const targetIndent = DESTINATION_INDENT[destKey(targetSection, targetCategory)] ?? 8;
   const reindented = reindentBlock(block, entry.indent, targetIndent);
 
-  // 4. Locate the destination insert point in the post-cut buffer.
   const dest = findSectionEnd(out, targetSection, targetCategory);
   if (!dest) return null;
 
   let { insertIdx, placeholderIdx } = dest;
-
-  // 5. Consume the "- " placeholder line if present (first insert).
   if (placeholderIdx !== null) {
     out.splice(placeholderIdx, 1);
     if (placeholderIdx < insertIdx) insertIdx--;
   }
-
-  // 6. Splice the block in.
   out.splice(insertIdx, 0, ...reindented);
   return out;
 }
