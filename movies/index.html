@@ -83,6 +83,15 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
 }
 .tab:hover { color: var(--txt); }
 .tab.on { color: var(--acc); border-bottom-color: var(--acc); }
+.tab.empty { opacity: 0.55; }
+.tab.empty.on { opacity: 1; }
+.tab-count {
+  display: inline-block; padding: 1px 6px; margin-left: 4px;
+  font-size: 11px; font-weight: 600; border-radius: 8px;
+  background: var(--bg2); color: var(--txt2);
+}
+.tab.on .tab-count { background: var(--acc); color: var(--bg); }
+.tab.empty .tab-count { color: var(--txt2); background: transparent; }
 
 /* ── Stats ── */
 #stats { padding: 5px 14px; color: var(--txt2); font-size: 12px; border-bottom: 1px solid var(--bd); }
@@ -1055,10 +1064,27 @@ function render() {
   const content = document.getElementById('content');
   content.innerHTML = '';
 
+  // Compute hits per tab once so badges and routing share the same numbers.
+  const hits = data.map(rs => countMatches(rs));
+  const totalAcrossTabs = hits.reduce((a, b) => a + b, 0);
+
+  // Auto-switch: when there's an active search and the current tab has zero
+  // matches, jump to the first tab that has any so the user lands on results.
+  const querying = !!sq.trim();
+  if (querying && hits[rootI] === 0 && totalAcrossTabs > 0) {
+    const idx = hits.findIndex(n => n > 0);
+    if (idx !== -1 && idx !== rootI) {
+      rootI = idx;
+      return render();
+    }
+  }
+
+  // Tab badges show per-tab counts so cross-tab matches are visible at a glance.
+  renderTabs(hits);
+
   const rootGroup = data[rootI];
   if (!rootGroup) return;
-
-  const total = countMatches(rootGroup);
+  const total = hits[rootI];
   const frag = buildGroup(rootGroup, 0);
   if (frag) content.appendChild(frag);
 
@@ -1067,28 +1093,33 @@ function render() {
 
   if (!total) {
     const q = sq.trim();
-    if (q) {
-      content.innerHTML =
-        `<div class="center">No movies match "${esc(q)}".` +
-        `<br><button class="search-add-btn edit-only" data-action="search-add" data-title="${esc(q)}">+ Add "${esc(q)}"</button>` +
-        `</div>`;
+    let body;
+    if (q && totalAcrossTabs === 0) {
+      // No hits anywhere → offer to add this title.
+      body = `No movies match "${esc(q)}" anywhere.` +
+        `<br><button class="search-add-btn edit-only" data-action="search-add" data-title="${esc(q)}">+ Add "${esc(q)}"</button>`;
+    } else if (q) {
+      // Defensive: should be rare since auto-switch usually moves us.
+      body = `No movies match "${esc(q)}" in <strong>${esc(rootGroup.name)}</strong>.`;
     } else {
-      content.innerHTML = '<div class="center">No movies found.</div>';
+      body = `No movies in <strong>${esc(rootGroup.name)}</strong>.`;
     }
+    content.innerHTML = `<div class="center">${body}</div>`;
   }
 }
 
-function renderTabs() {
+function renderTabs(precomputedHits) {
   const el = document.getElementById('tabs');
   el.innerHTML = '';
+  const hits = precomputedHits || data.map(rs => countMatches(rs));
   data.forEach((rs, i) => {
     const tab = document.createElement('div');
-    tab.className = 'tab' + (i === rootI ? ' on' : '');
-    tab.textContent = rs.name;
+    tab.className = 'tab' + (i === rootI ? ' on' : '') + (hits[i] === 0 ? ' empty' : '');
+    tab.dataset.idx = i;
+    tab.innerHTML = `<span class="tab-name">${esc(rs.name)}</span> <span class="tab-count">${hits[i]}</span>`;
     tab.onclick = () => {
       rootI = i;
-      document.querySelectorAll('.tab').forEach((t, j) => t.classList.toggle('on', j === i));
-      render();
+      render();  // render() will re-call renderTabs with fresh counts
     };
     el.appendChild(tab);
   });
