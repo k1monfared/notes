@@ -47,6 +47,13 @@ export function parseMovies(text) {
     return g;
   }
 
+  function pushNote(text) {
+    if (!mov) return;
+    if (!text) return;
+    mov.props.notes = mov.props.notes || [];
+    mov.props.notes.push(text);
+  }
+
   function setProp(rawKey, val) {
     if (!mov) return;
     const key = rawKey.toLowerCase().trim();
@@ -98,7 +105,10 @@ export function parseMovies(text) {
     } else if (key === 'tag' || key === 'tags') {
       p.tags = (v ? v.split(',').map(s => s.trim()).filter(Boolean) : []);
     } else if (key === 'notes' || key === 'because of') {
-      p.notes = (p.notes ? p.notes + '; ' : '') + v;
+      pushNote(v);
+    } else {
+      // Unknown property → keep as a free-form note in original "key: value" form
+      pushNote(`${rawKey.trim()}: ${v}`);
     }
   }
 
@@ -191,14 +201,14 @@ export function parseMovies(text) {
           if (propText.startsWith('http')) {
             mov.props.imdb = mov.props.imdb || propText;
           } else {
-            mov.props.notes = (mov.props.notes ? mov.props.notes + '; ' : '') + propText;
+            pushNote(propText);
           }
         } else {
           // "- text" with no colon → review/cast continuation if collecting, else note
           if (collecting === 'cast' || collecting === 'review' || collecting === 'director' || collecting === 'synopsis') {
             handleSubItem(propText);
           } else {
-            mov.props.notes = (mov.props.notes ? mov.props.notes + '; ' : '') + propText;
+            pushNote(propText);
           }
         }
       } else if (ind > propInd) {
@@ -333,6 +343,63 @@ export function setProperty(lines, movieIdx, movieIndent, key, value) {
     }
   }
   lines.splice(insertAt, 0, `${propPad}- ${key}: ${value}\n`);
+  return lines;
+}
+
+// Known property keys (case-insensitive) — used by setNotes to decide which
+// child lines to keep vs. treat as note bullets.
+const KNOWN_KEYS = new Set([
+  'imdb', 'imdb link', 'link', 'imdb rating', 'rating',
+  'year', 'genres', 'genre', 'country', 'duration', 'released', 'synopsis',
+  'director', 'directors',
+  'cast', 'cast (imdb)',
+  'recommender', 'recommended by', 'recommmender', 'receommender', 'recommender by',
+  'review',
+  'tag', 'tags',
+  'because of',
+  // Bare URL "key" gets routed via setProp's startsWith('http') guard
+  'http', 'https',
+]);
+
+function isKnownKey(k) {
+  const key = k.toLowerCase().trim();
+  if (KNOWN_KEYS.has(key)) return true;
+  // Multi-role director variants
+  if (key.startsWith('director and') || key.startsWith('directors and')) return true;
+  return false;
+}
+
+// Replace the entry's "notes" lines (free-form bullets at prop indent that
+// aren't a known property and aren't a sub-bullet of cast/review/etc.) with
+// the given notes array. Each notes[i] becomes one `- <text>` bullet.
+export function setNotes(lines, movieIdx, movieIndent, notesArray) {
+  const propIndent = movieIndent + 4;
+  const propPad = ' '.repeat(propIndent);
+
+  // Walk children backward and remove lines that look like notes.
+  let endIdx = findInsertAfter(lines, movieIdx, movieIndent);
+  for (let i = endIdx - 1; i > movieIdx; i--) {
+    const s = lines[i].trimEnd();
+    if (!s.trim()) continue;
+    const ind = s.length - s.trimStart().length;
+    if (ind !== propIndent) continue;       // skip cast members / sub-bullets
+    if (!s.trimStart().startsWith('- ')) continue;
+    const propText = s.trim().slice(2);
+    const colonIdx = propText.indexOf(':');
+    let key = '';
+    if (colonIdx > 0) key = propText.slice(0, colonIdx);
+    if (key && isKnownKey(key)) continue;   // known property, leave alone
+    // Otherwise this is a note line — remove it.
+    lines.splice(i, 1);
+  }
+
+  // Insert the new notes at the end of the entry's children.
+  const insertAt = findInsertAfter(lines, movieIdx, movieIndent);
+  const cleaned = (notesArray || [])
+    .map(n => (n || '').trim())
+    .filter(Boolean)
+    .map(n => `${propPad}- ${n}\n`);
+  if (cleaned.length) lines.splice(insertAt, 0, ...cleaned);
   return lines;
 }
 
