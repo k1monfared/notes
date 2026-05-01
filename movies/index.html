@@ -926,8 +926,11 @@ function movieDetail(m) {
   const p = m.props;
   let h = '';
 
-  const review = p.review || p.notes;
-  if (review) h += `<div class="review"><div class="review-label">My review</div><div class="review-text">${esc(review)}</div></div>`;
+  // Only label as "My review" when there's an explicit `- review:` property.
+  // Free-form prose lines (no colon) end up in `notes` and shouldn't be
+  // misrepresented as something the user wrote about the movie.
+  if (p.review) h += `<div class="review"><div class="review-label">My review</div><div class="review-text">${esc(p.review)}</div></div>`;
+  if (p.notes && p.notes !== p.review) h += `<div class="review notes-block"><div class="review-label">Notes</div><div class="review-text">${esc(p.notes)}</div></div>`;
   if (p.recommender) h += `<div class="recommended-by">Recommended by <span class="rec-name">${esc(p.recommender)}</span></div>`;
 
   const rows = [];
