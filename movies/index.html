@@ -169,9 +169,9 @@ body.edit-mode .edit-only { display: inline-flex !important; }
 .mv-edit-btn:hover { color: var(--acc); border-color: var(--acc); }
 .mv-edit-btn svg { display: block; }
 body.edit-mode #edit-lock { color: var(--green); }
-body.edit-mode .lock-closed { display: none; }
-.lock-open { display: none; }
-body.edit-mode .lock-open { display: block; }
+#edit-lock .lock-open { display: none; }
+body.edit-mode #edit-lock .lock-closed { display: none; }
+body.edit-mode #edit-lock .lock-open { display: block; }
 
 /* ── Enrich button ── */
 .enrich-btn {
