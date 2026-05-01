@@ -410,7 +410,26 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
 'use strict';
 
 const isLocalHost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-const RAW = isLocalHost ? '/movies.log' : 'https://raw.githubusercontent.com/k1monfared/notes/main/movies.log';
+// Sources tried in order. Production prefers raw (always-fresh) but falls
+// back to the same-origin copy so the page still loads if raw is blocked
+// or rate-limited.
+const SOURCES = isLocalHost
+  ? ['/movies.log']
+  : ['https://raw.githubusercontent.com/k1monfared/notes/main/movies.log', '../movies.log'];
+
+async function fetchMoviesLog() {
+  let lastErr;
+  for (const url of SOURCES) {
+    try {
+      const resp = await fetch(url, { cache: 'no-store' });
+      if (resp.ok) return resp.text();
+      lastErr = new Error(`HTTP ${resp.status} from ${url}`);
+    } catch (err) {
+      lastErr = err;
+    }
+  }
+  throw lastErr || new Error('No source available');
+}
 
 // ── Parser ───────────────────────────────────────────────────────────────────
 
@@ -1265,9 +1284,7 @@ function copyEnrich(btn) {
 
 async function init() {
   try {
-    const resp = await fetch(RAW);
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const text = await resp.text();
+    const text = await fetchMoviesLog();
     data = parseLog(text);
 
     collectGenres();
