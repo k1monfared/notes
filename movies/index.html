@@ -370,7 +370,49 @@ body.edit-mode #edit-lock .lock-open { display: block; }
 .editor-dialog .dialog-actions button.btn-danger {
   background: var(--red); color: white; border-color: var(--red);
 }
+.editor-dialog .dialog-actions button.btn-secondary {
+  background: var(--bg2); color: var(--txt); border-color: var(--bd);
+}
 .editor-dialog .dialog-actions button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* IMDb candidate picker */
+.imdb-candidates {
+  display: flex; flex-direction: column; gap: 8px;
+  margin: 8px 0 12px; max-height: 60vh; overflow-y: auto;
+}
+.imdb-candidate {
+  display: flex; gap: 12px; padding: 8px;
+  border: 1px solid var(--bd); border-radius: 8px;
+  background: var(--bg2); cursor: pointer; text-align: left;
+  color: var(--txt);
+  transition: border-color .15s, background .15s;
+}
+.imdb-candidate:hover { border-color: var(--acc); }
+.imdb-candidate.selected { border-color: var(--acc); background: var(--bg3); }
+.imdb-candidate img {
+  width: 60px; height: 90px; object-fit: cover;
+  border-radius: 4px; flex-shrink: 0; background: var(--bg3);
+}
+.imdb-candidate .poster-placeholder {
+  width: 60px; height: 90px; background: var(--bg3);
+  border-radius: 4px; display: flex; align-items: center; justify-content: center;
+  font-size: 24px; flex-shrink: 0;
+}
+.imdb-candidate .cand-meta { display: flex; flex-direction: column; justify-content: center; gap: 4px; min-width: 0; }
+.imdb-candidate .cand-title { font-weight: 600; font-size: 14px; }
+.imdb-candidate .cand-sub { font-size: 12px; color: var(--txt2); }
+
+/* Duplicate preview */
+.dup-preview {
+  background: var(--bg2); border: 1px solid var(--bd);
+  border-radius: 6px; padding: 10px 12px; margin: 4px 0 12px;
+  font-size: 13px; line-height: 1.6;
+}
+.dup-row { padding: 2px 0; }
+.dup-row strong {
+  display: inline-block; min-width: 100px; color: var(--txt2);
+  text-transform: uppercase; font-size: 11px; letter-spacing: 0.04em;
+}
 
 /* ── Toast ── */
 .editor-toast {

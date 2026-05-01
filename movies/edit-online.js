@@ -200,6 +200,7 @@ function openEditDialog(title) {
       <div class="dialog-error" id="ed-error"></div>
       <div class="dialog-actions">
         <button class="btn-danger" id="ed-delete">Delete</button>
+        <button class="btn-secondary" id="ed-fetch-imdb">Fetch IMDb info</button>
         <span style="flex:1"></span>
         <button class="btn-cancel" id="ed-cancel">Cancel</button>
         <button class="btn-primary" id="ed-save">Save</button>
@@ -213,6 +214,24 @@ function openEditDialog(title) {
   overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
   document.addEventListener('keydown', function onEsc(e) {
     if (e.key === 'Escape') { close(); document.removeEventListener('keydown', onEsc); }
+  });
+
+  overlay.querySelector('#ed-fetch-imdb').addEventListener('click', async () => {
+    const fetchBtn = overlay.querySelector('#ed-fetch-imdb');
+    fetchBtn.disabled = true; fetchBtn.textContent = 'Searching…';
+    const titleNow = overlay.querySelector('#ed-title').value.trim() || entry.title;
+    const yearNow  = overlay.querySelector('#ed-year').value.trim() || p.year || '';
+    const result = await showImdbPicker(titleNow, yearNow);
+    if (result) {
+      try {
+        await applyImdbDetails(entry.title, result);
+        close();
+        return;
+      } catch (err) {
+        overlay.querySelector('#ed-error').textContent = 'Apply failed: ' + err.message;
+      }
+    }
+    fetchBtn.disabled = false; fetchBtn.textContent = 'Fetch IMDb info';
   });
 
   overlay.querySelector('#ed-save').addEventListener('click', async () => {
@@ -338,12 +357,14 @@ async function commitDelete(title) {
   }
 }
 
-async function commitAdd(payload) {
+async function commitAdd(payload, forceDuplicate = false) {
   saving = true;
   try {
     const text = window.__moviesText;
     const lines = splitLines(text);
-    if (findMovie(lines, payload.title)) throw new Error(`"${payload.title}" already exists`);
+    if (!forceDuplicate && findMovie(lines, payload.title)) {
+      throw new Error(`"${payload.title}" already exists`);
+    }
 
     const insert = findToWatchInsert(lines, payload.recommender || null);
     if (!insert) throw new Error('Could not find an insertion point in To Watch');
@@ -440,16 +461,252 @@ function openAddDialog() {
       year: overlay.querySelector('#add-year').value.trim(),
       review: overlay.querySelector('#add-review').value.trim(),
     };
+
+    // Duplicate detection: case-insensitive title match against the parsed file
+    const existing = findEntryByTitle(window.__moviesText, title)
+      || findEntryByTitleCi(window.__moviesText, title);
+    if (existing) {
+      const choice = await showDuplicateDialog(existing);
+      if (choice === 'cancel') return;
+      if (choice === 'edit-existing') {
+        close();
+        openEditDialog(existing.title);
+        return;
+      }
+      // 'add-anyway' → fall through
+    }
+
     overlay.querySelector('#add-save').disabled = true;
     overlay.querySelector('#add-save').textContent = 'Adding…';
     try {
-      await commitAdd(payload);
+      await commitAdd(payload, /* forceDuplicate */ !!existing);
       close();
     } catch (err) {
       errEl.textContent = 'Add failed: ' + err.message;
       overlay.querySelector('#add-save').disabled = false;
       overlay.querySelector('#add-save').textContent = 'Add';
     }
+  });
+}
+
+function findEntryByTitleCi(text, title) {
+  const titleLc = title.toLowerCase();
+  const parsed = parseMovies(text);
+  return parsed.movies.find(m => m.title.toLowerCase() === titleLc) || null;
+}
+
+// ── OMDb integration (browser-side, opt-in per click) ───────────────────────
+
+const OMDB_KEY = 'omdb_api_key';
+const getOmdbKey = () => localStorage.getItem(OMDB_KEY);
+const setOmdbKey = (k) => localStorage.setItem(OMDB_KEY, k.trim());
+
+async function ensureOmdbKey() {
+  let k = getOmdbKey();
+  if (k) return k;
+  return new Promise((resolve) => {
+    const overlay = document.createElement('div');
+    overlay.className = 'editor-dialog-overlay';
+    overlay.innerHTML = `
+      <div class="editor-dialog">
+        <h3>OMDb API key</h3>
+        <p class="dialog-hint">Paste your OMDb API key (free at
+        <a href="https://www.omdbapi.com/apikey.aspx" target="_blank" rel="noopener">omdbapi.com/apikey.aspx</a>).
+        Stored in localStorage; only sent to omdbapi.com.</p>
+        <input type="password" id="omdb-key" placeholder="1234abcd" autocomplete="off">
+        <div class="dialog-actions">
+          <button class="btn-cancel">Cancel</button>
+          <button class="btn-primary" id="omdb-save">Save</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    const input = overlay.querySelector('#omdb-key');
+    input.focus();
+    const done = (val) => { overlay.remove(); resolve(val); };
+    overlay.querySelector('.btn-cancel').addEventListener('click', () => done(null));
+    overlay.querySelector('#omdb-save').addEventListener('click', () => {
+      const v = input.value.trim();
+      if (!v) return;
+      setOmdbKey(v);
+      done(v);
+    });
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') overlay.querySelector('#omdb-save').click(); });
+    overlay.addEventListener('click', e => { if (e.target === overlay) done(null); });
+  });
+}
+
+async function omdbSearch(title, year) {
+  const key = await ensureOmdbKey();
+  if (!key) throw new Error('OMDb key not provided');
+  const params = new URLSearchParams({ apikey: key, s: title, type: 'movie' });
+  if (year) params.set('y', year);
+  const res = await fetch(`https://www.omdbapi.com/?${params}`);
+  const data = await res.json();
+  if (data.Response === 'False') return [];
+  return data.Search || [];
+}
+
+async function omdbDetails(imdbID) {
+  const key = await ensureOmdbKey();
+  if (!key) throw new Error('OMDb key not provided');
+  const params = new URLSearchParams({ apikey: key, i: imdbID, plot: 'short' });
+  const res = await fetch(`https://www.omdbapi.com/?${params}`);
+  const data = await res.json();
+  if (data.Response === 'False') return null;
+  return data;
+}
+
+// Build IMDb property lines for an entry (mirrors scripts/enrich_all.py
+// build_imdb_lines but without the "(IMDb)" suffix since cleanup strips it).
+function buildImdbPropertyLines(d, indent) {
+  const pad = ' '.repeat(indent + 4);
+  const deepPad = ' '.repeat(indent + 8);
+  const na = (v) => (v && v !== 'N/A') ? v : null;
+  const out = [];
+  const fields = [
+    ['Year',         na(d.Year)],
+    ['IMDB Rating',  na(d.imdbRating) ? `${d.imdbRating}/10` : null],
+    ['Genres',       na(d.Genre)],
+    ['Country',      na(d.Country)],
+    ['Duration',     na(d.Runtime)],
+    ['Released',     na(d.Released)],
+    ['Director',     na(d.Director)],
+    ['Synopsis',     na(d.Plot)],
+  ];
+  for (const [k, v] of fields) if (v) out.push(`${pad}- ${k}: ${v}\n`);
+  const actors = na(d.Actors);
+  if (actors) {
+    out.push(`${pad}- Cast:\n`);
+    for (const a of actors.split(',').slice(0, 5)) out.push(`${deepPad}- ${a.trim()}\n`);
+  }
+  if (d.imdbID) out.push(`${pad}- IMDB: https://www.imdb.com/title/${d.imdbID}/\n`);
+  return out;
+}
+
+// Open a picker, fetch candidates, let user choose / mark N/A / cancel.
+async function showImdbPicker(title, hintYear) {
+  let candidates;
+  try {
+    candidates = await omdbSearch(title, hintYear);
+    if (!candidates.length && hintYear) {
+      // Retry without year filter — handles wrong/missing year
+      candidates = await omdbSearch(title);
+    }
+  } catch (err) {
+    showToast('OMDb search failed: ' + err.message, 'error');
+    return null;
+  }
+
+  return new Promise((resolve) => {
+    const overlay = document.createElement('div');
+    overlay.className = 'editor-dialog-overlay';
+    const list = candidates.length
+      ? candidates.slice(0, 8).map(r => `
+        <button class="imdb-candidate" data-id="${esc(r.imdbID)}">
+          ${r.Poster && r.Poster !== 'N/A' ? `<img src="${esc(r.Poster)}" alt="">` : '<span class="poster-placeholder">🎬</span>'}
+          <div class="cand-meta">
+            <div class="cand-title">${esc(r.Title)}</div>
+            <div class="cand-sub">${esc(r.Year || '')} · ${esc(r.Type || '')}</div>
+          </div>
+        </button>`).join('')
+      : '<p class="dialog-hint">No matches in OMDb.</p>';
+    overlay.innerHTML = `
+      <div class="editor-dialog editor-dialog-wide">
+        <h3>Pick IMDb match for "${esc(title)}"${hintYear ? ' (' + esc(hintYear) + ')' : ''}</h3>
+        <div class="imdb-candidates">${list}</div>
+        <div class="dialog-actions">
+          <button class="btn-cancel">Cancel</button>
+          <span style="flex:1"></span>
+          <button class="btn-secondary" id="imdb-na">None of these (mark N/A)</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    const close = (result) => { overlay.remove(); resolve(result); };
+    overlay.querySelector('.btn-cancel').addEventListener('click', () => close(null));
+    overlay.querySelector('#imdb-na').addEventListener('click', () => close({ na: true }));
+    overlay.addEventListener('click', e => { if (e.target === overlay) close(null); });
+    overlay.querySelectorAll('.imdb-candidate').forEach(b => {
+      b.addEventListener('click', async () => {
+        const id = b.dataset.id;
+        b.classList.add('selected');
+        b.disabled = true;
+        try {
+          const d = await omdbDetails(id);
+          close(d);
+        } catch (err) {
+          showToast('Detail fetch failed: ' + err.message, 'error');
+          b.disabled = false;
+          b.classList.remove('selected');
+        }
+      });
+    });
+  });
+}
+
+// Apply IMDb data to an entry: replace existing IMDb-related properties,
+// then commit.
+async function applyImdbDetails(originalTitle, details) {
+  const text = window.__moviesText;
+  const lines = splitLines(text);
+  const found = findMovie(lines, originalTitle);
+  if (!found) throw new Error('Not found');
+  // Remove any existing IMDb fields (so re-pick replaces them cleanly)
+  for (const k of ['Year', 'IMDB Rating', 'Genres', 'Country', 'Duration', 'Released', 'Director', 'Synopsis', 'IMDB', 'Cast']) {
+    removeProperty(lines, found.index, found.indent, k);
+  }
+  if (details.na) {
+    setProperty(lines, found.index, found.indent, 'IMDB', 'N/A');
+    await pushAndRefresh(joinLines(lines), `${originalTitle}: mark IMDb N/A`);
+    showToast(`${originalTitle}: marked N/A`);
+    return;
+  }
+  const newProps = buildImdbPropertyLines(details, found.indent);
+  const insertAt = findInsertAfter(lines, found.index, found.indent);
+  lines.splice(insertAt, 0, ...newProps);
+  await pushAndRefresh(joinLines(lines), `Enrich ${originalTitle} from IMDb`);
+  showToast(`${originalTitle}: IMDb data applied`);
+}
+
+// ── Duplicate detection on Add ───────────────────────────────────────────────
+
+function previewExistingEntry(entry) {
+  const p = entry.props;
+  const rows = [];
+  if (entry.section || entry.category) {
+    const path = [entry.section, entry.category, entry.subsection].filter(Boolean).join(' › ');
+    rows.push(['Section', path]);
+  }
+  if (p.year) rows.push(['Year', p.year]);
+  if (p.director) rows.push(['Director', p.director]);
+  if (p.recommender) rows.push(['Recommender', p.recommender]);
+  if (p.review) rows.push(['Review', p.review.length > 120 ? p.review.slice(0, 120) + '…' : p.review]);
+  return rows.map(([k, v]) => `<div class="dup-row"><strong>${esc(k)}</strong> ${esc(v)}</div>`).join('');
+}
+
+function showDuplicateDialog(existing) {
+  return new Promise((resolve) => {
+    const overlay = document.createElement('div');
+    overlay.className = 'editor-dialog-overlay';
+    overlay.innerHTML = `
+      <div class="editor-dialog">
+        <h3>"${esc(existing.title)}" already exists</h3>
+        <div class="dup-preview">${previewExistingEntry(existing)}</div>
+        <div class="dialog-actions">
+          <button class="btn-cancel" data-act="cancel">Cancel</button>
+          <span style="flex:1"></span>
+          <button class="btn-secondary" data-act="add-anyway">Add anyway</button>
+          <button class="btn-primary" data-act="edit-existing">Edit existing</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    const done = (v) => { overlay.remove(); resolve(v); };
+    overlay.querySelectorAll('button[data-act]').forEach(b =>
+      b.addEventListener('click', () => done(b.dataset.act))
+    );
+    overlay.addEventListener('click', e => { if (e.target === overlay) done('cancel'); });
   });
 }
 

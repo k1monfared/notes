@@ -23,11 +23,11 @@ jobs:
       - name: Fix recommender properties
         run: python scripts/fix_recommenders.py
 
-      - name: Enrich movies with IMDb data
-        if: env.OMDB_API_KEY != ''
-        env:
-          OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
-        run: python scripts/enrich_all.py
+      # Note: scripts/enrich_all.py is intentionally NOT run here.
+      # IMDb enrichment is now opt-in per movie through the editor's
+      # interactive picker (movies/edit-online.js → showImdbPicker).
+      # That way a typo or ambiguous title never silently attaches the
+      # wrong metadata.
 
       - name: Auto-cleanup (strip-imdb, normalize-keys, dedupe, route)
         run: python movies/movie cleanup --apply
