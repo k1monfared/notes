@@ -15,7 +15,7 @@ import {
   buildMovieEntry, findToWatchInsert,
 } from '../movie-writer/js/movies.js';
 import { autoRoute, applyMove } from '../movie-writer/js/route.js';
-import { createCommit } from '../movie-writer/js/github.js';
+import { createCommit, getFile } from '../movie-writer/js/github.js';
 import {
   isAuthenticated, getToken, setToken, clearToken, validateToken,
 } from '../movie-writer/js/auth.js';
@@ -361,7 +361,33 @@ async function commitAdd(payload) {
 
 async function pushAndRefresh(newText, message) {
   await createCommit([{ path: 'movies.log', content: newText }], message);
+  // Show the local result immediately so the user sees their edit.
   await window.__refreshMoviesText(newText);
+
+  // The enrich + cleanup workflow runs after every push. Poll the file
+  // until its content differs from what we just pushed (i.e. the workflow
+  // has committed enrichment + dedupe + route + key-normalisation on top),
+  // then refresh the viewer with that post-pipeline version.
+  pollForEnrichment(newText).catch(err => {
+    console.warn('post-save refresh failed:', err);
+  });
+}
+
+async function pollForEnrichment(ourText, attempts = 0) {
+  // Wait up to ~90 seconds (15 polls × 6s) for the enrichment workflow
+  // to commit on top of ours.
+  if (attempts >= 15) return;
+  await new Promise(r => setTimeout(r, 6000));
+  try {
+    const file = await getFile('movies.log');
+    if (file.content !== ourText && file.content !== window.__moviesText) {
+      // The workflow committed a newer version. Pull it in.
+      await window.__refreshMoviesText(file.content);
+      showToast('Enrichment + cleanup applied');
+      return;
+    }
+  } catch { /* transient — keep polling */ }
+  return pollForEnrichment(ourText, attempts + 1);
 }
 
 // ── Add modal ────────────────────────────────────────────────────────────────
