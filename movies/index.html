@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Movies</title>
 <link rel="stylesheet" href="https://k1monfared.github.io/site_kit/css/base.css">
+<link rel="stylesheet" href="https://k1monfared.github.io/site_kit/css/nav.css">
+<link rel="stylesheet" href="https://k1monfared.github.io/site_kit/css/sidebar.css">
+<link rel="stylesheet" href="https://k1monfared.github.io/site_kit/css/lightbox.css">
+<link rel="stylesheet" href="https://k1monfared.github.io/site_kit/css/post-nav.css">
 <script src="https://k1monfared.github.io/site_kit/js/theme.js"></script>
 <style>
 :root {
@@ -45,10 +49,6 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
 }
 .hdr-icon-btn:hover { color: var(--txt); background: var(--bg2); }
 .hdr-icon-btn svg { display: block; }
-.hdr-icon-btn .lock-open { display: none; }
-.hdr-icon-btn.unlocked .lock-closed { display: none; }
-.hdr-icon-btn.unlocked .lock-open { display: block; }
-.hdr-icon-btn.unlocked { color: var(--green); }
 .search-row { display: flex; gap: 8px; align-items: center; }
 #search {
   flex: 1; padding: 7px 12px;
@@ -156,10 +156,22 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
 .recommended-by .rec-name { color: var(--txt); font-weight: 500; }
 .imdb-link { display: inline-block; margin-top: 8px; color: var(--blue); font-size: 13px; text-decoration: none; }
 .imdb-link:hover { text-decoration: underline; }
-.action-row { display: flex; gap: 14px; margin-top: 8px; align-items: center; flex-wrap: wrap; }
-.action-row .imdb-link { margin-top: 0; }
-.edit-link { color: var(--txt2); font-size: 13px; text-decoration: none; }
-.edit-link:hover { color: var(--acc); text-decoration: underline; }
+
+/* Edit-mode controls (only visible when body.edit-mode is set) */
+.edit-only { display: none !important; }
+body.edit-mode .edit-only { display: inline-flex !important; }
+.mv-edit-btn {
+  background: transparent; border: 1px solid var(--bd); color: var(--txt2);
+  padding: 3px 6px; border-radius: 4px; cursor: pointer;
+  margin-left: 6px; flex-shrink: 0;
+  transition: color .15s, border-color .15s;
+}
+.mv-edit-btn:hover { color: var(--acc); border-color: var(--acc); }
+.mv-edit-btn svg { display: block; }
+body.edit-mode #edit-lock { color: var(--green); }
+body.edit-mode .lock-closed { display: none; }
+.lock-open { display: none; }
+body.edit-mode .lock-open { display: block; }
 
 /* ── Enrich button ── */
 .enrich-btn {
@@ -302,34 +314,80 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
   #sidebar { width: 100%; }
 }
 
-/* ── Login overlay ── */
-.login-overlay {
+/* ── Editor dialog (modals from edit-online.js) ── */
+.editor-dialog-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.55);
   display: flex; align-items: center; justify-content: center;
   z-index: 200; padding: 16px;
 }
-.login-dialog {
+.editor-dialog {
   background: var(--bg); border: 1px solid var(--bd); border-radius: 10px;
   padding: 18px 18px 14px; width: 100%; max-width: 420px;
   box-shadow: 0 8px 30px rgba(0,0,0,.3);
+  max-height: 90vh; overflow-y: auto;
 }
-.login-dialog h3 { color: var(--acc); margin-bottom: 8px; }
-.login-dialog p  { font-size: 13px; color: var(--txt2); margin-bottom: 12px; line-height: 1.5; }
-.login-dialog code { background: var(--bg2); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
-.login-dialog input[type=password] {
-  width: 100%; padding: 8px 10px; border: 1px solid var(--bd);
-  background: var(--bg2); color: var(--txt); border-radius: 6px; font-size: 14px;
-  margin-bottom: 8px;
+.editor-dialog.editor-dialog-wide { max-width: 540px; }
+.editor-dialog h3 { color: var(--acc); margin-bottom: 8px; font-size: 1.1rem; }
+.editor-dialog .dialog-hint {
+  font-size: 13px; color: var(--txt2); margin-bottom: 12px; line-height: 1.5;
 }
-.login-dialog input:focus { outline: none; border-color: var(--acc); }
-.login-error { color: var(--red); font-size: 12px; min-height: 16px; margin-bottom: 8px; }
-.login-actions { display: flex; gap: 8px; justify-content: flex-end; }
-.login-actions button {
+.editor-dialog .dialog-hint code {
+  background: var(--bg2); padding: 1px 5px; border-radius: 4px; font-size: 12px;
+}
+.editor-dialog input,
+.editor-dialog textarea,
+.editor-dialog select {
+  width: 100%; padding: 7px 10px; border: 1px solid var(--bd);
+  background: var(--bg2); color: var(--txt);
+  border-radius: 6px; font-size: 14px; font-family: inherit;
+}
+.editor-dialog textarea { min-height: 80px; resize: vertical; line-height: 1.5; }
+.editor-dialog input:focus,
+.editor-dialog textarea:focus,
+.editor-dialog select:focus { outline: none; border-color: var(--acc); }
+.editor-dialog .dialog-grid {
+  display: grid; grid-template-columns: 100px 1fr; gap: 8px 10px;
+  margin-bottom: 12px; align-items: start;
+}
+.editor-dialog .dialog-grid label {
+  font-size: 12px; color: var(--txt2); font-weight: 600; padding-top: 8px;
+  text-transform: uppercase; letter-spacing: 0.03em;
+}
+.editor-dialog .dialog-error {
+  color: var(--red); font-size: 12px; min-height: 16px; margin-bottom: 8px;
+}
+.editor-dialog .dialog-actions {
+  display: flex; gap: 8px; align-items: center;
+  border-top: 1px solid var(--bd); padding-top: 10px;
+}
+.editor-dialog .dialog-actions button {
   padding: 7px 14px; border: 1px solid var(--bd); border-radius: 6px;
   background: var(--bg); color: var(--txt); font-size: 13px; cursor: pointer;
 }
-.login-actions button.primary { background: var(--acc); color: var(--bg); border-color: var(--acc); }
-.login-actions button:disabled { opacity: 0.5; cursor: not-allowed; }
+.editor-dialog .dialog-actions button.btn-primary {
+  background: var(--acc); color: var(--bg); border-color: var(--acc);
+}
+.editor-dialog .dialog-actions button.btn-danger {
+  background: var(--red); color: white; border-color: var(--red);
+}
+.editor-dialog .dialog-actions button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Toast ── */
+.editor-toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: var(--bg2); color: var(--txt);
+  border: 1px solid var(--bd); border-radius: 6px;
+  padding: 9px 16px; font-size: 13px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.25);
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+  z-index: 300; cursor: pointer;
+}
+.editor-toast.visible { opacity: 1; pointer-events: auto; }
+.editor-toast.toast-error { border-color: var(--red); color: var(--red); }
+@media(max-width:500px) {
+  .editor-dialog .dialog-grid { grid-template-columns: 1fr; gap: 4px; }
+  .editor-dialog .dialog-grid label { padding-top: 8px; }
+}
 </style>
 </head>
 <body>
@@ -810,12 +868,7 @@ function movieDetail(m) {
   }
 
   const url = p.imdb && p.imdb.startsWith('http') ? p.imdb : null;
-  const slug = m.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-  const editUrl = `../movie-writer/#m=${encodeURIComponent(slug)}`;
-  h += `<div class="action-row">`;
   if (url) h += `<a class="imdb-link" href="${esc(url)}" target="_blank" rel="noopener">View on IMDB ↗</a>`;
-  h += `<a class="edit-link" href="${editUrl}">Edit ↗</a>`;
-  h += `</div>`;
 
   if (needsEnrichment(m)) h += `<button class="enrich-btn" onclick="enrichMovie(this, movieRef(this))">Fetch IMDb info</button>`;
 
@@ -841,6 +894,9 @@ function buildMovieEl(m) {
         <div class="mv-name">${esc(m.title)}</div>
         ${sub ? `<div class="mv-sub">${esc(sub)}</div>` : ''}
       </div>
+      <button class="mv-edit-btn edit-only" data-action="edit-movie" title="Edit movie" aria-label="Edit movie">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 113 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+      </button>
       <span class="mv-toggle"></span>
     </div>
     <div class="mv-detail">${movieDetail(m)}</div>`;
@@ -1285,6 +1341,7 @@ function copyEnrich(btn) {
 async function init() {
   try {
     const text = await fetchMoviesLog();
+    window.__moviesText = text;
     data = parseLog(text);
 
     collectGenres();
@@ -1316,99 +1373,20 @@ async function init() {
 
 // ── Edit-mode lock (login → redirect to /movie-writer/) ─────────────────────
 
-const TOKEN_KEY = 'gh_token';
-const REPO = 'k1monfared/notes';
-const EDITOR_URL = '../movie-writer/';
+// Bridge for edit-online.js: refresh the viewer with a mutated movies.log.
+window.__refreshMoviesText = (newText) => {
+  data = parseLog(newText);
+  movieMap.clear();
+  movieIdCounter = 0;
+  collectGenres();
+  initRatingSlider();
+  renderTabs();
+  render();
+  window.__moviesText = newText;
+};
 
-function isAuthenticated() { return !!localStorage.getItem(TOKEN_KEY); }
-
-function setLockState() {
-  const btn = document.getElementById('edit-lock');
-  if (!btn) return;
-  btn.classList.toggle('unlocked', isAuthenticated());
-  btn.title = isAuthenticated() ? 'Open editor' : 'Edit mode (sign in)';
-}
-
-async function validateToken(token) {
-  try {
-    const res = await fetch(`https://api.github.com/repos/${REPO}`, {
-      headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github.v3+json' },
-    });
-    if (!res.ok) return { valid: false, error: `HTTP ${res.status}` };
-    const data = await res.json();
-    if (!data.permissions || !data.permissions.push) {
-      return { valid: false, error: 'Token lacks write permission for this repo' };
-    }
-    return { valid: true };
-  } catch (err) {
-    return { valid: false, error: err.message };
-  }
-}
-
-function showLoginDialog() {
-  const overlay = document.createElement('div');
-  overlay.className = 'login-overlay';
-  overlay.innerHTML = `
-    <div class="login-dialog">
-      <h3>Connect to GitHub</h3>
-      <p>Paste a fine-grained Personal Access Token for <code>${REPO}</code> with
-        <strong>Contents read/write</strong> permission.
-        <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Create one</a>.
-      </p>
-      <input type="password" id="login-token" placeholder="github_pat_..." autocomplete="off">
-      <div class="login-error" id="login-error"></div>
-      <div class="login-actions">
-        <button id="login-cancel">Cancel</button>
-        <button id="login-connect" class="primary">Connect</button>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(overlay);
-  const input = overlay.querySelector('#login-token');
-  const err   = overlay.querySelector('#login-error');
-  const cancel = overlay.querySelector('#login-cancel');
-  const connect = overlay.querySelector('#login-connect');
-  input.focus();
-
-  const close = () => overlay.remove();
-  cancel.addEventListener('click', close);
-  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
-  document.addEventListener('keydown', function onEsc(e) {
-    if (e.key === 'Escape') { close(); document.removeEventListener('keydown', onEsc); }
-  });
-
-  connect.addEventListener('click', async () => {
-    const token = input.value.trim();
-    if (!token) { err.textContent = 'Please enter a token.'; return; }
-    connect.disabled = true; connect.textContent = 'Validating…';
-    const result = await validateToken(token);
-    if (result.valid) {
-      localStorage.setItem(TOKEN_KEY, token);
-      close();
-      window.location.href = EDITOR_URL;
-    } else {
-      err.textContent = result.error;
-      connect.disabled = false; connect.textContent = 'Connect';
-    }
-  });
-  input.addEventListener('keydown', e => { if (e.key === 'Enter') connect.click(); });
-}
-
-function setupLockButton() {
-  const btn = document.getElementById('edit-lock');
-  if (!btn) return;
-  setLockState();
-  btn.addEventListener('click', () => {
-    if (isAuthenticated()) {
-      window.location.href = EDITOR_URL;
-    } else {
-      showLoginDialog();
-    }
-  });
-}
-
-setupLockButton();
 init();
 </script>
+<script type="module" src="edit-online.js"></script>
 </body>
 </html>
