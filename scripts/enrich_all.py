@@ -21,9 +21,11 @@ TODO_RE = re.compile(r"^(\s*)\[([x\-? ]?)\]\s*(.+?)\s*$", re.IGNORECASE)
 DELAY = 0.2  # seconds between movies
 
 
-def omdb_search(api_key, title):
-    params = urllib.parse.urlencode({"apikey": api_key, "s": title, "type": "movie"})
-    with urllib.request.urlopen(f"{OMDB_URL}?{params}", timeout=10) as resp:
+def omdb_search(api_key, title, year=None):
+    params = {"apikey": api_key, "s": title, "type": "movie"}
+    if year:
+        params["y"] = year
+    with urllib.request.urlopen(f"{OMDB_URL}?{urllib.parse.urlencode(params)}", timeout=10) as resp:
         data = json.loads(resp.read())
     if data.get("Response") == "False":
         return []
@@ -107,7 +109,7 @@ def build_imdb_lines(d, indent):
 
 
 def find_all_unenriched(lines):
-    """Find all movie entries that lack IMDb data. Returns [(idx, indent, title), ...]."""
+    """Find all movie entries that lack IMDb data. Returns [(idx, indent, title, year), ...]."""
     movies = []
     for i, line in enumerate(lines):
         m = TODO_RE.match(line.rstrip("\n"))
@@ -115,8 +117,27 @@ def find_all_unenriched(lines):
             indent = len(m.group(1))
             title = m.group(3).strip()
             if not has_imdb_data(lines, i, indent):
-                movies.append((i, indent, title))
+                year = read_user_year(lines, i, indent)
+                movies.append((i, indent, title, year))
     return movies
+
+
+def read_user_year(lines, movie_idx, movie_indent):
+    """Read the Year property from a movie's children, if present."""
+    idx = movie_idx + 1
+    while idx < len(lines):
+        s = lines[idx].rstrip("\n")
+        if not s.strip():
+            idx += 1
+            continue
+        ind = len(s) - len(s.lstrip())
+        if ind <= movie_indent:
+            break
+        m = re.match(r"^\s*-?\s*Year\s*:\s*(\d{4})", s, re.IGNORECASE)
+        if m:
+            return m.group(1)
+        idx += 1
+    return None
 
 
 def main():
@@ -145,17 +166,22 @@ def main():
     api_calls = 0
     offset = 0  # tracks line offset from insertions
 
-    for i, (orig_idx, indent, title) in enumerate(unenriched):
+    for i, (orig_idx, indent, title, user_year) in enumerate(unenriched):
         if api_calls >= 990:  # leave some buffer
             print(f"\nStopping: approaching daily API limit ({api_calls} calls used)")
             break
 
         idx = orig_idx + offset
-        print(f"[{i+1}/{len(unenriched)}] {title}", end=" ", flush=True)
+        print(f"[{i+1}/{len(unenriched)}] {title}{' (' + user_year + ')' if user_year else ''}", end=" ", flush=True)
 
         try:
-            results = omdb_search(api_key, title)
+            # Try with year filter first (better disambiguation when title collides)
+            results = omdb_search(api_key, title, user_year)
             api_calls += 1
+            # If no results with year, retry without — handles wrong/missing year
+            if not results and user_year:
+                results = omdb_search(api_key, title)
+                api_calls += 1
         except Exception as e:
             err_str = str(e)
             if "401" in err_str or "limit" in err_str.lower():
@@ -180,11 +206,23 @@ def main():
             time.sleep(DELAY)
             continue
 
-        # Auto-match: exact title > first result
+        # Auto-match: exact title > first result.
+        # If user-supplied year is present, prefer the exact-title result whose
+        # Year matches; otherwise fall back to the first exact-title hit; if
+        # nothing exact, take OMDb's top relevance result.
         match = results[0]
         exact = [r for r in results if r["Title"].lower() == title.lower()]
+        ambiguous_count = 0
         if exact:
-            match = exact[0]
+            if user_year:
+                year_match = [r for r in exact if r.get("Year", "").startswith(user_year)]
+                match = year_match[0] if year_match else exact[0]
+                if not year_match and len(exact) > 1:
+                    ambiguous_count = len(exact)
+            else:
+                match = exact[0]
+                if len(exact) > 1:
+                    ambiguous_count = len(exact)
 
         try:
             d = omdb_details(api_key, match["imdbID"])
@@ -212,6 +250,10 @@ def main():
             skipped += 1
             time.sleep(DELAY)
             continue
+
+        if ambiguous_count:
+            pad = " " * (indent + 4)
+            new_lines.insert(0, f"{pad}- enrich-warning: {ambiguous_count} OMDb candidates with exact title; first one used\n")
 
         insert_at = find_insert_after(lines, idx, indent)
 
