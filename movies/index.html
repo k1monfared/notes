@@ -57,6 +57,20 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
 }
 #search:focus { outline: none; border-color: var(--acc); }
 
+.search-pills {
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  margin-top: 6px; font-size: 12px;
+}
+.search-pills[hidden] { display: none; }
+.search-pills .pills-label { color: var(--txt2); margin-right: 2px; }
+.search-pills .pill {
+  background: var(--bg2); border: 1px solid var(--bd);
+  color: var(--txt2); padding: 3px 8px; border-radius: 12px;
+  font-size: 12px; cursor: pointer; font-family: ui-monospace, monospace;
+  transition: color .15s, border-color .15s;
+}
+.search-pills .pill:hover { color: var(--acc); border-color: var(--acc); }
+
 /* ── Root tabs ── */
 #tabs {
   display: flex; border-bottom: 2px solid var(--bd);
@@ -160,6 +174,13 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
 /* Edit-mode controls (only visible when body.edit-mode is set) */
 .edit-only { display: none !important; }
 body.edit-mode .edit-only { display: inline-flex !important; }
+.search-add-btn {
+  margin-top: 12px; padding: 8px 16px;
+  background: var(--acc); color: var(--bg); border: none;
+  border-radius: 6px; font-size: 14px; cursor: pointer;
+  font-weight: 600;
+}
+.search-add-btn:hover { opacity: 0.9; }
 .mv-edit-btn {
   background: transparent; border: 1px solid var(--bd); color: var(--txt2);
   padding: 3px 6px; border-radius: 4px; cursor: pointer;
@@ -447,6 +468,17 @@ body.edit-mode #edit-lock .lock-open { display: block; }
   <div class="search-row">
     <input type="search" id="search" placeholder="Search… (genre:comedy, director:nolan, title:dark, review:brilliant)" autocomplete="off">
     <button id="filter-toggle" onclick="toggleSidebar()">Filters</button>
+  </div>
+  <div id="search-pills" class="search-pills" hidden>
+    <span class="pills-label">Filter:</span>
+    <button class="pill" data-pill="title:">title:</button>
+    <button class="pill" data-pill="director:">director:</button>
+    <button class="pill" data-pill="year:">year:</button>
+    <button class="pill" data-pill="genre:">genre:</button>
+    <button class="pill" data-pill="recommender:">recommender:</button>
+    <button class="pill" data-pill="country:">country:</button>
+    <button class="pill" data-pill="tag:">tag:</button>
+    <button class="pill" data-pill="review:">review:</button>
   </div>
 </div>
 <div id="tabs"></div>
@@ -1034,7 +1066,15 @@ function render() {
     `${total} movie${total !== 1 ? 's' : ''}${sq ? ` matching "${sq}"` : ''}`;
 
   if (!total) {
-    content.innerHTML = '<div class="center">No movies found.</div>';
+    const q = sq.trim();
+    if (q) {
+      content.innerHTML =
+        `<div class="center">No movies match "${esc(q)}".` +
+        `<br><button class="search-add-btn edit-only" data-action="search-add" data-title="${esc(q)}">+ Add "${esc(q)}"</button>` +
+        `</div>`;
+    } else {
+      content.innerHTML = '<div class="center">No movies found.</div>';
+    }
   }
 }
 
@@ -1401,9 +1441,38 @@ async function init() {
       document.documentElement.style.setProperty('--hdr-sec-h', (hdrH + secH) + 'px');
     });
 
-    document.getElementById('search').addEventListener('input', e => {
+    const searchEl = document.getElementById('search');
+    const pillsEl = document.getElementById('search-pills');
+    searchEl.addEventListener('input', e => {
       sq = e.target.value.trim();
       render();
+    });
+    // Show filter pills when the search bar is focused
+    searchEl.addEventListener('focus', () => pillsEl.hidden = false);
+    searchEl.addEventListener('blur', () => {
+      // Delay so a click on a pill registers before we hide
+      setTimeout(() => pillsEl.hidden = true, 200);
+    });
+    // Click a pill → append the filter prefix to the query
+    pillsEl.querySelectorAll('.pill').forEach(p => {
+      p.addEventListener('mousedown', e => e.preventDefault()); // keep focus on input
+      p.addEventListener('click', () => {
+        const cur = searchEl.value;
+        const sep = cur && !cur.endsWith(' ') ? ' ' : '';
+        searchEl.value = cur + sep + p.dataset.pill;
+        sq = searchEl.value.trim();
+        searchEl.focus();
+        render();
+      });
+    });
+    // On Enter: expand all sections that contain matching movies (but
+    // leave the movie cards themselves collapsed).
+    searchEl.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      document.querySelectorAll('.sec, .subsec').forEach(s => {
+        if (s.querySelector('.mv')) s.classList.add('open');
+      });
     });
 
 

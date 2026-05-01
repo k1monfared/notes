@@ -134,15 +134,22 @@ function showLoginDialog() {
 // ── Pencil click delegation ─────────────────────────────────────────────────
 
 document.addEventListener('click', (e) => {
-  const btn = e.target.closest('[data-action="edit-movie"]');
-  if (!btn) return;
-  e.preventDefault();
-  e.stopPropagation();
-  const card = btn.closest('.mv');
-  if (!card) return;
-  const title = card.querySelector('.mv-name')?.textContent.trim();
-  if (!title) return;
-  openEditDialog(title);
+  const editBtn = e.target.closest('[data-action="edit-movie"]');
+  if (editBtn) {
+    e.preventDefault();
+    e.stopPropagation();
+    const card = editBtn.closest('.mv');
+    if (!card) return;
+    const title = card.querySelector('.mv-name')?.textContent.trim();
+    if (title) openEditDialog(title);
+    return;
+  }
+  const searchAddBtn = e.target.closest('[data-action="search-add"]');
+  if (searchAddBtn) {
+    e.preventDefault();
+    e.stopPropagation();
+    openAddDialog(searchAddBtn.dataset.title || '');
+  }
 });
 
 // ── Edit dialog ──────────────────────────────────────────────────────────────
@@ -413,7 +420,7 @@ async function pollForEnrichment(ourText, attempts = 0) {
 
 // ── Add modal ────────────────────────────────────────────────────────────────
 
-function openAddDialog() {
+function openAddDialog(prefillTitle = '') {
   const overlay = document.createElement('div');
   overlay.className = 'editor-dialog-overlay';
   overlay.innerHTML = `
@@ -421,7 +428,7 @@ function openAddDialog() {
       <h3>Add movie</h3>
       <div class="dialog-grid">
         <label>Title *</label>
-        <input type="text" id="add-title" autofocus>
+        <input type="text" id="add-title" autofocus value="${esc(prefillTitle)}">
 
         <label>Recommender</label>
         <input type="text" id="add-rec">
@@ -673,16 +680,28 @@ async function applyImdbDetails(originalTitle, details) {
 
 function previewExistingEntry(entry) {
   const p = entry.props;
+  // Each row is [label, escapedValueHTML].
   const rows = [];
   if (entry.section || entry.category) {
     const path = [entry.section, entry.category, entry.subsection].filter(Boolean).join(' › ');
-    rows.push(['Section', path]);
+    rows.push(['Section', esc(path)]);
   }
-  if (p.year) rows.push(['Year', p.year]);
-  if (p.director) rows.push(['Director', p.director]);
-  if (p.recommender) rows.push(['Recommender', p.recommender]);
-  if (p.review) rows.push(['Review', p.review.length > 120 ? p.review.slice(0, 120) + '…' : p.review]);
-  return rows.map(([k, v]) => `<div class="dup-row"><strong>${esc(k)}</strong> ${esc(v)}</div>`).join('');
+  if (p.year)        rows.push(['Year', esc(p.year)]);
+  if (p.director)    rows.push(['Director', esc(p.director)]);
+  if (p.recommender) rows.push(['Recommender', esc(p.recommender)]);
+  if (p.review) {
+    const r = p.review.length > 120 ? p.review.slice(0, 120) + '…' : p.review;
+    rows.push(['Review', esc(r)]);
+  }
+  // Always show the IMDb link last if we have one
+  if (p.imdb) {
+    if (p.imdb.startsWith('http')) {
+      rows.push(['IMDb', `<a href="${esc(p.imdb)}" target="_blank" rel="noopener">${esc(p.imdb)}</a>`]);
+    } else {
+      rows.push(['IMDb', esc(p.imdb)]);
+    }
+  }
+  return rows.map(([k, v]) => `<div class="dup-row"><strong>${esc(k)}</strong> ${v}</div>`).join('');
 }
 
 function showDuplicateDialog(existing) {
