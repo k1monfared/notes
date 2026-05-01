@@ -11,7 +11,7 @@
 
 import {
   parseMovies, findMovie, findInsertAfter,
-  setStatus, setReview, setProperty, removeProperty,
+  setStatus, setReview, setProperty, removeProperty, setNotes,
   buildMovieEntry, findToWatchInsert,
 } from '../movie-writer/js/movies.js';
 import { autoRoute, applyMove } from '../movie-writer/js/route.js';
@@ -133,11 +133,14 @@ function showLoginDialog() {
 
 // ── Pencil click delegation ─────────────────────────────────────────────────
 
+// Use capture phase so we run BEFORE the inline onclick on .mv-hdr
+// (toggleMv) which would otherwise fold the card on pencil click.
 document.addEventListener('click', (e) => {
   const editBtn = e.target.closest('[data-action="edit-movie"]');
   if (editBtn) {
     e.preventDefault();
     e.stopPropagation();
+    e.stopImmediatePropagation();
     const card = editBtn.closest('.mv');
     if (!card) return;
     const title = card.querySelector('.mv-name')?.textContent.trim();
@@ -150,7 +153,7 @@ document.addEventListener('click', (e) => {
     e.stopPropagation();
     openAddDialog(searchAddBtn.dataset.title || '');
   }
-});
+}, true);
 
 // ── Edit dialog ──────────────────────────────────────────────────────────────
 
@@ -203,6 +206,9 @@ function openEditDialog(title) {
 
         <label>Review</label>
         <textarea id="ed-review" rows="4">${esc(p.review || '')}</textarea>
+
+        <label>Notes</label>
+        <textarea id="ed-notes" rows="4" placeholder="Free-form notes, one per line">${esc((p.notes || []).join('\n'))}</textarea>
       </div>
       <div class="dialog-error" id="ed-error"></div>
       <div class="dialog-actions">
@@ -257,6 +263,7 @@ function openEditDialog(title) {
       imdb: overlay.querySelector('#ed-imdb').value.trim(),
       tags: overlay.querySelector('#ed-tags').value.trim(),
       review: overlay.querySelector('#ed-review').value.trim(),
+      notes: overlay.querySelector('#ed-notes').value.split('\n').map(s => s.trim()).filter(Boolean),
     };
 
     overlay.querySelector('#ed-save').disabled = true;
@@ -321,6 +328,8 @@ async function commitEdit(originalTitle, u) {
     setOrRemove('tag', u.tags);
     if (u.review) setReview(lines, found.index, found.indent, u.review);
     else removeProperty(lines, found.index, found.indent, 'review');
+    // Replace all "note" lines under this entry with the user's textarea
+    setNotes(lines, found.index, found.indent, u.notes || []);
 
     // 4. Category move (if explicit category chosen, move into watched > <category>)
     if (u.category) {

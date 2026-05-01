@@ -663,9 +663,18 @@ function parseLog(text) {
       p.becauseOf = v;
     } else if (key === 'tag') {
       p.tag = v;
+    } else {
+      // Unknown key → store as a free-form note ("key: value" form)
+      pushNote(`${rawKey.trim()}: ${v}`);
     }
     // always update lastKey
     lastKey = key;
+  }
+
+  function pushNote(text) {
+    if (!mov || !text) return;
+    mov.props.notes = mov.props.notes || [];
+    mov.props.notes.push(text);
   }
 
   function handleSubItem(inner) {
@@ -753,7 +762,7 @@ function parseLog(text) {
               mov.props.review = mov.props.review ? mov.props.review + ' ' + inner.trim() : inner.trim();
             } else {
               // Generic note (e.g. "- A nicely made musical love story.")
-              mov.props.notes = mov.props.notes ? mov.props.notes + ' ' + inner.trim() : inner.trim();
+              pushNote(inner.trim());
             }
           }
         } else {
@@ -889,7 +898,7 @@ function advancedSearch(m, query) {
     genres: p.genres,
     country: p.country,
     year: p.year,
-    review: [p.review, p.notes].filter(Boolean).join(' '),
+    review: [p.review, ...(p.notes || [])].filter(Boolean).join(' '),
     rating: p.rating,
     cast: (p.cast || []).join(' '),
     synopsis: p.synopsis,
@@ -905,7 +914,8 @@ function advancedSearch(m, query) {
   if (freeText) {
     const hay = [
       m.title, m.section, m.subsection,
-      p.director, p.review, p.notes,
+      p.director, p.review,
+      (p.notes || []).join(' '),
       p.country, p.genres, p.recommender,
       p.year, p.synopsis, p.tag,
       (p.cast || []).join(' ')
@@ -927,10 +937,14 @@ function movieDetail(m) {
   let h = '';
 
   // Only label as "My review" when there's an explicit `- review:` property.
-  // Free-form prose lines (no colon) end up in `notes` and shouldn't be
-  // misrepresented as something the user wrote about the movie.
+  // Free-form prose lines and unknown-key bullets end up in `notes` (an
+  // array of strings) and are shown under their own "Notes" header so they
+  // can't be mistaken for the user's review.
   if (p.review) h += `<div class="review"><div class="review-label">My review</div><div class="review-text">${esc(p.review)}</div></div>`;
-  if (p.notes && p.notes !== p.review) h += `<div class="review notes-block"><div class="review-label">Notes</div><div class="review-text">${esc(p.notes)}</div></div>`;
+  if (p.notes && p.notes.length) {
+    const notesHtml = p.notes.map(n => esc(n)).join('<br>');
+    h += `<div class="review notes-block"><div class="review-label">Notes</div><div class="review-text">${notesHtml}</div></div>`;
+  }
   if (p.recommender) h += `<div class="recommended-by">Recommended by <span class="rec-name">${esc(p.recommender)}</span></div>`;
 
   const rows = [];
