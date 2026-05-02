@@ -1,0 +1,6 @@
+name = "omdb-proxy"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+# OMDB_API_KEY is provided via `wrangler secret put OMDB_API_KEY`.
+# See README.md for deployment steps.

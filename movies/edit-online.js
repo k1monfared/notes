@@ -514,8 +514,28 @@ function findEntryByTitleCi(text, title) {
 // ── OMDb integration (browser-side, opt-in per click) ───────────────────────
 
 const OMDB_KEY = 'omdb_api_key';
+const OMDB_PROXY_KEY = 'omdb_proxy_url';
 const getOmdbKey = () => localStorage.getItem(OMDB_KEY);
 const setOmdbKey = (k) => localStorage.setItem(OMDB_KEY, k.trim());
+const getOmdbProxy = () => (localStorage.getItem(OMDB_PROXY_KEY) || '').replace(/\/$/, '');
+
+// If a proxy URL is configured (see omdb-proxy/README.md), every request
+// goes through it and we never need a key in the browser. Otherwise we
+// fall back to direct calls + a stored API key.
+async function omdbFetch(params) {
+  const proxy = getOmdbProxy();
+  if (proxy) {
+    const res = await fetch(`${proxy}/?${params}`);
+    const data = await res.json();
+    return data;
+  }
+  const key = await ensureOmdbKey();
+  if (!key) throw new Error('OMDb key not provided');
+  params.set('apikey', key);
+  const res = await fetch(`https://www.omdbapi.com/?${params}`);
+  const data = await res.json();
+  return data;
+}
 
 async function ensureOmdbKey() {
   let k = getOmdbKey();
@@ -528,7 +548,9 @@ async function ensureOmdbKey() {
         <h3>OMDb API key</h3>
         <p class="dialog-hint">Paste your OMDb API key (free at
         <a href="https://www.omdbapi.com/apikey.aspx" target="_blank" rel="noopener">omdbapi.com/apikey.aspx</a>).
-        Stored in localStorage; only sent to omdbapi.com.</p>
+        Stored in localStorage; only sent to omdbapi.com.<br>
+        Tip: if you set up the Cloudflare Worker proxy
+        (see <code>omdb-proxy/</code>), no key is needed here.</p>
         <input type="password" id="omdb-key" placeholder="1234abcd" autocomplete="off">
         <div class="dialog-actions">
           <button class="btn-cancel">Cancel</button>
@@ -553,22 +575,16 @@ async function ensureOmdbKey() {
 }
 
 async function omdbSearch(title, year) {
-  const key = await ensureOmdbKey();
-  if (!key) throw new Error('OMDb key not provided');
-  const params = new URLSearchParams({ apikey: key, s: title, type: 'movie' });
+  const params = new URLSearchParams({ s: title, type: 'movie' });
   if (year) params.set('y', year);
-  const res = await fetch(`https://www.omdbapi.com/?${params}`);
-  const data = await res.json();
+  const data = await omdbFetch(params);
   if (data.Response === 'False') return [];
   return data.Search || [];
 }
 
 async function omdbDetails(imdbID) {
-  const key = await ensureOmdbKey();
-  if (!key) throw new Error('OMDb key not provided');
-  const params = new URLSearchParams({ apikey: key, i: imdbID, plot: 'short' });
-  const res = await fetch(`https://www.omdbapi.com/?${params}`);
-  const data = await res.json();
+  const params = new URLSearchParams({ i: imdbID, plot: 'short' });
+  const data = await omdbFetch(params);
   if (data.Response === 'False') return null;
   return data;
 }
