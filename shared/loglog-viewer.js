@@ -17,10 +17,11 @@
 
 function buildTree(text) {
   const lines = text.split('\n');
-  const root = { raw: '', indent: -1, children: [] };
+  const root = { raw: '', indent: -1, children: [], lineIdx: -1 };
   const stack = [root];
 
-  for (const raw of lines) {
+  for (let i = 0; i < lines.length; i++) {
+    const raw = lines[i];
     if (raw.trim() === '') continue;
     const indent = raw.search(/\S/);
     const content = raw.trim();
@@ -29,7 +30,7 @@ function buildTree(text) {
       stack.pop();
     }
 
-    const node = { raw: content, indent, children: [] };
+    const node = { raw: content, indent, children: [], lineIdx: i };
     stack[stack.length - 1].children.push(node);
     stack.push(node);
   }
@@ -83,7 +84,7 @@ function classifyNode(node, tierSet, config, depth) {
   // ── Checkbox items → always items ──
   if (cbMatch) {
     if (!name && node.children.length === 0) return null;
-    const item = { type: 'item', name, depth, checkbox: (cbMatch[1] || ' ').toLowerCase(), properties: {}, childTexts: [] };
+    const item = { type: 'item', name, depth, lineIdx: node.lineIdx, indent: node.indent, checkbox: (cbMatch[1] || ' ').toLowerCase(), properties: {}, childTexts: [] };
     if (node.children.length > 0) extractProperties(node.children, item);
     return item;
   }
@@ -91,7 +92,7 @@ function classifyNode(node, tierSet, config, depth) {
   // ── Tier names → always sections ──
   if (isTier) {
     const children = classifyChildren(node.children, tierSet, config, depth + 1);
-    return { type: 'section', name, depth, isTier: true, children };
+    return { type: 'section', name, depth, lineIdx: node.lineIdx, indent: node.indent, isTier: true, children };
   }
 
   // ── Bare name with children → section or item ──
@@ -99,17 +100,17 @@ function classifyNode(node, tierSet, config, depth) {
     // If all children are property-like → item (e.g., a place with descriptions/URLs)
     const allProp = node.children.every(c => canBeProperty(c));
     if (allProp) {
-      const item = { type: 'item', name, depth, properties: {}, childTexts: [] };
+      const item = { type: 'item', name, depth, lineIdx: node.lineIdx, indent: node.indent, properties: {}, childTexts: [] };
       extractProperties(node.children, item);
       return item;
     }
     const children = classifyChildren(node.children, tierSet, config, depth + 1);
-    return { type: 'section', name, depth, children };
+    return { type: 'section', name, depth, lineIdx: node.lineIdx, indent: node.indent, children };
   }
 
   // ── No children → leaf item ──
   if (node.children.length === 0) {
-    return { type: 'item', name, depth, properties: {}, childTexts: [] };
+    return { type: 'item', name, depth, lineIdx: node.lineIdx, indent: node.indent, properties: {}, childTexts: [] };
   }
 
   // ── Dash-prefixed with children: decide section vs item ──
@@ -120,20 +121,20 @@ function classifyNode(node, tierSet, config, depth) {
   );
   if (allSimpleTextLeaves && node.children.length >= 2) {
     const children = classifyChildren(node.children, tierSet, config, depth + 1);
-    return { type: 'section', name, depth, children };
+    return { type: 'section', name, depth, lineIdx: node.lineIdx, indent: node.indent, children };
   }
 
   // If all children can be properties/text → item
   const allProp = node.children.every(c => canBeProperty(c));
   if (allProp) {
-    const item = { type: 'item', name, depth, properties: {}, childTexts: [] };
+    const item = { type: 'item', name, depth, lineIdx: node.lineIdx, indent: node.indent, properties: {}, childTexts: [] };
     extractProperties(node.children, item);
     return item;
   }
 
   // Has non-property children → section
   const children = classifyChildren(node.children, tierSet, config, depth + 1);
-  return { type: 'section', name, depth, children };
+  return { type: 'section', name, depth, lineIdx: node.lineIdx, indent: node.indent, children };
 }
 
 function classifyChildren(rawChildren, tierSet, config, depth) {
@@ -236,7 +237,10 @@ function createLoglogViewer(container, config) {
 
   container.innerHTML = `
     <div id="hdr">
-      <h1>${escHtml(title)}</h1>
+      <div class="title-row">
+        <h1>${escHtml(title)}</h1>
+        <div class="hdr-actions"></div>
+      </div>
       <div class="search-row">
         <input id="search" type="text" placeholder="Search… (use key:value for field search)" autocomplete="off">
         <span id="search-count"></span>
@@ -250,47 +254,57 @@ function createLoglogViewer(container, config) {
   const statsEl = container.querySelector('#stats');
   const contentEl = container.querySelector('#content');
 
+  // Render once we have text (either from initial fetch or after a save).
+  function renderFromText(text) {
+    const tree = buildTree(text);
+    const nodes = classifyTree(tree, config);
+
+    if (tiers) {
+      const tierLower = tiers.map(t => t.toLowerCase());
+      for (const n of nodes) {
+        const idx = tierLower.indexOf((n.name || '').toLowerCase());
+        if (idx !== -1) n.tierIndex = idx + 1;
+      }
+    }
+
+    let totalItems = 0, checkedItems = 0;
+    function countItems(ns) {
+      for (const n of ns) {
+        if (n.type === 'item') { totalItems++; if (n.checkbox === 'x') checkedItems++; }
+        if (n.children) countItems(n.children);
+      }
+    }
+    countItems(nodes);
+    statsEl.textContent = checkboxes
+      ? `${checkedItems} / ${totalItems} done`
+      : `${totalItems} items`;
+
+    contentEl.innerHTML = '';
+    renderNodes(contentEl, nodes, config);
+
+    const allItemNodes = [];
+    collectAllItemNodes(nodes, allItemNodes);
+
+    // Stash state so the editor (loaded as a sibling script) can find raw
+    // text + parsed item nodes for in-place save + refresh.
+    container.__loglogState = {
+      text, nodes, items: allItemNodes, dataFile, config,
+      refresh: (newText) => renderFromText(newText),
+    };
+
+    // Notify any listeners (the editor) that fresh state is available.
+    container.dispatchEvent(new CustomEvent('loglog-rendered', { detail: container.__loglogState }));
+
+    return allItemNodes;
+  }
+
   fetch(dataFile)
     .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
     .then(text => {
-      const tree = buildTree(text);
-      const nodes = classifyTree(tree, config);
-
-      // Assign tier indices
-      if (tiers) {
-        const tierLower = tiers.map(t => t.toLowerCase());
-        for (const n of nodes) {
-          const idx = tierLower.indexOf((n.name || '').toLowerCase());
-          if (idx !== -1) n.tierIndex = idx + 1;
-        }
-      }
-
-      // Count items
-      let totalItems = 0, checkedItems = 0;
-      function countItems(ns) {
-        for (const n of ns) {
-          if (n.type === 'item') { totalItems++; if (n.checkbox === 'x') checkedItems++; }
-          if (n.children) countItems(n.children);
-        }
-      }
-      countItems(nodes);
-
-      if (checkboxes) {
-        statsEl.textContent = `${checkedItems} / ${totalItems} done`;
-      } else {
-        statsEl.textContent = `${totalItems} items`;
-      }
-
-      contentEl.innerHTML = '';
-      renderNodes(contentEl, nodes, config);
-
-      // Search
-      let allItemNodes = [];
-      collectAllItemNodes(nodes, allItemNodes);
-
+      const allItemNodes = renderFromText(text);
       searchEl.addEventListener('input', () => {
         const q = searchEl.value.trim();
-        filterNodes(contentEl, q, countEl, allItemNodes);
+        filterNodes(contentEl, q, countEl, container.__loglogState.items);
       });
     })
     .catch(err => {
@@ -353,6 +367,10 @@ function renderItem(container, node, config) {
   item.className = 'item';
   item.dataset.depth = node.depth || 0;
   item.dataset.name = (node.name || '').toLowerCase();
+  // Editor uses these to locate the item in the raw text.
+  if (node.lineIdx !== undefined) item.dataset.lineIdx = node.lineIdx;
+  if (node.indent !== undefined) item.dataset.indent = node.indent;
+  if (node.checkbox !== undefined) item.dataset.checkbox = node.checkbox;
 
   const props = node.properties || {};
   const hasDetail = Object.keys(props).length > 0 || (node.childTexts && node.childTexts.length > 0);

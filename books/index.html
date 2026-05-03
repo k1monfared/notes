@@ -11,30 +11,40 @@
 <body>
 <div id="app"></div>
 <script src="../shared/loglog-viewer.js"></script>
+<script src="../shared/loglog-editor.js"></script>
 <script>
-createLoglogViewer(document.getElementById('app'), {
+const app = document.getElementById('app');
+const TIERS = [
+  'I highly recommend',
+  'I recommend',
+  "I think it's a nice one",
+  "There's something in it",
+  'Good entertainment/fun and/or story is nice',
+  "I've read it",
+  'Not a good one',
+  'I highly discourage',
+  'Never finished/started',
+  'imported from goodreads',
+  'reading list',
+];
+createLoglogViewer(app, {
   title: 'Books',
   dataFile: '../books.log',
   checkboxes: true,
-  tiers: [
-    'I highly recommend',
-    'I recommend',
-    "I think it's a nice one",
-    "There's something in it",
-    'Good entertainment/fun and/or story is nice',
-    "I've read it",
-    'Not a good one',
-    'I highly discourage',
-    'Never finished/started',
-    'imported from goodreads',
-    'reading list',
-  ],
+  tiers: TIERS,
   summaryField: 'author',
   reviewFields: ['review'],
   linkFields: ['goodreads'],
   propertyRenderers: {
     goodreads: v => `<a href="${v}" target="_blank" rel="noopener">Goodreads</a>`,
   },
+});
+createLoglogEditor(app, {
+  dataFile: 'books.log',
+  commitPrefix: 'books',
+  checkboxStates: ['', 'x', '-', '?'],
+  tiers: TIERS,
+  reviewKey: 'review',
 });
 </script>
 </body>
