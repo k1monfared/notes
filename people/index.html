@@ -11,13 +11,19 @@
 <body>
 <div id="app"></div>
 <script src="../shared/loglog-viewer.js"></script>
+<script src="../shared/loglog-editor.js"></script>
 <script>
-createLoglogViewer(document.getElementById('app'), {
+const app = document.getElementById('app');
+createLoglogViewer(app, {
   title: 'People',
   dataFile: '../people.log',
   checkboxes: false,
   reviewFields: [],
   linkFields: ['blog', 'website', 'twitter', 'youtube'],
+});
+createLoglogEditor(app, {
+  dataFile: 'people.log',
+  commitPrefix: 'people',
 });
 </script>
 </body>

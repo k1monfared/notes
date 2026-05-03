@@ -11,24 +11,33 @@
 <body>
 <div id="app"></div>
 <script src="../shared/loglog-viewer.js"></script>
+<script src="../shared/loglog-editor.js"></script>
 <script>
-createLoglogViewer(document.getElementById('app'), {
+const app = document.getElementById('app');
+const TIERS = [
+  'I highly recommend',
+  'I recommend',
+  "There's something in it",
+  'Good entertainment/fun and/or story telling is nice',
+  "I've listened",
+  'Not a good one',
+  'I highly discourage',
+  'lost interest, not for me',
+  'listening list',
+];
+createLoglogViewer(app, {
   title: 'Podcasts',
   dataFile: '../podcasts.log',
   checkboxes: false,
-  tiers: [
-    'I highly recommend',
-    'I recommend',
-    "There's something in it",
-    'Good entertainment/fun and/or story telling is nice',
-    "I've listened",
-    'Not a good one',
-    'I highly discourage',
-    'lost interest, not for me',
-    'listening list',
-  ],
+  tiers: TIERS,
   summaryField: 'by',
   reviewFields: ['review'],
+});
+createLoglogEditor(app, {
+  dataFile: 'podcasts.log',
+  commitPrefix: 'podcasts',
+  tiers: TIERS,
+  reviewKey: 'review',
 });
 </script>
 </body>
