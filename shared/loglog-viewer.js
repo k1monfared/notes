@@ -358,8 +358,9 @@ function renderSection(container, node, config) {
 
   sec.innerHTML = `
     <div class="sec-hdr">
+      <span class="arr">▶</span>
       <span class="sec-title">${escHtml(node.name)}</span>
-      <span class="sec-meta"><span>${metaText}</span> <span class="arr">▶</span></span>
+      <span class="sec-meta"><span>${metaText}</span></span>
     </div>
     <div class="sec-body"></div>`;
 
