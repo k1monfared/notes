@@ -134,12 +134,53 @@ def goodreads_url(book_id):
 
 # ── Import Goodreads ─────────────────────────────────────────────────────────
 
+def find_book_by_url(lines, gr_url):
+    """Find a book entry whose children include `- goodreads: <gr_url>`.
+    Returns (item_idx, item_indent) or None. More reliable than title fuzz."""
+    if not gr_url:
+        return None
+    target = gr_url.strip().lower()
+    for i, line in enumerate(lines):
+        m = TODO_RE.match(line.rstrip("\n"))
+        if not m:
+            continue
+        idx, indent = i, len(m.group(1))
+        end = find_insert_after(lines, idx, indent)
+        for j in range(idx + 1, end):
+            cl = lines[j].rstrip("\n").strip()
+            if cl.lower().startswith("- goodreads:"):
+                val = cl.split(":", 1)[1].strip().lower()
+                if val == target:
+                    return idx, indent
+    return None
+
+
+def review_lines_for(review_text, deep_pad):
+    """Split a possibly multi-line review into one nested bullet per line.
+    Empty lines are dropped; pre-existing leading dashes are stripped so we
+    don't double them up in the output."""
+    parts = []
+    for raw in (review_text or "").split("\n"):
+        s = raw.strip()
+        if not s:
+            continue
+        # Drop a leading "- " in case the value already came in bulleted form
+        if s.startswith("- "):
+            s = s[2:].strip()
+        parts.append(f"{deep_pad}- {s}\n")
+    return parts
+
+
 def cmd_import_goodreads(args):
     """Import Goodreads CSV export into books.log."""
     csv_path = Path(args.csv).expanduser()
     if not csv_path.exists():
         print(f"File not found: {csv_path}")
         return 1
+
+    apply = bool(getattr(args, "apply", False))
+    if not apply:
+        print("(dry-run — nothing will be written; pass --apply to commit changes)\n")
 
     # Parse CSV
     books = []
@@ -155,106 +196,169 @@ def cmd_import_goodreads(args):
     existing_matched = 0
     new_read = []
     new_toread = []
+    field_adds = 0
 
     for row in books:
-        title = row["Title"].strip()
-        author = row["Author"].strip()
-        shelf = row["Exclusive Shelf"].strip()
-        avg_rating = row["Average Rating"].strip()
-        year = row.get("Original Publication Year", "").strip()
-        book_id = row["Book Id"].strip()
-        review = clean_review(row.get("My Review", ""))
-        gr_url = goodreads_url(book_id)
+        title = (row.get("Title") or "").strip()
+        if not title:
+            continue
+        author = (row.get("Author") or "").strip()
+        shelf = (row.get("Exclusive Shelf") or "").strip().lower()
+        avg_rating = (row.get("Average Rating") or "").strip()
+        my_rating = (row.get("My Rating") or "").strip()
+        year = (row.get("Original Publication Year") or "").strip() or (row.get("Year Published") or "").strip()
+        pages = (row.get("Number of Pages") or "").strip()
+        # ISBN often comes as ="0123456789"; strip CSV escaping
+        isbn = clean_isbn(row.get("ISBN13") or "") or clean_isbn(row.get("ISBN") or "")
+        date_read = (row.get("Date Read") or "").strip()
+        date_added = (row.get("Date Added") or "").strip()
+        bookshelves = (row.get("Bookshelves") or "").strip()
+        shelves = [
+            s.strip() for s in bookshelves.split(",")
+            if s.strip() and s.strip().lower() not in ("read", "to-read", "currently-reading", "skipped")
+        ]
+        book_id = (row.get("Book Id") or "").strip()
+        review = clean_review(row.get("My Review") or "")
+        gr_url = goodreads_url(book_id) if book_id else ""
 
-        result = find_book(lines, title)
-
+        # Match by Goodreads URL first (rock-solid), fall back to title fuzz
+        result = find_book_by_url(lines, gr_url)
         if result:
+            idx, indent = result
+        else:
+            tr = find_book(lines, title)
+            if tr:
+                idx, indent, _m = tr
+            else:
+                idx = indent = None
+
+        if idx is not None:
             # Existing book — enrich with missing fields
-            idx, indent, m = result
             insert_at = find_insert_after(lines, idx, indent)
             pad = " " * (indent + 4)
+            deep_pad = " " * (indent + 8)
             added = []
 
-            if author and not has_property(lines, idx, indent, "author"):
-                lines.insert(insert_at, f"{pad}- author: {author}\n")
+            def add_prop(key, value):
+                nonlocal insert_at
+                if not value:
+                    return
+                if has_property(lines, idx, indent, key):
+                    return
+                lines.insert(insert_at, f"{pad}- {key}: {value}\n")
                 insert_at += 1
-                added.append("author")
+                added.append(key)
 
-            if year and not has_property(lines, idx, indent, "year"):
-                lines.insert(insert_at, f"{pad}- year: {year}\n")
+            add_prop("author", author)
+            add_prop("year", year)
+            add_prop("goodreads", gr_url)
+            add_prop("goodreads rating", avg_rating)
+            add_prop("my rating", my_rating if (my_rating and my_rating not in ("0", "0.00")) else "")
+            add_prop("pages", pages)
+            add_prop("isbn", isbn)
+            add_prop("date read", date_read)
+            add_prop("date added", date_added)
+            if shelves and not has_property(lines, idx, indent, "shelves"):
+                lines.insert(insert_at, f"{pad}- shelves: {', '.join(shelves)}\n")
                 insert_at += 1
-                added.append("year")
-
-            if gr_url and not has_property(lines, idx, indent, "goodreads"):
-                lines.insert(insert_at, f"{pad}- goodreads: {gr_url}\n")
-                insert_at += 1
-                added.append("goodreads")
-
-            if avg_rating and not has_property(lines, idx, indent, "goodreads rating"):
-                lines.insert(insert_at, f"{pad}- goodreads rating: {avg_rating}\n")
-                insert_at += 1
-                added.append("goodreads rating")
+                added.append("shelves")
+            if review and not has_property(lines, idx, indent, "review"):
+                rl = review_lines_for(review, deep_pad)
+                if rl:
+                    lines.insert(insert_at, f"{pad}- review:\n")
+                    insert_at += 1
+                    for k, line in enumerate(rl):
+                        lines.insert(insert_at + k, line)
+                    insert_at += len(rl)
+                    added.append("review")
 
             if added:
-                print(f"  updated: {m.group(3).strip()} (+{', '.join(added)})")
+                print(f"  updated: {title} (+{', '.join(added)})")
+                field_adds += len(added)
             existing_matched += 1
 
         elif shelf in ("read", "skipped", "currently-reading"):
             new_read.append({
                 "title": title, "author": author, "year": year,
                 "goodreads": gr_url, "avg_rating": avg_rating,
-                "review": review, "shelf": shelf,
+                "my_rating": my_rating, "pages": pages, "isbn": isbn,
+                "date_read": date_read, "date_added": date_added,
+                "shelves": shelves, "review": review, "shelf": shelf,
             })
         elif shelf == "to-read":
             new_toread.append({
-                "title": title, "author": author, "goodreads": gr_url,
+                "title": title, "author": author, "year": year,
+                "goodreads": gr_url, "avg_rating": avg_rating,
+                "shelves": shelves,
             })
 
-    print(f"  {existing_matched} existing books matched/enriched")
-    print(f"  {len(new_read)} new read/skipped books")
+    print(f"\nSummary:")
+    print(f"  {existing_matched} existing books matched (+{field_adds} new fields filled in)")
+    print(f"  {len(new_read)} new read/skipped/in-progress books")
     print(f"  {len(new_toread)} new to-read books")
 
     # Insert "imported from goodreads" section before "reading list"
     if new_read:
+        # If section already exists, append into it; otherwise create it before
+        # "reading list".
+        existing_sec = find_section(lines, "imported from goodreads")
+        if existing_sec is not None:
+            insert_at_idx = find_section_end(lines, existing_sec)
+            section_header_lines = []
+        else:
+            reading_list_idx = find_section(lines, "reading list")
+            insert_at_idx = reading_list_idx if reading_list_idx is not None else len(lines)
+            section_header_lines = ["imported from goodreads\n"]
+
+        body = []
+        for b in new_read:
+            cb = "[x]" if b["shelf"] == "read" else ("[-]" if b["shelf"] == "skipped" else "[?]")
+            body.append(f"    {cb} {b['title']}\n")
+            if b["author"]:        body.append(f"        - author: {b['author']}\n")
+            if b["year"]:          body.append(f"        - year: {b['year']}\n")
+            if b["goodreads"]:     body.append(f"        - goodreads: {b['goodreads']}\n")
+            if b["avg_rating"]:    body.append(f"        - goodreads rating: {b['avg_rating']}\n")
+            if b["my_rating"] and b["my_rating"] not in ("0", "0.00"):
+                body.append(f"        - my rating: {b['my_rating']}\n")
+            if b["pages"]:         body.append(f"        - pages: {b['pages']}\n")
+            if b["isbn"]:          body.append(f"        - isbn: {b['isbn']}\n")
+            if b["date_read"]:     body.append(f"        - date read: {b['date_read']}\n")
+            if b["date_added"]:    body.append(f"        - date added: {b['date_added']}\n")
+            if b["shelves"]:       body.append(f"        - shelves: {', '.join(b['shelves'])}\n")
+            if b["review"]:
+                rl = review_lines_for(b["review"], "            ")
+                if rl:
+                    body.append("        - review:\n")
+                    body.extend(rl)
+
+        insert_chunk = section_header_lines + body
+        lines[insert_at_idx:insert_at_idx] = insert_chunk
+
+    # Append new to-read books to reading list (or create the section)
+    if new_toread:
         reading_list_idx = find_section(lines, "reading list")
         if reading_list_idx is None:
-            # Append at end
-            reading_list_idx = len(lines)
+            # Create a "reading list" section at the end
+            if lines and not lines[-1].endswith("\n"):
+                lines.append("\n")
+            lines.append("reading list\n")
+            reading_list_idx = len(lines) - 1
+        end_idx = find_section_end(lines, reading_list_idx)
+        body = []
+        for b in new_toread:
+            body.append(f"    [] {b['title']}\n")
+            if b["author"]:        body.append(f"        - author: {b['author']}\n")
+            if b["year"]:          body.append(f"        - year: {b['year']}\n")
+            if b["goodreads"]:     body.append(f"        - goodreads: {b['goodreads']}\n")
+            if b["avg_rating"]:    body.append(f"        - goodreads rating: {b['avg_rating']}\n")
+            if b["shelves"]:       body.append(f"        - shelves: {', '.join(b['shelves'])}\n")
+        lines[end_idx:end_idx] = body
 
-        insert_lines = ["imported from goodreads\n"]
-        for book in new_read:
-            checkbox = "[x]" if book["shelf"] == "read" else "[-]"
-            insert_lines.append(f"    {checkbox} {book['title']}\n")
-            if book["author"]:
-                insert_lines.append(f"        - author: {book['author']}\n")
-            if book["year"]:
-                insert_lines.append(f"        - year: {book['year']}\n")
-            if book["goodreads"]:
-                insert_lines.append(f"        - goodreads: {book['goodreads']}\n")
-            if book["avg_rating"]:
-                insert_lines.append(f"        - goodreads rating: {book['avg_rating']}\n")
-            if book["review"]:
-                insert_lines.append(f"        - review:\n")
-                insert_lines.append(f"            {book['review']}\n")
-
-        lines[reading_list_idx:reading_list_idx] = insert_lines
-
-    # Append new to-read books to reading list
-    if new_toread:
-        # Re-find reading list since we may have inserted above
-        reading_list_idx = find_section(lines, "reading list")
-        if reading_list_idx is not None:
-            end_idx = find_section_end(lines, reading_list_idx)
-            insert_lines = []
-            for book in new_toread:
-                insert_lines.append(f"    [] {book['title']}\n")
-                if book["author"]:
-                    insert_lines.append(f"        - author: {book['author']}\n")
-            lines[end_idx:end_idx] = insert_lines
-            print(f"  {len(new_toread)} books added to reading list")
-
-    write_lines(lines)
-    print(f"\nDone. books.log updated.")
+    if apply:
+        write_lines(lines)
+        print(f"\nWrote {BOOKS_FILE}")
+    else:
+        print(f"\nDry-run only. Re-run with --apply to commit changes.")
     return 0
 
 
@@ -470,6 +574,7 @@ def main():
 
     p = sub.add_parser("import-goodreads", help="Import Goodreads CSV export")
     p.add_argument("csv", help="Path to goodreads_library_export.csv")
+    p.add_argument("--apply", action="store_true", help="Write changes (default: dry-run)")
 
     p = sub.add_parser("enrich", help="Fetch Open Library data for a book")
     p.add_argument("title", help="Book title")
