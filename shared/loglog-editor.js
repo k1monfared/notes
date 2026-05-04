@@ -149,6 +149,37 @@
   // spaces, dashes, slashes, ampersands, parens, apostrophes — same set the
   // viewer uses, plus a permissive trailing colon.
   const FIELD_LINE_RE = /^-?\s*([A-Za-z][\w\s/&'()\-]*?):\s*(.*)$/;
+  const URL_ONLY_RE = /^https?:\/\/[^\s]+$/;
+  const SENTENCE_END = /[.,;:!?)\]]$/;
+  const MAX_KEY_WORDS = 5;
+  const MAX_KEY_CHARS = 40;
+
+  // Pure-URL probe. Returns the URL string when the input is *exactly* a URL,
+  // otherwise null. Trailing sentence punctuation kicks it out (ambiguous).
+  function asPureUrl(text) {
+    const t = (text || '').trim();
+    return (URL_ONLY_RE.test(t) && !SENTENCE_END.test(t)) ? t : null;
+  }
+
+  // "Is this a clear field line?" probe. Returns { key, value } when the
+  // input parses unambiguously as a structured field; otherwise null.
+  // Rejection rules (everything else falls back to notes):
+  //   - http/https as keys (those are URLs, not fields)
+  //   - keys longer than 5 words or 40 chars (those are mid-sentence colons)
+  function asClearField(text) {
+    const inner = (text || '').replace(/^-\s*/, '').trim();
+    if (!inner) return null;
+    // Pure URL is a clear field too, classified as `url`
+    const url = asPureUrl(inner);
+    if (url) return { key: 'url', value: url };
+    const m = inner.match(FIELD_LINE_RE);
+    if (!m) return null;
+    const key = m[1].trim();
+    if (/^https?$/i.test(key)) return null;
+    const wordCount = key.split(/\s+/).length;
+    if (wordCount > MAX_KEY_WORDS || key.length > MAX_KEY_CHARS) return null;
+    return { key, value: m[2].trim() };
+  }
 
   function parseEntryBlock(lines, itemLineIdx, itemIndent) {
     // Walk children of the item until we hit a sibling/parent.
@@ -188,35 +219,42 @@
       //    Anything ambiguous (trailing prose, trailing period, etc.) falls
       //    through to the note path.
       const trimmedInner = inner.trim();
-      const URL_ONLY_RE = /^https?:\/\/[^\s]+$/;
-      if (startedWithDash && nestedLines.length === 0 &&
-          URL_ONLY_RE.test(trimmedInner) &&
-          !/[.,;:!?)\]]$/.test(trimmedInner)) {
-        fields.push({ key: 'url', value: trimmedInner, multi: false });
-        i++;
-        continue;
+      if (startedWithDash && nestedLines.length === 0) {
+        const url = asPureUrl(trimmedInner);
+        if (url) {
+          fields.push({ key: 'url', value: url, multi: false });
+          i++;
+          continue;
+        }
       }
 
-      const m = inner.match(FIELD_LINE_RE);
-      // Reject http/https as field keys — a URL line that didn't match the
-      // strict pure-URL test above is ambiguous, so the user said "→ notes".
-      const isUrlKey = m && /^https?$/i.test(m[1].trim());
-
-      // 1. "- key: value" / "- key:" → field
-      if (m && startedWithDash && !isUrlKey) {
-        const key = m[1].trim();
-        const inlineVal = m[2].trim();
-        if (inlineVal && nestedLines.length === 0) {
-          fields.push({ key, value: inlineVal, multi: false });
-        } else if (!inlineVal && nestedLines.length > 0) {
-          fields.push({ key, value: nestedLines.join('\n'), multi: true });
-        } else if (inlineVal && nestedLines.length > 0) {
-          fields.push({ key, value: [inlineVal, ...nestedLines].join('\n'), multi: true });
-        } else {
-          fields.push({ key, value: '', multi: false });
+      // 1. "- key: value" / "- key:" → field, but only when the key passes
+      //    the asClearField sanity test (short, not http/https, etc.).
+      //    Anything ambiguous falls through to the note path.
+      if (startedWithDash) {
+        // Treat colon-ending "- key:" with nested children as a multi-line
+        // field even when there's no inline value.
+        const m = inner.match(FIELD_LINE_RE);
+        if (m) {
+          const key = m[1].trim();
+          const inlineVal = m[2].trim();
+          const looksLikeKey = !/^https?$/i.test(key)
+            && key.split(/\s+/).length <= MAX_KEY_WORDS
+            && key.length <= MAX_KEY_CHARS;
+          if (looksLikeKey) {
+            if (inlineVal && nestedLines.length === 0) {
+              fields.push({ key, value: inlineVal, multi: false });
+            } else if (!inlineVal && nestedLines.length > 0) {
+              fields.push({ key, value: nestedLines.join('\n'), multi: true });
+            } else if (inlineVal && nestedLines.length > 0) {
+              fields.push({ key, value: [inlineVal, ...nestedLines].join('\n'), multi: true });
+            } else {
+              fields.push({ key, value: '', multi: false });
+            }
+            i = j;
+            continue;
+          }
         }
-        i = j;
-        continue;
       }
 
       // 2. "- key" (no colon) + nested children → treat as key with multi-line
@@ -249,11 +287,8 @@
     const propPad = ' '.repeat(itemIndent + 4);
     const deepPad = ' '.repeat(itemIndent + 8);
     const out = [];
-    for (const f of block.fields) {
-      const key = f.key.trim();
-      if (!key) continue;
-      const value = (f.value || '').replace(/\r/g, '');
-      const lines = value.split('\n').map(s => s.trim()).filter(Boolean);
+    function emitField(key, value) {
+      const lines = (value || '').replace(/\r/g, '').split('\n').map(s => s.trim()).filter(Boolean);
       if (lines.length === 0) {
         out.push(`${propPad}- ${key}:\n`);
       } else if (lines.length === 1) {
@@ -263,9 +298,21 @@
         for (const ln of lines) out.push(`${deepPad}- ${ln}\n`);
       }
     }
+    for (const f of block.fields) {
+      const key = (f.key || '').trim();
+      if (!key) continue;
+      emitField(key, f.value);
+    }
+    // Notes pass: each note line is rechecked. If it now parses as a clear
+    // field (e.g., the user moved a URL onto its own line as `url: http://…`,
+    // or wrote `author: …`), promote it back into a field so the file ends
+    // up with the structured form. Otherwise it stays as a free-prose note.
     for (const n of block.notes || []) {
       const text = (n || '').trim();
-      if (text) out.push(`${propPad}- ${text}\n`);
+      if (!text) continue;
+      const promoted = asClearField(text);
+      if (promoted) emitField(promoted.key, promoted.value);
+      else out.push(`${propPad}- ${text}\n`);
     }
     return out;
   }
