@@ -92,8 +92,6 @@ body {
 .si.uncertain  { color: var(--txt2); }
 .item-info { flex: 1; min-width: 0; }
 .item-name { font-weight: 500; }
-.item-sub { font-size: 12px; color: var(--txt2); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.item.open .item-sub { display: none; }
 .item-toggle { display: none; }
 
 /* Item nesting indentation */
@@ -211,11 +209,6 @@ body.edit-mode .edit-only { display: inline-flex !important; }
 .item-edit-btn svg,
 .sec-edit-btn svg { display: block; }
 
-.sec-notes {
-  padding: 8px 14px; border-bottom: 1px solid var(--bd, var(--border));
-  font-size: 13px; color: var(--text-muted); line-height: 1.5; font-style: italic;
-}
-.sec-notes div { padding: 1px 0; }
 
 .editor-dialog-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.55);
