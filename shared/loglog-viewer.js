@@ -250,11 +250,38 @@ function createLoglogViewer(container, config) {
     tiers = null,
   } = config;
 
+  // Per-page user preferences in localStorage. Key includes the data file
+  // path so each viewer (books, people, etc.) has its own settings.
+  const PREFS_KEY = `loglog_prefs:${dataFile || title}`;
+  function loadPrefs() {
+    try {
+      const raw = localStorage.getItem(PREFS_KEY);
+      if (!raw) return {};
+      return JSON.parse(raw) || {};
+    } catch { return {}; }
+  }
+  function savePrefs(p) {
+    try { localStorage.setItem(PREFS_KEY, JSON.stringify(p)); } catch {}
+  }
+  let prefs = loadPrefs();
+  if (prefs.subtitlesOn === false) document.body.classList.add('subtitles-off');
+
+  // Effective config: prefs override the page-supplied defaults.
+  function effectiveConfig() {
+    const out = Object.assign({}, config);
+    if (Array.isArray(prefs.subtitleFields)) out.subtitleFields = prefs.subtitleFields;
+    return out;
+  }
+
   container.innerHTML = `
     <div id="hdr">
       <div class="title-row">
         <h1>${escHtml(title)}</h1>
-        <div class="hdr-actions"></div>
+        <div class="hdr-actions">
+          <button id="loglog-settings" class="hdr-icon-btn" title="Settings" aria-label="Settings">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          </button>
+        </div>
       </div>
       <div class="search-row">
         <input id="search" type="text" placeholder="Search… (use key:value for field search)" autocomplete="off">
@@ -264,6 +291,49 @@ function createLoglogViewer(container, config) {
     <div id="stats"></div>
     <div id="content"><div class="center">Loading…</div></div>`;
 
+  container.querySelector('#loglog-settings').addEventListener('click', openSettingsDialog);
+
+  function openSettingsDialog() {
+    const o = document.createElement('div');
+    o.className = 'editor-dialog-overlay';
+    document.body.appendChild(o);
+    const fieldsValue = (prefs.subtitleFields ?? config.subtitleFields ?? []).join(', ');
+    const showOn = prefs.subtitlesOn !== false;
+    o.innerHTML = `
+      <div class="editor-dialog">
+        <h3>Display settings</h3>
+        <div class="dialog-grid">
+          <label>Subtitles</label>
+          <label class="checkbox-row"><input type="checkbox" id="pref-subtitles-on" ${showOn ? 'checked' : ''}> Show subtitles under each item</label>
+          <label>Fields</label>
+          <input type="text" id="pref-subtitle-fields" placeholder="comma,separated,e.g.,author" value="${escHtml(fieldsValue)}">
+        </div>
+        <p class="dialog-hint">First field with a value wins. Leave empty to use the page default.</p>
+        <div class="dialog-actions">
+          <button class="btn-cancel" id="pref-cancel">Cancel</button>
+          <span style="flex:1"></span>
+          <button class="btn-primary" id="pref-save">Save</button>
+        </div>
+      </div>`;
+    o.querySelector('#pref-cancel').addEventListener('click', () => o.remove());
+    o.addEventListener('click', e => { if (e.target === o) o.remove(); });
+    o.querySelector('#pref-save').addEventListener('click', () => {
+      const subtitlesOn = o.querySelector('#pref-subtitles-on').checked;
+      const raw = o.querySelector('#pref-subtitle-fields').value.trim();
+      const fieldsList = raw
+        ? raw.split(',').map(s => s.trim()).filter(Boolean)
+        : null;
+      prefs = { subtitlesOn, ...(fieldsList ? { subtitleFields: fieldsList } : {}) };
+      savePrefs(prefs);
+      document.body.classList.toggle('subtitles-off', subtitlesOn === false);
+      // Re-render with new prefs
+      if (container.__loglogState) {
+        container.__loglogState.refresh(container.__loglogState.text);
+      }
+      o.remove();
+    });
+  }
+
   const searchEl = container.querySelector('#search');
   const countEl = container.querySelector('#search-count');
   const statsEl = container.querySelector('#stats');
@@ -271,8 +341,9 @@ function createLoglogViewer(container, config) {
 
   // Render once we have text (either from initial fetch or after a save).
   function renderFromText(text) {
+    const cfg = effectiveConfig();
     const tree = buildTree(text);
-    const nodes = classifyTree(tree, config);
+    const nodes = classifyTree(tree, cfg);
 
     if (tiers) {
       const tierLower = tiers.map(t => t.toLowerCase());
@@ -295,7 +366,7 @@ function createLoglogViewer(container, config) {
       : `${totalItems} items`;
 
     contentEl.innerHTML = '';
-    renderNodes(contentEl, nodes, config);
+    renderNodes(contentEl, nodes, cfg);
 
     const allItemNodes = [];
     collectAllItemNodes(nodes, allItemNodes);
@@ -303,7 +374,7 @@ function createLoglogViewer(container, config) {
     // Stash state so the editor (loaded as a sibling script) can find raw
     // text + parsed item nodes for in-place save + refresh.
     container.__loglogState = {
-      text, nodes, items: allItemNodes, dataFile, config,
+      text, nodes, items: allItemNodes, dataFile, config: cfg,
       refresh: (newText) => renderFromText(newText),
     };
 
@@ -386,7 +457,7 @@ function renderSection(container, node, config) {
 }
 
 function renderItem(container, node, config) {
-  const { checkboxes = false } = config;
+  const { checkboxes = false, subtitleFields = [], subtitleMode = 'first' } = config;
   const item = document.createElement('div');
   item.className = 'item';
   item.dataset.depth = node.depth || 0;
@@ -407,11 +478,27 @@ function renderItem(container, node, config) {
     siHtml = `<span class="si ${cls}">${icon}</span>`;
   }
 
+  // Subtitle: configurable list of fields. Show the first present (default)
+  // or all present (subtitleMode: 'all') as a small line under the title.
+  // Hidden when the card is expanded (CSS).
+  let subtitleHtml = '';
+  if (subtitleFields.length > 0) {
+    const present = subtitleFields
+      .map(f => props[f.toLowerCase()])
+      .filter(Boolean)
+      .map(v => v.split('\n')[0].trim());
+    if (present.length > 0) {
+      const text = subtitleMode === 'all' ? present.join(' · ') : present[0];
+      subtitleHtml = `<div class="item-sub">${escHtml(text)}</div>`;
+    }
+  }
+
   item.innerHTML = `
     <div class="item-hdr">
       ${siHtml}
       <div class="item-info">
         <div class="item-name">${escHtml(node.name)}</div>
+        ${subtitleHtml}
       </div>
     </div>`;
 
@@ -429,7 +516,9 @@ function renderItem(container, node, config) {
 function renderItemDetail(detail, node, config) {
   const props = node.properties || {};
   const { propertyRenderers = {}, reviewFields = ['review'], linkFields = ['link', 'goodreads', 'website'], hideProperties = [] } = config;
-  const hideSet = new Set([...(hideProperties || []), config.summaryField].filter(Boolean).map(s => s.toLowerCase()));
+  // Note: subtitleFields are NOT hidden here — the subtitle disappears when
+  // expanded via CSS, but the field stays visible in the detail panel.
+  const hideSet = new Set((hideProperties || []).map(s => s.toLowerCase()));
 
   // Reviews first
   for (const rf of reviewFields) {
