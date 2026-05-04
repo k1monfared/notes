@@ -92,6 +92,18 @@ body {
 .si.uncertain  { color: var(--txt2); }
 .item-info { flex: 1; min-width: 0; }
 .item-name { font-weight: 500; }
+.item-sub { font-size: 12px; color: var(--txt2, var(--text-muted)); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.item.open .item-sub { display: none; }
+body.subtitles-off .item-sub,
+body.subtitles-off .mv-sub { display: none !important; }
+.editor-dialog .checkbox-row {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; color: var(--text); padding: 4px 0;
+  text-transform: none; letter-spacing: normal;
+}
+.editor-dialog .checkbox-row input[type="checkbox"] {
+  width: auto; flex: 0 0 auto; margin: 0;
+}
 .item-toggle { display: none; }
 
 /* Item nesting indentation */

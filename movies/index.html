@@ -158,6 +158,9 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
 .si.uncertain  { color: var(--txt2); }
 .mv-info { flex: 1; min-width: 0; }
 .mv-name { font-weight: 500; }
+.mv-sub { font-size: 12px; color: var(--txt2); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mv.open .mv-sub { display: none; }
+body.subtitles-off .mv-sub, body.subtitles-off .item-sub { display: none !important; }
 .mv-toggle { display: none; }
 
 /* ── Movie detail ── */
@@ -465,6 +468,9 @@ body.edit-mode #edit-lock .lock-open { display: block; }
   <div class="title-row">
     <h1>Movies</h1>
     <div class="hdr-actions">
+      <button id="loglog-settings" class="hdr-icon-btn" aria-label="Settings" title="Settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      </button>
       <button id="edit-lock" class="hdr-icon-btn" aria-label="Edit mode" title="Edit mode">
         <svg class="lock-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
         <svg class="lock-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 019.9-1"/></svg>
@@ -981,11 +987,21 @@ function buildMovieEl(m) {
   div.className = 'mv';
   div.dataset.mid = id;
 
+  // Subtitle: list of fields driven by user prefs (gear icon → settings).
+  // Defaults: year + first director. First-present wins unless mode is 'all'.
+  const fields = (window.__moviesPrefs && window.__moviesPrefs.subtitleFields) || ['year', 'director'];
+  const mode = (window.__moviesPrefs && window.__moviesPrefs.subtitleMode) || 'all';
+  const subVals = fields
+    .map(f => f === 'director' && m.props.director ? m.props.director.split(',')[0].trim() : (m.props[f] || ''))
+    .filter(Boolean);
+  const sub = subVals.length === 0 ? '' : (mode === 'all' ? subVals.join(' · ') : subVals[0]);
+
   div.innerHTML = `
     <div class="mv-hdr" onclick="toggleMv(this.parentElement)">
       ${siIcon(m.status)}
       <div class="mv-info">
         <div class="mv-name">${esc(m.title)}</div>
+        ${sub ? `<div class="mv-sub">${esc(sub)}</div>` : ''}
       </div>
       <button class="mv-edit-btn edit-only" data-action="edit-movie" title="Edit movie" aria-label="Edit movie">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 113 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
@@ -1536,6 +1552,60 @@ window.__refreshMoviesText = (newText) => {
   render();
   window.__moviesText = newText;
 };
+
+// ── Subtitle prefs (gear icon) ────────────────────────────────────────
+const PREFS_KEY = 'loglog_prefs:movies.log';
+function loadPrefs() {
+  try { return JSON.parse(localStorage.getItem(PREFS_KEY) || '{}') || {}; } catch { return {}; }
+}
+function savePrefs(p) { try { localStorage.setItem(PREFS_KEY, JSON.stringify(p)); } catch {} }
+window.__moviesPrefs = loadPrefs();
+if (window.__moviesPrefs.subtitlesOn === false) document.body.classList.add('subtitles-off');
+
+function openMoviesSettingsDialog() {
+  const o = document.createElement('div');
+  o.className = 'editor-dialog-overlay';
+  document.body.appendChild(o);
+  const showOn = window.__moviesPrefs.subtitlesOn !== false;
+  const fieldsValue = (window.__moviesPrefs.subtitleFields || ['year', 'director']).join(', ');
+  const mode = window.__moviesPrefs.subtitleMode || 'all';
+  o.innerHTML = `
+    <div class="editor-dialog">
+      <h3>Display settings</h3>
+      <div class="dialog-grid">
+        <label>Subtitles</label>
+        <label class="checkbox-row"><input type="checkbox" id="pref-subtitles-on" ${showOn ? 'checked' : ''}> Show subtitles under each movie</label>
+        <label>Fields</label>
+        <input type="text" id="pref-subtitle-fields" placeholder="year, director" value="${esc(fieldsValue)}">
+        <label>Mode</label>
+        <select id="pref-subtitle-mode">
+          <option value="first" ${mode === 'first' ? 'selected' : ''}>First present</option>
+          <option value="all" ${mode === 'all' ? 'selected' : ''}>All present, joined</option>
+        </select>
+      </div>
+      <p class="dialog-hint">Comma-separated. e.g. <code>year, director</code>.</p>
+      <div class="dialog-actions">
+        <button class="btn-cancel" id="pref-cancel">Cancel</button>
+        <span style="flex:1"></span>
+        <button class="btn-primary" id="pref-save">Save</button>
+      </div>
+    </div>`;
+  o.querySelector('#pref-cancel').addEventListener('click', () => o.remove());
+  o.addEventListener('click', e => { if (e.target === o) o.remove(); });
+  o.querySelector('#pref-save').addEventListener('click', () => {
+    const subtitlesOn = o.querySelector('#pref-subtitles-on').checked;
+    const raw = o.querySelector('#pref-subtitle-fields').value.trim();
+    const subtitleMode = o.querySelector('#pref-subtitle-mode').value;
+    const fields = raw ? raw.split(',').map(s => s.trim()).filter(Boolean) : ['year', 'director'];
+    window.__moviesPrefs = { subtitlesOn, subtitleFields: fields, subtitleMode };
+    savePrefs(window.__moviesPrefs);
+    document.body.classList.toggle('subtitles-off', subtitlesOn === false);
+    // Re-render so subtitles pick up the new fields
+    if (typeof render === 'function') render();
+    o.remove();
+  });
+}
+document.getElementById('loglog-settings')?.addEventListener('click', openMoviesSettingsDialog);
 
 init();
 </script>

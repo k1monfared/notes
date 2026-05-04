@@ -424,14 +424,16 @@
       console.warn('loglog-editor: viewer title row missing — abort');
       return;
     }
-    hdrActions.innerHTML = `
+    // Append (not replace) so any pre-existing buttons (e.g. the viewer's
+    // gear) stay in place. Order: gear (left, from viewer) → add → lock.
+    hdrActions.insertAdjacentHTML('beforeend', `
       <button id="loglog-add" class="hdr-icon-btn edit-only" title="Add new item">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       </button>
       <button id="loglog-lock" class="hdr-icon-btn" title="Edit mode">
         <svg class="lock-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
         <svg class="lock-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 019.9-1"/></svg>
-      </button>`;
+      </button>`);
 
     const lockBtn = hdrActions.querySelector('#loglog-lock');
     const addBtn = hdrActions.querySelector('#loglog-add');
