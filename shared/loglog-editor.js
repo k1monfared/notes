@@ -182,9 +182,28 @@
         j++;
       }
 
+      // 0. Pure-URL line ("- https://example.com") → `url` field.
+      //    Strict: the WHOLE line content (after the leading dash) must be
+      //    exactly one URL with no whitespace and no sentence-end punctuation.
+      //    Anything ambiguous (trailing prose, trailing period, etc.) falls
+      //    through to the note path.
+      const trimmedInner = inner.trim();
+      const URL_ONLY_RE = /^https?:\/\/[^\s]+$/;
+      if (startedWithDash && nestedLines.length === 0 &&
+          URL_ONLY_RE.test(trimmedInner) &&
+          !/[.,;:!?)\]]$/.test(trimmedInner)) {
+        fields.push({ key: 'url', value: trimmedInner, multi: false });
+        i++;
+        continue;
+      }
+
       const m = inner.match(FIELD_LINE_RE);
+      // Reject http/https as field keys — a URL line that didn't match the
+      // strict pure-URL test above is ambiguous, so the user said "→ notes".
+      const isUrlKey = m && /^https?$/i.test(m[1].trim());
+
       // 1. "- key: value" / "- key:" → field
-      if (m && startedWithDash) {
+      if (m && startedWithDash && !isUrlKey) {
         const key = m[1].trim();
         const inlineVal = m[2].trim();
         if (inlineVal && nestedLines.length === 0) {

@@ -152,9 +152,24 @@ function extractProperties(children, item) {
   for (const child of children) {
     const raw = child.raw;
 
+    // Pure-URL line ("- https://example.com" or just "https://example.com")
+    // → store as `url` property, not as a property called "https".
+    // Strict: the entire content must be exactly one URL with no whitespace
+    // and no sentence-end punctuation. Anything ambiguous becomes a child text.
+    const trimmedRaw = raw.replace(/^-\s*/, '').trim();
+    if (/^https?:\/\/[^\s]+$/.test(trimmedRaw) &&
+        !/[.,;:!?)\]]$/.test(trimmedRaw) &&
+        child.children.length === 0) {
+      if (!item.properties.url) item.properties.url = trimmedRaw;
+      else item.childTexts.push(trimmedRaw);
+      continue;
+    }
+
     // Property with value: "- key: value" or "key: value"
+    // (but reject http/https keys that slipped past the URL test above —
+    //  they're ambiguous URLs and the user wants those as notes)
     const propValMatch = raw.match(/^-?\s*(\w[\w\s/&'()\-]*?):\s+(.+)$/);
-    if (propValMatch) {
+    if (propValMatch && !/^https?$/i.test(propValMatch[1].trim())) {
       const key = propValMatch[1].trim().toLowerCase();
       let val = propValMatch[2].trim();
       if (child.children.length > 0) {
