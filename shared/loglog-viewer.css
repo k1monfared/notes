@@ -52,8 +52,8 @@ body {
 }
 .sec-hdr:hover { background: var(--bg3); }
 .sec-title { font-weight: 600; font-size: .9rem; }
-.sec-meta { display: flex; align-items: center; gap: 8px; color: var(--txt2); font-size: 12px; }
-.arr { color: var(--txt2); font-size: 11px; transition: transform .2s; }
+.sec-meta { display: flex; align-items: center; gap: 8px; color: var(--txt2); font-size: 12px; margin-left: auto; }
+.arr { color: var(--txt2); font-size: 11px; transition: transform .2s; flex-shrink: 0; width: 12px; text-align: center; margin-right: 6px; }
 .sec.open > .sec-hdr .arr { transform: rotate(90deg); }
 .sec-body { display: none; }
 .sec.open > .sec-body { display: block; }

@@ -107,8 +107,8 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
 }
 .sec-hdr:hover { background: var(--bg3); }
 .sec-title { font-weight: 600; font-size: .9rem; }
-.sec-meta { display: flex; align-items: center; gap: 8px; color: var(--txt2); font-size: 12px; }
-.arr { color: var(--txt2); font-size: 11px; transition: transform .2s; }
+.sec-meta { display: flex; align-items: center; gap: 8px; color: var(--txt2); font-size: 12px; margin-left: auto; }
+.arr { color: var(--txt2); font-size: 11px; transition: transform .2s; flex-shrink: 0; width: 12px; text-align: center; margin-right: 6px; }
 .sec.open > .sec-hdr .arr { transform: rotate(90deg); }
 .sec-body { display: none; }
 .sec.open > .sec-body { display: block; }
@@ -138,8 +138,8 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
   font-size: 11px; text-transform: uppercase;
   letter-spacing: .8px; color: var(--acc); font-weight: 600;
 }
-.subsec-meta { display: flex; align-items: center; gap: 8px; color: var(--txt2); font-size: 12px; }
-.subsec .arr { color: var(--txt2); font-size: 10px; transition: transform .2s; }
+.subsec-meta { display: flex; align-items: center; gap: 8px; color: var(--txt2); font-size: 12px; margin-left: auto; }
+.subsec .arr { color: var(--txt2); font-size: 10px; transition: transform .2s; flex-shrink: 0; width: 12px; text-align: center; margin-right: 6px; }
 .subsec.open > .subsec-hdr .arr { transform: rotate(90deg); }
 .subsec-body { display: none; }
 .subsec.open .subsec-body { display: block; }
@@ -1055,11 +1055,11 @@ function buildGroup(group, level) {
 
   wrap.innerHTML = `
     <div class="${hdrClass}" onclick="toggleSec(this.parentElement)">
+      <span class="arr">▶</span>
       <div class="${titleClass}">${esc(group.name)}</div>
       <div class="${metaClass}">
         <span>${total}</span>
         ${watched ? `<span style="color:var(--green)">${watched}✓</span>` : ''}
-        <span class="arr">▶</span>
       </div>
     </div>
     <div class="${bodyClass}"></div>`;
