@@ -158,8 +158,6 @@ body { background: var(--bg); color: var(--txt); font-family: system-ui,-apple-s
 .si.uncertain  { color: var(--txt2); }
 .mv-info { flex: 1; min-width: 0; }
 .mv-name { font-weight: 500; }
-.mv-sub { font-size: 12px; color: var(--txt2); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mv.open .mv-sub { display: none; }
 .mv-toggle { display: none; }
 
 /* ── Movie detail ── */
@@ -983,15 +981,11 @@ function buildMovieEl(m) {
   div.className = 'mv';
   div.dataset.mid = id;
 
-  const year = m.props.year ? `${m.props.year}` : '';
-  const dir  = m.props.director ? m.props.director.split(',')[0].trim() : '';
-  const sub  = [year, dir].filter(Boolean).join(' · ');
   div.innerHTML = `
     <div class="mv-hdr" onclick="toggleMv(this.parentElement)">
       ${siIcon(m.status)}
       <div class="mv-info">
         <div class="mv-name">${esc(m.title)}</div>
-        ${sub ? `<div class="mv-sub">${esc(sub)}</div>` : ''}
       </div>
       <button class="mv-edit-btn edit-only" data-action="edit-movie" title="Edit movie" aria-label="Edit movie">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 113 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>

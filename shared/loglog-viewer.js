@@ -65,35 +65,6 @@ function classifyTree(rawNodes, config) {
   return result;
 }
 
-// A "bare-leaf" child is a `- text` line with no children, no checkbox,
-// and no field-shape colon. When such lines appear right at the top of a
-// section's children (before any structured item or sub-section), they're
-// treated as section-level notes rather than items.
-function isBareLeaf(node) {
-  if (node.children.length > 0) return false;
-  const r = node.raw;
-  if (/^\[/.test(r)) return false;                      // checkbox → item
-  if (!/^\s*-\s/.test(r)) return false;                  // must be bullet
-  if (/^-?\s*\w[\w\s/&'()\-]*?:\s*\S/.test(r)) return false; // looks like field
-  return true;
-}
-
-function extractSectionNotes(rawChildren) {
-  // Pull leading bare-leaf children off as notes; stop at the first
-  // structured child. Returns { notes: [string], rest: [Node] }.
-  const notes = [];
-  let i = 0;
-  while (i < rawChildren.length && isBareLeaf(rawChildren[i])) {
-    notes.push(rawChildren[i].raw.replace(/^\s*-\s*/, '').trim());
-    i++;
-  }
-  // Only treat as notes if there's at least one structured child after them;
-  // a section that contains only bare leaves is probably a flat list of
-  // items (titles), not a section with notes and no contents.
-  if (i === rawChildren.length) return { notes: [], rest: rawChildren };
-  return { notes, rest: rawChildren.slice(i) };
-}
-
 function classifyNode(node, tierSet, config, depth) {
   const raw = node.raw;
 
@@ -120,9 +91,8 @@ function classifyNode(node, tierSet, config, depth) {
 
   // ── Tier names → always sections ──
   if (isTier) {
-    const { notes: secNotes, rest } = extractSectionNotes(node.children);
-    const children = classifyChildren(rest, tierSet, config, depth + 1);
-    return { type: 'section', name, depth, lineIdx: node.lineIdx, indent: node.indent, isTier: true, sectionNotes: secNotes, children };
+    const children = classifyChildren(node.children, tierSet, config, depth + 1);
+    return { type: 'section', name, depth, lineIdx: node.lineIdx, indent: node.indent, isTier: true, children };
   }
 
   // ── Bare name with children → section or item ──
@@ -134,9 +104,8 @@ function classifyNode(node, tierSet, config, depth) {
       extractProperties(node.children, item);
       return item;
     }
-    const { notes: secNotes, rest } = extractSectionNotes(node.children);
-    const children = classifyChildren(rest, tierSet, config, depth + 1);
-    return { type: 'section', name, depth, lineIdx: node.lineIdx, indent: node.indent, sectionNotes: secNotes, children };
+    const children = classifyChildren(node.children, tierSet, config, depth + 1);
+    return { type: 'section', name, depth, lineIdx: node.lineIdx, indent: node.indent, children };
   }
 
   // ── No children → leaf item ──
@@ -151,9 +120,8 @@ function classifyNode(node, tierSet, config, depth) {
     c.children.length === 0 && !isPropertyLine(c.raw)
   );
   if (allSimpleTextLeaves && node.children.length >= 2) {
-    const { notes: secNotes, rest } = extractSectionNotes(node.children);
-    const children = classifyChildren(rest, tierSet, config, depth + 1);
-    return { type: 'section', name, depth, lineIdx: node.lineIdx, indent: node.indent, sectionNotes: secNotes, children };
+    const children = classifyChildren(node.children, tierSet, config, depth + 1);
+    return { type: 'section', name, depth, lineIdx: node.lineIdx, indent: node.indent, children };
   }
 
   // If all children can be properties/text → item
@@ -165,9 +133,8 @@ function classifyNode(node, tierSet, config, depth) {
   }
 
   // Has non-property children → section
-  const { notes: secNotes, rest } = extractSectionNotes(node.children);
-  const children = classifyChildren(rest, tierSet, config, depth + 1);
-  return { type: 'section', name, depth, lineIdx: node.lineIdx, indent: node.indent, sectionNotes: secNotes, children };
+  const children = classifyChildren(node.children, tierSet, config, depth + 1);
+  return { type: 'section', name, depth, lineIdx: node.lineIdx, indent: node.indent, children };
 }
 
 function classifyChildren(rawChildren, tierSet, config, depth) {
@@ -408,16 +375,6 @@ function renderSection(container, node, config) {
   });
 
   const body = sec.querySelector('.sec-body');
-
-  // Section-level notes (free-prose lines under the header, before any items
-  // or sub-sections). Render as a small descriptive block.
-  if (node.sectionNotes && node.sectionNotes.length > 0) {
-    const notesEl = document.createElement('div');
-    notesEl.className = 'sec-notes';
-    notesEl.innerHTML = node.sectionNotes.map(n => `<div>${linkify(escHtml(n))}</div>`).join('');
-    body.appendChild(notesEl);
-  }
-
   if (node.children && node.children.length > 0) {
     renderNodes(body, node.children, config);
   }
@@ -429,7 +386,7 @@ function renderSection(container, node, config) {
 }
 
 function renderItem(container, node, config) {
-  const { checkboxes = false, summaryField, reviewFields = ['review'], linkFields = ['link', 'goodreads', 'website'] } = config;
+  const { checkboxes = false } = config;
   const item = document.createElement('div');
   item.className = 'item';
   item.dataset.depth = node.depth || 0;
@@ -450,24 +407,12 @@ function renderItem(container, node, config) {
     siHtml = `<span class="si ${cls}">${icon}</span>`;
   }
 
-  // Summary line
-  let summary = '';
-  if (summaryField && props[summaryField]) {
-    summary = props[summaryField].split('\n')[0];
-  } else if (node.childTexts && node.childTexts.length > 0) {
-    summary = node.childTexts[0];
-  }
-  const summaryHtml = summary ? `<div class="item-sub">${escHtml(summary)}</div>` : '';
-  const toggleHtml = hasDetail ? '<span class="item-toggle"></span>' : '';
-
   item.innerHTML = `
     <div class="item-hdr">
       ${siHtml}
       <div class="item-info">
         <div class="item-name">${escHtml(node.name)}</div>
-        ${summaryHtml}
       </div>
-      ${toggleHtml}
     </div>`;
 
   if (hasDetail) {
