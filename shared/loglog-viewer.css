@@ -199,14 +199,23 @@ body.edit-mode #loglog-lock { color: #4caf50; }
 .edit-only { display: none !important; }
 body.edit-mode .edit-only { display: inline-flex !important; }
 
-.item-edit-btn {
+.item-edit-btn,
+.sec-edit-btn {
   background: transparent; border: 1px solid var(--border); color: var(--text-muted);
   padding: 3px 6px; border-radius: 4px; cursor: pointer;
   margin-left: 6px; flex-shrink: 0;
   transition: color .15s, border-color .15s;
 }
-.item-edit-btn:hover { color: var(--link); border-color: var(--link); }
-.item-edit-btn svg { display: block; }
+.item-edit-btn:hover,
+.sec-edit-btn:hover { color: var(--link); border-color: var(--link); }
+.item-edit-btn svg,
+.sec-edit-btn svg { display: block; }
+
+.sec-notes {
+  padding: 8px 14px; border-bottom: 1px solid var(--bd, var(--border));
+  font-size: 13px; color: var(--text-muted); line-height: 1.5; font-style: italic;
+}
+.sec-notes div { padding: 1px 0; }
 
 .editor-dialog-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.55);

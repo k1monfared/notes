@@ -459,14 +459,16 @@
     // Re-attach pencils every time the viewer renders (initial + after save).
     container.addEventListener('loglog-rendered', () => attachPencils());
 
+    const PENCIL_SVG = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 113 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>`;
+
     function attachPencils() {
-      const items = container.querySelectorAll('.item');
-      items.forEach(it => {
+      // Items
+      container.querySelectorAll('.item').forEach(it => {
         if (it.querySelector('.item-edit-btn')) return;
         const btn = document.createElement('button');
         btn.className = 'item-edit-btn edit-only';
         btn.title = 'Edit';
-        btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 113 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>`;
+        btn.innerHTML = PENCIL_SVG;
         const hdr = it.querySelector('.item-hdr');
         if (hdr) hdr.appendChild(btn);
         btn.addEventListener('click', (e) => {
@@ -476,6 +478,24 @@
           const checkbox = it.dataset.checkbox;
           const name = it.querySelector('.item-name')?.textContent || '';
           openEditDialog({ lineIdx, indent, checkbox, name });
+        }, true);
+      });
+
+      // Sections (and subsections — they share the .sec-hdr structure)
+      container.querySelectorAll('.sec[data-kind="section"]').forEach(sc => {
+        const hdr = sc.querySelector('.sec-hdr');
+        if (!hdr || hdr.querySelector('.sec-edit-btn')) return;
+        const btn = document.createElement('button');
+        btn.className = 'sec-edit-btn edit-only';
+        btn.title = 'Edit section';
+        btn.innerHTML = PENCIL_SVG;
+        hdr.appendChild(btn);
+        btn.addEventListener('click', (e) => {
+          e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+          const lineIdx = parseInt(sc.dataset.lineIdx, 10);
+          const indent = parseInt(sc.dataset.indent, 10);
+          const name = sc.querySelector('.sec-title')?.textContent || '';
+          openSectionEditDialog({ lineIdx, indent, name });
         }, true);
       });
     }
@@ -667,6 +687,131 @@
       state.text = newText;
       state.refresh(newText);
       showToast(`Deleted ${itemRef.name}`);
+    }
+
+    // ── Section edit dialog ──────────────────────────────────────────────
+
+    function openSectionEditDialog(secRef) {
+      const state = container.__loglogState;
+      if (!state) { showToast('No data loaded yet', 'error'); return; }
+      const lines = splitLines(state.text);
+      const existingNotes = readSectionNotes(lines, secRef.lineIdx, secRef.indent);
+
+      const o = makeOverlay();
+      o.innerHTML = `
+        <div class="editor-dialog">
+          <h3>Edit section</h3>
+          <div class="dialog-grid">
+            <label>Name</label>
+            <input type="text" id="sec-name" value="${esc(secRef.name)}">
+            <label>Notes</label>
+            <textarea id="sec-notes" rows="5" placeholder="Section description, one note per line">${esc(existingNotes.join('\n'))}</textarea>
+          </div>
+          <div class="dialog-error" id="sec-error"></div>
+          <div class="dialog-actions">
+            <button class="btn-cancel" id="sec-cancel">Cancel</button>
+            <span style="flex:1"></span>
+            <button class="btn-primary" id="sec-save">Save</button>
+          </div>
+        </div>`;
+      o.querySelector('#sec-cancel').addEventListener('click', () => o.remove());
+      o.querySelector('#sec-save').addEventListener('click', async () => {
+        const errEl = o.querySelector('#sec-error');
+        const saveBtn = o.querySelector('#sec-save');
+        const newName = o.querySelector('#sec-name').value.trim() || secRef.name;
+        const newNotes = o.querySelector('#sec-notes').value
+          .split('\n').map(s => s.trim()).filter(Boolean);
+        saveBtn.disabled = true; saveBtn.textContent = 'Saving…';
+        try {
+          await commitSectionEdit(secRef, newName, newNotes);
+          o.remove();
+        } catch (err) {
+          errEl.textContent = 'Save failed: ' + err.message;
+          saveBtn.disabled = false; saveBtn.textContent = 'Save';
+        }
+      });
+    }
+
+    // Read existing section-level notes (leading bare-leaf children of the
+    // section header) from the raw lines.
+    function readSectionNotes(lines, secLineIdx, secIndent) {
+      const propIndent = secIndent + 4;
+      const out = [];
+      let i = secLineIdx + 1;
+      while (i < lines.length) {
+        const r = lines[i].replace(/\n$/, '');
+        if (!r.trim()) { i++; continue; }
+        const ind = r.search(/\S/);
+        if (ind <= secIndent) break;
+        if (ind !== propIndent) break;       // dropped into deeper structure
+        const inner = r.replace(/^\s*-\s*/, '');
+        // Stop if it's not a bare leaf (has colon → field, has checkbox → item)
+        if (/^\[/.test(r.trimStart())) break;
+        if (/^\w[\w\s/&'()\-]*?:\s*\S/.test(inner)) break;
+        // Look ahead: if the NEXT line is more indented, this isn't a leaf
+        let j = i + 1;
+        while (j < lines.length && !lines[j].trim()) j++;
+        const nextIndent = j < lines.length ? lines[j].search(/\S/) : -1;
+        if (nextIndent > propIndent) break;  // has nested children → not a note
+        out.push(inner.trim());
+        i++;
+      }
+      return out;
+    }
+
+    async function commitSectionEdit(secRef, newName, newNotes) {
+      const state = container.__loglogState;
+      const lines = splitLines(state.text);
+      const propIndent = secRef.indent + 4;
+      const propPad = ' '.repeat(propIndent);
+
+      // 1. Rewrite the section header line, preserving the leading prefix
+      //    (might be "    - Some Section" or "  Some Section" — we keep
+      //    whatever shape was there before, just swap the name).
+      const orig = lines[secRef.lineIdx].replace(/\n$/, '');
+      const cb = orig.match(/^\s*\[([x \-?]?)\]/i);
+      const pad = ' '.repeat(secRef.indent);
+      let prefix;
+      if (cb) prefix = `${pad}[${cb[1] || ' '}] `;
+      else if (/^\s*-\s/.test(orig)) prefix = `${pad}- `;
+      else prefix = pad;
+      // Keep optional trailing colon if the original had one
+      const hadColon = /:\s*$/.test(orig);
+      lines[secRef.lineIdx] = `${prefix}${newName}${hadColon ? ':' : ''}\n`;
+
+      // 2. Remove existing leading bare-leaf children (the old notes).
+      let removeFrom = secRef.lineIdx + 1;
+      let removeTo = removeFrom;
+      while (removeTo < lines.length) {
+        const r = lines[removeTo].replace(/\n$/, '');
+        if (!r.trim()) { removeTo++; continue; }
+        const ind = r.search(/\S/);
+        if (ind <= secRef.indent) break;
+        if (ind !== propIndent) break;
+        const inner = r.replace(/^\s*-\s*/, '');
+        if (/^\[/.test(r.trimStart())) break;
+        if (/^\w[\w\s/&'()\-]*?:\s*\S/.test(inner)) break;
+        let j = removeTo + 1;
+        while (j < lines.length && !lines[j].trim()) j++;
+        const nextIndent = j < lines.length ? lines[j].search(/\S/) : -1;
+        if (nextIndent > propIndent) break;
+        removeTo++;
+      }
+      lines.splice(removeFrom, removeTo - removeFrom);
+
+      // 3. Insert the new notes at the same position.
+      const noteLines = newNotes
+        .map(n => n.trim())
+        .filter(Boolean)
+        .map(n => `${propPad}- ${n}\n`);
+      if (noteLines.length) lines.splice(removeFrom, 0, ...noteLines);
+
+      const newText = joinLines(lines);
+      const message = `${cfg.commitPrefix ? cfg.commitPrefix + ': ' : ''}edit section ${newName}`;
+      await createCommit([{ path: cfg.dataFile.replace(/^\.\//, '').replace(/^\.\.\//, '') || cfg.dataFile, content: newText }], message);
+      state.text = newText;
+      state.refresh(newText);
+      showToast(`Saved section ${newName}`);
     }
 
     // ── Add dialog ───────────────────────────────────────────────────────
