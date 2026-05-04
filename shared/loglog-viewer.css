@@ -94,9 +94,7 @@ body {
 .item-name { font-weight: 500; }
 .item-sub { font-size: 12px; color: var(--txt2); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .item.open .item-sub { display: none; }
-.item-toggle { flex-shrink: 0; color: var(--txt2); font-size: 14px; margin-top: 3px; width: 16px; text-align: center; }
-.item.open .item-toggle::after { content: '\2212'; }
-.item:not(.open) .item-toggle::after { content: '+'; }
+.item-toggle { display: none; }
 
 /* Item nesting indentation */
 .item[data-depth="1"] > .item-hdr { padding-left: 28px; }
