@@ -9,7 +9,7 @@ Reading was the easy part. Translating reading into anything I could actually us
 
 ## What it is
 
-[Marginalia](https://github.com/k1monfared/marginalia) is a personal library where each book I read produces two artifacts: a conceptual outline of the book, and a set of discrete, actionable skills extracted from it. The outline tells me what's in the book. The skills tell me what to do.
+[Marginalia](https://k1monfared.github.io/marginalia/) is a personal library where each book I read produces two artifacts: a conceptual outline of the book, and a set of discrete, actionable skills extracted from it. The outline tells me what's in the book. The skills tell me what to do.
 
 A skill is a small file with a fixed shape. It names the situation in which it should fire, the move (numbered steps), what success looks like, the failure mode it prevents, a worked example from the book itself, and the source. About 200 to 400 words each. Each one is supposed to be a thing I can reach for and apply, not a thing I read once and nod at.
 
