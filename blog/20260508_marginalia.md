@@ -1,5 +1,5 @@
 ---
-tags: reading, tools, observation, claude code
+tags: reading, tools, observation
 ---
 # Marginalia
 
