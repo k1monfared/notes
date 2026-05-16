@@ -96,6 +96,38 @@ article .post-meta {
   height: 100%;
 }
 
+/* Audio / video figures (self-hosted media) */
+.audio-figure,
+.video-figure {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.audio-figure audio {
+  width: 100%;
+  max-width: 600px;
+  display: block;
+  margin: 0 auto;
+}
+
+.video-figure video {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 6px;
+  background: #000;
+}
+
+.audio-figure figcaption,
+.video-figure figcaption {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+  line-height: 1.4;
+}
+
 /* Comments */
 .comments {
   margin-top: 3rem;

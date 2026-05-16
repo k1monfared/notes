@@ -5,11 +5,25 @@ import { saveImage, getImagesForDraft, deleteImage } from './storage.js';
 const MAX_DIMENSION = 1600;
 const JPEG_QUALITY = 0.8;
 
+const AUDIO_EXTS = new Set(['mp3', 'm4a', 'wav', 'oga', 'ogg', 'flac', 'opus', 'aac']);
+const VIDEO_EXTS = new Set(['mp4', 'mov', 'webm', 'm4v', 'ogv']);
+const MEDIA_SIZE_WARN_BYTES = 25 * 1024 * 1024;
+
 function sanitizeFilename(name) {
   return name
     .toLowerCase()
     .replace(/\s+/g, '_')
     .replace(/[^\w.\-]/g, '');
+}
+
+export function isAudio(name) {
+  const ext = name.toLowerCase().split('.').pop();
+  return AUDIO_EXTS.has(ext);
+}
+
+export function isVideo(name) {
+  const ext = name.toLowerCase().split('.').pop();
+  return VIDEO_EXTS.has(ext);
 }
 
 export async function pickImage() {
@@ -122,4 +136,35 @@ export function createThumbnailUrl(imageRecord) {
 
 export function markdownImageRef(dateStr, imageName, alt = '') {
   return `![${alt}](files/${dateStr}/${imageName})`;
+}
+
+export async function pickMedia() {
+  return new Promise((resolve) => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'audio/*,video/*';
+    input.onchange = async () => {
+      if (!input.files || !input.files[0]) {
+        resolve(null);
+        return;
+      }
+      const file = input.files[0];
+      if (file.size > MEDIA_SIZE_WARN_BYTES) {
+        const mb = (file.size / (1024 * 1024)).toFixed(1);
+        const ok = confirm(
+          `This file is ${mb} MB. Files over 25 MB add up fast in the repo. ` +
+          `Continue?`
+        );
+        if (!ok) { resolve(null); return; }
+      }
+      const buffer = await file.arrayBuffer();
+      resolve({
+        name: sanitizeFilename(file.name),
+        data: buffer,
+        type: file.type || 'application/octet-stream',
+        base64: arrayBufferToBase64(buffer),
+      });
+    };
+    input.click();
+  });
 }

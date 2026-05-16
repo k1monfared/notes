@@ -6,7 +6,7 @@ import { formatDate, parseFilename, displayDate, imageDir } from './naming.js';
 import { buildPostContent, extractFromContent } from './frontmatter.js';
 import { createEditor } from './editor.js';
 import { renderPreview } from './preview.js';
-import { pickImage, storeImage, getStoredImages, removeStoredImage, createThumbnailUrl, markdownImageRef } from './images.js';
+import { pickImage, pickMedia, storeImage, getStoredImages, removeStoredImage, createThumbnailUrl, markdownImageRef, isAudio, isVideo } from './images.js';
 import { suggestTags } from './tags.js';
 import { saveDraft, getDraft, getAllDrafts, deleteDraft } from './storage.js';
 
@@ -222,6 +222,19 @@ async function showEditor(existingPath = null) {
     renderImageThumbs();
   };
 
+  // Audio / video insertion (no resize, uploaded as-is)
+  editor.onMediaRequest = async () => {
+    const media = await pickMedia();
+    if (!media) return;
+    const dateStr = dateEl.value.replace(/-/g, '');
+    const record = await storeImage(currentDraftId, dateStr, media);
+    attachedImages.push(record);
+    const caption = prompt('Caption (optional):', '') || '';
+    const ref = markdownImageRef(dateStr, media.name, caption);
+    editor.insertAtCursor('\n\n' + ref + '\n\n');
+    renderImageThumbs();
+  };
+
   // Tag suggestions
   app.querySelector('#suggest-tags-btn').addEventListener('click', () => {
     const content = titleEl.value + '\n' + editor.value;
@@ -407,13 +420,23 @@ function renderImageThumbs() {
     container.innerHTML = '';
     return;
   }
-  container.innerHTML = attachedImages.map((img, i) => `
+  container.innerHTML = attachedImages.map((img, i) => {
+    let preview;
+    if (isAudio(img.name)) {
+      preview = '<div class="media-thumb-icon" title="audio">&#9836;</div>';
+    } else if (isVideo(img.name)) {
+      preview = '<div class="media-thumb-icon" title="video">&#9655;</div>';
+    } else {
+      preview = `<img src="${createThumbnailUrl(img)}" alt="${escapeHtml(img.name)}">`;
+    }
+    return `
     <div class="image-thumb">
-      <img src="${createThumbnailUrl(img)}" alt="${escapeHtml(img.name)}">
+      ${preview}
       <span class="image-name">${escapeHtml(img.name)}</span>
       <button class="btn-remove" data-index="${i}">&times;</button>
     </div>
-  `).join('');
+  `;
+  }).join('');
   container.querySelectorAll('.btn-remove').forEach(btn => {
     btn.addEventListener('click', async () => {
       const idx = parseInt(btn.dataset.index);

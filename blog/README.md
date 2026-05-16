@@ -65,6 +65,27 @@ The app uses the GitHub Contents and Git Trees APIs to create atomic commits con
 
 Images uploaded via the app are stored as regular git blobs (not LFS), which is fine for the build pipeline.
 
+## Audio and Video
+
+Self-hosted media uses the same syntax as images. The build detects the file extension and renders the right HTML5 element:
+
+```markdown
+![Caption here](files/20260514/song.mp3)
+![](files/20260514/demo.mp4)
+```
+
+Renders as:
+
+- `<audio controls>` for `mp3`, `m4a`, `wav`, `oga`, `ogg`, `flac`, `opus`, `aac`
+- `<video controls>` for `mp4`, `mov`, `webm`, `m4v`, `ogv`
+- regular `<img>` for everything else
+
+The reference must sit on its own line for the conversion to trigger. Captions become `<figcaption>` text.
+
+GitHub Pages supports HTTP byte-range requests, so the browser streams and seeks natively. For files larger than ~25 MB consider uploading to a GitHub Release and linking to that URL instead, so the repo doesn't grow per post.
+
+The mobile editor has a separate audio/video button (musical note icon) in the toolbar that picks the file from the device and uploads it under `files/YYYYMMDD/` in the same atomic commit as the post.
+
 ## Comments
 
 Comments use a Staticman-like model: form submission creates a PR with a YAML file, owner merges, site rebuilds with comment visible.

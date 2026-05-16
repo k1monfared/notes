@@ -8,6 +8,7 @@ export function createEditor(container) {
       <button type="button" data-action="heading" title="Heading">H</button>
       <button type="button" data-action="link" title="Link">&#128279;</button>
       <button type="button" data-action="image" title="Insert Image">&#128247;</button>
+      <button type="button" data-action="media" title="Insert Audio/Video">&#9836;</button>
       <button type="button" data-action="hr" title="Horizontal Rule">&mdash;</button>
     </div>
     <textarea id="editor-textarea" placeholder="Write your post here..."></textarea>
@@ -22,8 +23,11 @@ export function createEditor(container) {
     if (!btn) return;
     const action = btn.dataset.action;
     if (action === 'image') {
-      // Handled externally via onImageRequest callback
       if (editor.onImageRequest) editor.onImageRequest();
+      return;
+    }
+    if (action === 'media') {
+      if (editor.onMediaRequest) editor.onMediaRequest();
       return;
     }
     applyAction(textarea, action);
@@ -34,6 +38,7 @@ export function createEditor(container) {
     set value(v) { textarea.value = v; },
     get element() { return textarea; },
     onImageRequest: null,
+    onMediaRequest: null,
     insertAtCursor(text) {
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;

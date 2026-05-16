@@ -178,6 +178,46 @@ EMBED_RE = re.compile(r'\[embed\](.*?)\[/embed\]', re.IGNORECASE)
 YOUTUBE_RE = re.compile(r'https?://(?:www\.)?youtube\.com/watch\?v=([\w-]+)')
 YOUTU_BE_RE = re.compile(r'https?://youtu\.be/([\w-]+)')
 
+AUDIO_EXTS = {"mp3", "m4a", "wav", "oga", "ogg", "flac", "opus", "aac"}
+VIDEO_EXTS = {"mp4", "mov", "webm", "m4v", "ogv"}
+MEDIA_RE = re.compile(
+    r'^[ \t]*!\[([^\]]*)\]\(<?([^)>\s]+\.[A-Za-z0-9]+)>?\)[ \t]*$',
+    re.MULTILINE,
+)
+
+
+def convert_media_links(text):
+    """Convert ![caption](path/to/file.ext) to <audio>/<video> figures.
+
+    Matches the standard markdown image syntax when it sits on its own line and
+    the URL ends in an audio or video extension. Non-media extensions fall
+    through to normal image rendering.
+    """
+    def replace(match):
+        caption = match.group(1).strip()
+        src = match.group(2).strip()
+        ext = src.rsplit('.', 1)[-1].lower() if '.' in src else ''
+        if ext in AUDIO_EXTS:
+            kind = 'audio'
+            media = (
+                f'<audio controls preload="metadata" '
+                f'src="{html.escape(src, quote=True)}"></audio>'
+            )
+        elif ext in VIDEO_EXTS:
+            kind = 'video'
+            media = (
+                f'<video controls preload="metadata" playsinline>'
+                f'<source src="{html.escape(src, quote=True)}">'
+                f'</video>'
+            )
+        else:
+            return match.group(0)
+        figcap = (
+            f'<figcaption>{html.escape(caption)}</figcaption>' if caption else ''
+        )
+        return f'\n<figure class="{kind}-figure">{media}{figcap}</figure>\n'
+    return MEDIA_RE.sub(replace, text)
+
 
 def convert_embeds(text):
     """Convert WordPress [embed]URL[/embed] to iframes (YouTube) or links."""
@@ -414,6 +454,7 @@ def build(local=False, force=False, cdn=None):
         else:
             # Expensive: convert embeds, rewrite links, render markdown, load comments
             content = convert_embeds(content)
+            content = convert_media_links(content)
             content = rewrite_github_links(content, slug_map)
 
             for match in re.finditer(r'(?<![a-z/])files/([^"\')\s]+)', content):
