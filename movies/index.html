@@ -202,6 +202,13 @@ body.edit-mode #edit-lock { color: var(--green); }
 #edit-lock .lock-open { display: none; }
 body.edit-mode #edit-lock .lock-closed { display: none; }
 body.edit-mode #edit-lock .lock-open { display: block; }
+#sync-badge {
+  width: auto; padding: 3px 9px; font-size: 12px; border-radius: 6px;
+  border: 1px solid var(--bd);
+}
+#sync-badge[data-state="pending"] { color: var(--ora); border-color: var(--ora); }
+#sync-badge[data-state="syncing"] { color: var(--blue); border-color: var(--blue); }
+#sync-badge[data-state="synced"]  { color: var(--txt2); }
 
 /* ── Enrich button ── */
 .enrich-btn {

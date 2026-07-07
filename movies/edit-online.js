@@ -19,6 +19,11 @@ import { createCommit, getFile } from '../movie-writer/js/github.js';
 import {
   isAuthenticated, getToken, setToken, clearToken, validateToken,
 } from '../movie-writer/js/auth.js';
+import {
+  getLocalMovies, setLocalMovies,
+  isDirty, setDirty,
+  addPendingMessage, getPendingMessages, clearPendingMessages,
+} from '../movie-writer/js/storage.js';
 
 const REPO = 'k1monfared/notes';
 const RATED_CATEGORIES = [
@@ -36,6 +41,9 @@ const RATED_CATEGORIES = [
 // ── State ────────────────────────────────────────────────────────────────────
 
 let saving = false;
+let syncTimer = null;     // debounce handle for scheduleSync
+let syncing = false;      // reentrancy guard for doSync
+let dirtyCache = false;   // in-memory mirror of storage.isDirty() for sync UI + exit guard
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -294,6 +302,73 @@ function openEditDialog(title) {
   });
 }
 
+// ── Local-first queue + background sync ──────────────────────────────────────
+
+// Persist an edit locally, render it optimistically, and schedule a background
+// push. Edits accumulate in IndexedDB (surviving a browser close) and drain to
+// GitHub as a single coalesced commit.
+async function saveLocalAndRender(newText, message) {
+  window.__moviesText = newText;
+  await setLocalMovies(newText);
+  await setDirty(true);
+  await addPendingMessage(message);
+  dirtyCache = true;
+  window.__refreshMoviesText(newText);   // fold state preserved (Task 1)
+  updateSyncBadge();
+  scheduleSync();
+}
+
+function scheduleSync() {
+  if (syncTimer) clearTimeout(syncTimer);
+  syncTimer = setTimeout(() => { doSync(); }, 1000);
+}
+
+async function doSync() {
+  if (syncing) return;
+  // The viewer may not have populated window.__moviesText yet on boot; retry.
+  if (!window.__moviesText) { scheduleSync(); return; }
+  if (!(await isDirty())) { dirtyCache = false; updateSyncBadge(); return; }
+  syncing = true;
+  updateSyncBadge();
+  try {
+    const messages = await getPendingMessages();
+    const message = messages.length <= 1
+      ? (messages[0] || 'Update movies')
+      : messages.slice(0, 5).join(' / ') + (messages.length > 5 ? ` (+${messages.length - 5} more)` : '');
+
+    await createCommit([{ path: 'movies.log', content: window.__moviesText }], message);
+
+    await setDirty(false);
+    await clearPendingMessages();
+    dirtyCache = false;
+
+    // Pull in anything the enrichment workflow committed on top of ours.
+    // (Usually nothing yet, the workflow runs async; a later reload or sync
+    // picks it up. Best-effort.)
+    try {
+      const file = await getFile('movies.log');
+      if (file.content !== window.__moviesText) {
+        window.__refreshMoviesText(file.content);
+        await setLocalMovies(file.content);
+      }
+    } catch { /* refetch is best-effort */ }
+  } catch (err) {
+    console.error('Sync failed:', err);
+    // Stays dirty + pending, retried on next edit, refocus, online, or load.
+  } finally {
+    syncing = false;
+    updateSyncBadge();
+  }
+}
+
+function updateSyncBadge() {
+  const badge = document.getElementById('sync-badge');
+  if (!badge) return;
+  if (syncing) { badge.textContent = 'syncing…'; badge.dataset.state = 'syncing'; return; }
+  badge.textContent = dirtyCache ? 'pending' : 'synced';
+  badge.dataset.state = dirtyCache ? 'pending' : 'synced';
+}
+
 // ── Mutation + commit ────────────────────────────────────────────────────────
 
 async function commitEdit(originalTitle, u) {
@@ -350,7 +425,7 @@ async function commitEdit(originalTitle, u) {
     }
 
     const newText = joinLines(lines);
-    await pushAndRefresh(newText, `Edit ${u.title}`);
+    await saveLocalAndRender(newText, `Edit ${u.title}`);
     showToast(`Saved ${u.title}`);
   } finally {
     saving = false;
@@ -366,7 +441,7 @@ async function commitDelete(title) {
     if (!found) throw new Error('Not found');
     const end = findInsertAfter(lines, found.index, found.indent);
     lines.splice(found.index, end - found.index);
-    await pushAndRefresh(joinLines(lines), `Delete ${title}`);
+    await saveLocalAndRender(joinLines(lines), `Delete ${title}`);
     showToast(`Deleted ${title}`);
   } finally {
     saving = false;
@@ -389,42 +464,11 @@ async function commitAdd(payload, forceDuplicate = false) {
     const block = buildMovieEntry(payload.title, payload, insert.indent);
     lines.splice(i, 0, ...block);
 
-    await pushAndRefresh(joinLines(lines), `Add ${payload.title}`);
+    await saveLocalAndRender(joinLines(lines), `Add ${payload.title}`);
     showToast(`Added ${payload.title}`);
   } finally {
     saving = false;
   }
-}
-
-async function pushAndRefresh(newText, message) {
-  await createCommit([{ path: 'movies.log', content: newText }], message);
-  // Show the local result immediately so the user sees their edit.
-  await window.__refreshMoviesText(newText);
-
-  // The enrich + cleanup workflow runs after every push. Poll the file
-  // until its content differs from what we just pushed (i.e. the workflow
-  // has committed enrichment + dedupe + route + key-normalisation on top),
-  // then refresh the viewer with that post-pipeline version.
-  pollForEnrichment(newText).catch(err => {
-    console.warn('post-save refresh failed:', err);
-  });
-}
-
-async function pollForEnrichment(ourText, attempts = 0) {
-  // Wait up to ~90 seconds (15 polls × 6s) for the enrichment workflow
-  // to commit on top of ours.
-  if (attempts >= 15) return;
-  await new Promise(r => setTimeout(r, 6000));
-  try {
-    const file = await getFile('movies.log');
-    if (file.content !== ourText && file.content !== window.__moviesText) {
-      // The workflow committed a newer version. Pull it in.
-      await window.__refreshMoviesText(file.content);
-      showToast('Enrichment + cleanup applied');
-      return;
-    }
-  } catch { /* transient — keep polling */ }
-  return pollForEnrichment(ourText, attempts + 1);
 }
 
 // ── Add modal ────────────────────────────────────────────────────────────────
@@ -690,14 +734,14 @@ async function applyImdbDetails(originalTitle, details) {
   }
   if (details.na) {
     setProperty(lines, found.index, found.indent, 'IMDB', 'N/A');
-    await pushAndRefresh(joinLines(lines), `${originalTitle}: mark IMDb N/A`);
+    await saveLocalAndRender(joinLines(lines), `${originalTitle}: mark IMDb N/A`);
     showToast(`${originalTitle}: marked N/A`);
     return;
   }
   const newProps = buildImdbPropertyLines(details, found.indent);
   const insertAt = findInsertAfter(lines, found.index, found.indent);
   lines.splice(insertAt, 0, ...newProps);
-  await pushAndRefresh(joinLines(lines), `Enrich ${originalTitle} from IMDb`);
+  await saveLocalAndRender(joinLines(lines), `Enrich ${originalTitle} from IMDb`);
   showToast(`${originalTitle}: IMDb data applied`);
 }
 
@@ -789,7 +833,42 @@ function setupAddButton() {
   btn.addEventListener('click', () => openAddDialog());
 }
 
-// ── Boot ─────────────────────────────────────────────────────────────────────
+// ── Sync badge, exit guard, retry triggers ───────────────────────────────────
+
+function setupSyncBadge() {
+  const lock = document.getElementById('edit-lock');
+  if (!lock || document.getElementById('sync-badge')) return;
+  const badge = document.createElement('button');
+  badge.id = 'sync-badge';
+  badge.className = 'hdr-icon-btn edit-only';
+  badge.title = 'Sync status, click to sync now';
+  badge.textContent = 'synced';
+  badge.dataset.state = 'synced';
+  badge.addEventListener('click', () => doSync());
+  lock.parentNode.insertBefore(badge, lock);
+}
+
+// Warn before leaving if edits are still queued (unsynced).
+window.addEventListener('beforeunload', (e) => {
+  if (dirtyCache) { e.preventDefault(); e.returnValue = ''; }
+});
+
+// Retry a pending queue when the tab regains focus or the network returns.
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && dirtyCache) scheduleSync();
+});
+window.addEventListener('online', () => { if (dirtyCache) scheduleSync(); });
+
+// On boot, reflect any queue left over from a previous session and try to drain.
+async function initQueueFromStorage() {
+  try {
+    dirtyCache = await isDirty();
+    updateSyncBadge();
+    if (dirtyCache) scheduleSync();
+  } catch { /* storage unavailable */ }
+}
 
 setupLockButton();
 setupAddButton();
+setupSyncBadge();
+initQueueFromStorage();
