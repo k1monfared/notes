@@ -810,6 +810,14 @@ let includeUnrated = true;
 let watchedFilter = 'all';   // 'all', 'yes', 'no'
 let reviewedFilter = 'all';  // 'all', 'yes', 'no'
 
+// Expand/collapse state that must survive re-renders (optimistic edit saves,
+// filter changes, tab switches). Sections are keyed by their full path from the
+// tab's root group name, cards by movie title. Each element restores its own
+// prior state, so a moved item's destination section keeps whatever state it
+// had (source location has priority).
+const openSecs = new Set();  // section paths currently expanded
+const openMovs = new Set();  // movie titles currently expanded
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 const esc = s => s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : '';
@@ -986,6 +994,8 @@ function buildMovieEl(m) {
   const div = document.createElement('div');
   div.className = 'mv';
   div.dataset.mid = id;
+  div.dataset.title = m.title;
+  if (openMovs.has(m.title)) div.classList.add('open');
 
   // Subtitle: list of fields driven by user prefs (gear icon → settings).
   // Defaults: year + first director. First-present wins unless mode is 'all'.
@@ -1033,17 +1043,19 @@ function countWatched(group) {
 
 // Render a Group as either a top-level container (level 0, no header — the tab IS the header)
 // or as a collapsible section (.sec for level 1, .subsec for level 2+).
-function buildGroup(group, level) {
+function buildGroup(group, level, path) {
   const matchedMovies = group.movies.filter(matches);
   const total = countMatches(group);
   if (!total) return null;
+
+  const myPath = path == null ? group.name : path;
 
   // Level 0: render directly into a fragment, no surrounding section wrapper.
   if (level === 0) {
     const frag = document.createDocumentFragment();
     for (const m of matchedMovies) frag.appendChild(buildMovieEl(m));
     for (const child of group.children) {
-      const el = buildGroup(child, 1);
+      const el = buildGroup(child, 1, myPath + ' / ' + child.name);
       if (el) frag.appendChild(el);
     }
     return frag;
@@ -1062,6 +1074,8 @@ function buildGroup(group, level) {
   const wrap = document.createElement('div');
   wrap.className = wrapClass;
   if (t) wrap.dataset.t = t;
+  wrap.dataset.path = myPath;
+  if (openSecs.has(myPath)) wrap.classList.add('open');
 
   wrap.innerHTML = `
     <div class="${hdrClass}" onclick="toggleSec(this.parentElement)">
@@ -1077,7 +1091,7 @@ function buildGroup(group, level) {
   const body = wrap.querySelector('.' + bodyClass);
   for (const m of matchedMovies) body.appendChild(buildMovieEl(m));
   for (const child of group.children) {
-    const el = buildGroup(child, level + 1);
+    const el = buildGroup(child, level + 1, myPath + ' / ' + child.name);
     if (el) body.appendChild(el);
   }
   return wrap;
@@ -1111,7 +1125,7 @@ function render() {
   const rootGroup = data[rootI];
   if (!rootGroup) return;
   const total = hits[rootI];
-  const frag = buildGroup(rootGroup, 0);
+  const frag = buildGroup(rootGroup, 0, rootGroup.name);
   if (frag) content.appendChild(frag);
 
   document.getElementById('stats').textContent =
@@ -1153,8 +1167,16 @@ function renderTabs(precomputedHits) {
 
 // ── Interactions ─────────────────────────────────────────────────────────────
 
-function toggleSec(el) { el.classList.toggle('open'); }
-function toggleMv(el)  { el.classList.toggle('open'); }
+function toggleSec(el) {
+  const open = el.classList.toggle('open');
+  const p = el.dataset.path;
+  if (p) { if (open) openSecs.add(p); else openSecs.delete(p); }
+}
+function toggleMv(el) {
+  const open = el.classList.toggle('open');
+  const t = el.dataset.title;
+  if (t) { if (open) openMovs.add(t); else openMovs.delete(t); }
+}
 
 // ── Sidebar ──────────────────────────────────────────────────────────────────
 
@@ -1528,7 +1550,10 @@ async function init() {
       if (e.key !== 'Enter') return;
       e.preventDefault();
       document.querySelectorAll('.sec, .subsec').forEach(s => {
-        if (s.querySelector('.mv')) s.classList.add('open');
+        if (s.querySelector('.mv')) {
+          s.classList.add('open');
+          if (s.dataset.path) openSecs.add(s.dataset.path);
+        }
       });
     });
 
