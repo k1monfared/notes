@@ -8,12 +8,18 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: enrich-movies
+  cancel-in-progress: true
+
 jobs:
   enrich:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -39,7 +45,16 @@ jobs:
           git add movies.log
           if git diff --cached --quiet; then
             echo "No changes to commit"
-          else
-            git commit -m "Auto-enrich movies with IMDb data"
-            git push
+            exit 0
           fi
+          git commit -m "Auto-enrich movies with IMDb data"
+          for attempt in 1 2 3 4 5; do
+            if git push; then
+              echo "Pushed on attempt $attempt"
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt), rebasing onto latest main..."
+            git pull --rebase origin main || true
+          done
+          echo "Failed to push after 5 attempts" >&2
+          exit 1
