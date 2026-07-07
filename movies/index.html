@@ -1508,7 +1508,17 @@ function copyEnrich(btn) {
 
 async function init() {
   try {
-    const text = await fetchMoviesLog();
+    const remote = await fetchMoviesLog();
+    // If the local edit queue is dirty (unsynced edits from this or a prior
+    // session), show those instead of remote so a reload never drops them.
+    let text = remote;
+    try {
+      const storage = await import('../movie-writer/js/storage.js');
+      if (await storage.isDirty()) {
+        const local = await storage.getLocalMovies();
+        if (local) text = local;
+      }
+    } catch { /* storage unavailable, fall back to remote */ }
     window.__moviesText = text;
     data = parseLog(text);
 
