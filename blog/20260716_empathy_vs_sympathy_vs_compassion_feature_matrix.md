@@ -9,26 +9,48 @@ tags: life
     ~ = partial / possible
       = absent / not required
 
-The four component columns (cognitive and affective empathy, sympathy, compassion) sit left of the double rule. The five to the right are whole-person profiles, arranged darkest to lightest: psychopath, sociopath, empath, altruist, and the integrated ideal. Rows stay ordered by the two dark profiles' contrast, in four blocks separated by blank dividers: present in both, in the psychopath only, in the sociopath only, and in neither. The table scrolls horizontally on narrow screens, with the header row and the feature column pinned.
+The four component columns (cognitive and affective empathy, sympathy, compassion) sit left of the double rule. The five to the right are whole-person profiles, arranged darkest to lightest: psychopath, sociopath, empath, altruist, and the integrated ideal. Rows stay ordered by the two dark profiles' contrast, in four blocks separated by blank dividers: present in both, in the psychopath only, in the sociopath only, and in neither. The table spans the full window width and is capped to the screen height: when the screen is tall enough it shows every row, otherwise it scrolls with the header row and feature column pinned.
 
 <style>
-.matrix-scroll { overflow: auto; max-height: 80vh; margin: 1.5em 0; }
-.matrix-scroll table { margin: 0; }
+/* Break out of the centered column to use the full window width, and cap the
+   height to the viewport so the table never grows taller than the screen:
+   short screens scroll internally (header stays pinned), tall screens show all. */
+.matrix-scroll {
+  width: 100vw;
+  margin: 1.5em calc(50% - 50vw);
+  padding: 0 1.5rem;
+  box-sizing: border-box;
+  overflow: auto;
+  max-height: 100vh;
+  max-height: 100dvh;
+}
+.matrix-scroll table { width: 100%; margin: 0; }
 /* sticky header row */
-.matrix-scroll thead th { position: sticky; top: 0; z-index: 2; background: var(--header-bg); }
+.matrix-scroll thead th {
+  position: sticky; top: 0; z-index: 2;
+  background: var(--header-bg);
+  box-shadow: inset 0 -1px var(--border);
+}
 /* sticky first (feature) column */
 .matrix-scroll th:first-child,
 .matrix-scroll td:first-child {
   position: sticky; left: 0; z-index: 1;
-  text-align: left; min-width: 20rem;
+  text-align: left; min-width: 18rem;
   background: var(--bg);
   box-shadow: inset -1px 0 var(--border);
 }
-/* the header/feature-column corner sits above both */
-.matrix-scroll thead th:first-child { z-index: 3; background: var(--header-bg); }
+/* top-left corner sits above both sticky axes */
+.matrix-scroll thead th:first-child {
+  z-index: 3; background: var(--header-bg);
+  box-shadow: inset -1px -1px var(--border);
+}
 /* double rule dividing the empathy components from the profile columns */
 .matrix-scroll th:nth-child(5),
 .matrix-scroll td:nth-child(5) { border-right: 4px double var(--text-muted); }
+/* double rules dividing the four row blocks (after rows 3, 4, and 12) */
+.matrix-scroll tbody tr:nth-child(3) td,
+.matrix-scroll tbody tr:nth-child(4) td,
+.matrix-scroll tbody tr:nth-child(12) td { border-bottom: 4px double var(--text-muted); }
 </style>
 
 <div class="matrix-scroll" markdown="1">
@@ -38,9 +60,7 @@ The four component columns (cognitive and affective empathy, sympathy, compassio
 | Accurately modeling the other's mental state | ✓ | ~ | ~ | ✓ | ✓ | ~ | ~ | ✓ | ✓ |
 | Maintains self/other boundary | ✓ |   | ✓ | ✓ | ✓ | ~ |   | ✓ | ✓ |
 | Can exist in manipulators / con artists | ✓ |   |   |   | ✓ | ~ |   |   |   |
-|  |  |  |  |  |  |  |  |  |  |
 | Controlled / instrumental rather than reactive / impulsive | ✓ |   | ~ | ✓ | ✓ |   |   | ✓ | ✓ |
-|  |  |  |  |  |  |  |  |  |  |
 | Actually sharing / mirroring the emotion |   | ✓ |   |   |   | ~ | ✓ | ~ | ✓ |
 | Capacity to genuinely care about the person *at all* |   | ~ | ✓ | ✓ |   | ✓ | ✓ | ✓ | ✓ |
 | Motivation to help or act |   | ~ | ~ | ✓ |   | ~ | ~ | ✓ | ✓ |
@@ -49,7 +69,6 @@ The four component columns (cognitive and affective empathy, sympathy, compassio
 | Biased toward vivid, similar individuals | ~ | ✓ | ~ |   |   | ✓ | ✓ |   | ~ |
 | Treats people as ends, not means (Kantianism) |   | ~ | ~ | ✓ |   | ~ | ✓ | ✓ | ✓ |
 | Values each person's dignity and worth (Humanism) |   | ~ | ✓ | ✓ |   | ~ | ✓ | ✓ | ✓ |
-|  |  |  |  |  |  |  |  |  |  |
 | Concern reaches *beyond* a vivid / similar in-group |   |   | ~ | ✓ |   |   |   | ✓ | ✓ |
 | Believes people are fundamentally good (Faith in Humanity) |   |   | ~ | ~ |   |   | ✓ | ✓ | ✓ |
 | Sustainable and scalable as a moral guide | ~ |   | ~ | ✓ |   |   |   | ✓ | ✓ |
