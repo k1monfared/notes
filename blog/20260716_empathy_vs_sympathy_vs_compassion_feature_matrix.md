@@ -9,34 +9,52 @@ tags: life
     ~ = partial / possible
       = absent / not required
 
-The four columns left of the ‖ are components of a moral response. The five to the right are whole-person profiles, arranged darkest to lightest: psychopath, sociopath, empath, altruist, and the integrated ideal. Rows stay ordered by the two dark profiles' contrast, in four blocks separated by blank dividers: present in both, in the psychopath only, in the sociopath only, and in neither.
+The four component columns (cognitive and affective empathy, sympathy, compassion) sit left of the double rule. The five to the right are whole-person profiles, arranged darkest to lightest: psychopath, sociopath, empath, altruist, and the integrated ideal. Rows stay ordered by the two dark profiles' contrast, in four blocks separated by blank dividers: present in both, in the psychopath only, in the sociopath only, and in neither. The table scrolls horizontally on narrow screens, with the header row and the feature column pinned.
 
 <style>
-/* Give the feature-label column room so it does not wrap awkwardly */
-article table th:first-child,
-article table td:first-child { text-align: left; min-width: 24rem; }
+.matrix-scroll { overflow: auto; max-height: 80vh; margin: 1.5em 0; }
+.matrix-scroll table { margin: 0; }
+/* sticky header row */
+.matrix-scroll thead th { position: sticky; top: 0; z-index: 2; background: var(--header-bg); }
+/* sticky first (feature) column */
+.matrix-scroll th:first-child,
+.matrix-scroll td:first-child {
+  position: sticky; left: 0; z-index: 1;
+  text-align: left; min-width: 20rem;
+  background: var(--bg);
+  box-shadow: inset -1px 0 var(--border);
+}
+/* the header/feature-column corner sits above both */
+.matrix-scroll thead th:first-child { z-index: 3; background: var(--header-bg); }
+/* double rule dividing the empathy components from the profile columns */
+.matrix-scroll th:nth-child(5),
+.matrix-scroll td:nth-child(5) { border-right: 4px double var(--text-muted); }
 </style>
 
-| Feature | Empathy: cognitive | Empathy: affective | Sympathy | Compassion | ‖ | Psychopath | Sociopath | Empath | Altruist | Integrated |
-|:-----------------------------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| Accurately modeling the other's mental state | ✓ | ~ | ~ | ✓ | ‖ | ✓ | ~ | ~ | ✓ | ✓ |
-| Maintains self/other boundary | ✓ |   | ✓ | ✓ | ‖ | ✓ | ~ |   | ✓ | ✓ |
-| Can exist in manipulators / con artists | ✓ |   |   |   | ‖ | ✓ | ~ |   |   |   |
-|  |  |  |  |  | ‖ |  |  |  |  |  |
-| Controlled / instrumental rather than reactive / impulsive | ✓ |   | ~ | ✓ | ‖ | ✓ |   |   | ✓ | ✓ |
-|  |  |  |  |  | ‖ |  |  |  |  |  |
-| Actually sharing / mirroring the emotion |   | ✓ |   |   | ‖ |   | ~ | ✓ | ~ | ✓ |
-| Capacity to genuinely care about the person *at all* |   | ~ | ✓ | ✓ | ‖ |   | ✓ | ✓ | ✓ | ✓ |
-| Motivation to help or act |   | ~ | ~ | ✓ | ‖ |   | ~ | ~ | ✓ | ✓ |
-| Produces guilt / remorse after causing harm |   | ~ | ~ | ~ | ‖ |   | ~ | ✓ | ~ | ~ |
-| Risk of emotional contagion and burnout |   | ✓ | ~ |   | ‖ |   | ~ | ✓ |   | ~ |
-| Biased toward vivid, similar individuals | ~ | ✓ | ~ |   | ‖ |   | ✓ | ✓ |   | ~ |
-| Treats people as ends, not means (Kantianism) |   | ~ | ~ | ✓ | ‖ |   | ~ | ✓ | ✓ | ✓ |
-| Values each person's dignity and worth (Humanism) |   | ~ | ✓ | ✓ | ‖ |   | ~ | ✓ | ✓ | ✓ |
-|  |  |  |  |  | ‖ |  |  |  |  |  |
-| Concern reaches *beyond* a vivid / similar in-group |   |   | ~ | ✓ | ‖ |   |   |   | ✓ | ✓ |
-| Believes people are fundamentally good (Faith in Humanity) |   |   | ~ | ~ | ‖ |   |   | ✓ | ✓ | ✓ |
-| Sustainable and scalable as a moral guide | ~ |   | ~ | ✓ | ‖ |   |   |   | ✓ | ✓ |
+<div class="matrix-scroll" markdown="1">
+
+| Feature | Empathy: cognitive | Empathy: affective | Sympathy | Compassion | Psychopath | Sociopath | Empath | Altruist | Integrated |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Accurately modeling the other's mental state | ✓ | ~ | ~ | ✓ | ✓ | ~ | ~ | ✓ | ✓ |
+| Maintains self/other boundary | ✓ |   | ✓ | ✓ | ✓ | ~ |   | ✓ | ✓ |
+| Can exist in manipulators / con artists | ✓ |   |   |   | ✓ | ~ |   |   |   |
+|  |  |  |  |  |  |  |  |  |  |
+| Controlled / instrumental rather than reactive / impulsive | ✓ |   | ~ | ✓ | ✓ |   |   | ✓ | ✓ |
+|  |  |  |  |  |  |  |  |  |  |
+| Actually sharing / mirroring the emotion |   | ✓ |   |   |   | ~ | ✓ | ~ | ✓ |
+| Capacity to genuinely care about the person *at all* |   | ~ | ✓ | ✓ |   | ✓ | ✓ | ✓ | ✓ |
+| Motivation to help or act |   | ~ | ~ | ✓ |   | ~ | ~ | ✓ | ✓ |
+| Produces guilt / remorse after causing harm |   | ~ | ~ | ~ |   | ~ | ✓ | ~ | ~ |
+| Risk of emotional contagion and burnout |   | ✓ | ~ |   |   | ~ | ✓ |   | ~ |
+| Biased toward vivid, similar individuals | ~ | ✓ | ~ |   |   | ✓ | ✓ |   | ~ |
+| Treats people as ends, not means (Kantianism) |   | ~ | ~ | ✓ |   | ~ | ✓ | ✓ | ✓ |
+| Values each person's dignity and worth (Humanism) |   | ~ | ✓ | ✓ |   | ~ | ✓ | ✓ | ✓ |
+|  |  |  |  |  |  |  |  |  |  |
+| Concern reaches *beyond* a vivid / similar in-group |   |   | ~ | ✓ |   |   |   | ✓ | ✓ |
+| Believes people are fundamentally good (Faith in Humanity) |   |   | ~ | ~ |   |   | ✓ | ✓ | ✓ |
+| Sustainable and scalable as a moral guide | ~ |   | ~ | ✓ |   |   |   | ✓ | ✓ |
+
+</div>
 
 ## Notes
 
