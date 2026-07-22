@@ -49,10 +49,9 @@ GITHUB_LINK_RE = re.compile(
     r"https://github\.com/k1monfared/notes/blob/main/blog/(\d{8}_[^)\"'\s]+\.md)"
 )
 
-# Images live in Git LFS (see .gitattributes: files/** filter=lfs). raw.githubusercontent
-# serves the LFS *pointer* text, not the binary, so images show up broken. The
-# media.githubusercontent.com/media/ endpoint resolves LFS objects to the real files.
-CDN_BASE_URL = "https://media.githubusercontent.com/media/k1monfared/notes/main/blog"
+# Blog images are stored as regular committed files (no Git LFS), so raw.githubusercontent
+# serves the actual binaries directly.
+CDN_BASE_URL = "https://raw.githubusercontent.com/k1monfared/notes/main/blog"
 
 
 def rewrite_cdn_urls(html_text, cdn_base):

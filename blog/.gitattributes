@@ -1,1 +1,1 @@
-files/** filter=lfs diff=lfs merge=lfs -text
+# Blog images are stored as regular files (not Git LFS).
