@@ -44,4 +44,20 @@ To run the code click on the link: [SageCell](http://sagecell.sagemath.org/?z=eJ
 
 Here is some sample generated graphs for different values of $n$ and $c$:
 
+![sample multiplication graph](files/20160203/sample_01.jpg)
+![sample multiplication graph](files/20160203/sample_02.jpg)
+![sample multiplication graph](files/20160203/sample_03.jpg)
+![sample multiplication graph](files/20160203/sample_04.jpg)
+![sample multiplication graph](files/20160203/sample_05.jpg)
+![sample multiplication graph](files/20160203/sample_06.jpg)
+![sample multiplication graph](files/20160203/sample_07.jpg)
+![sample multiplication graph](files/20160203/sample_08.jpg)
+![sample multiplication graph](files/20160203/sample_09.jpg)
+![sample multiplication graph](files/20160203/sample_10.jpg)
+![sample multiplication graph](files/20160203/sample_11.jpg)
+![sample multiplication graph](files/20160203/sample_12.jpg)
+![sample multiplication graph](files/20160203/sample_13.jpg)
+![sample multiplication graph](files/20160203/sample_14.jpg)
+![sample multiplication graph](files/20160203/sample_15.jpg)
+
 One interesting variation of this is to keep $n$ large and change the base of the modulus. Here is a [link to the GitHub file](https://github.com/k1monfared/modular_timestable_graph/blob/master/sage).

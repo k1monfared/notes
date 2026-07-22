@@ -232,6 +232,8 @@ Let me analyze all possible combinations and show you the best and worst (see [c
 | 164 | {2,3,12} | 43.8% | 56.2% | 2.3% | 1.05 |
 | 165 | {2,11,12} | 43.8% | 56.2% | 2.3% | 1.05 |
 
+![Top 10 best and bottom 10 worst column combinations by success rate](files/20251201/column_combinations_comparison.png)
+
 **What's "Clean"?** Remember the forced-move rule? A "clean" move is one where you only hit columns you actually want. Even the best combination {6,7,8} only has 39.8% clean moves - the rest of the time you're forced onto unwanted columns.
 
 Here's the complete picture - all 165 combinations ranked by success rate:
