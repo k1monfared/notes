@@ -51,7 +51,7 @@ I ran this thousands of times under different conditions. Each run takes about t
 
 Yes. When simulated listeners can see what others are consuming, the correlation between actual quality and commercial success drops significantly (p < 0.0001 across 360 runs per condition). In a world where nobody could see what anyone else was listening to, quality would be a moderately good predictor of success. But in a world with charts, recommendations, and "trending" labels (our world), the link gets weaker. A mediocre work that gets lucky early can ride social proof to stardom, while an equally good work that starts slow may never recover.
 
-This is, incidentally, why I distrust recommendation algorithms so much. Every "Top 40" chart, every "Customers Also Bought" widget, every view count is a form of social influence that systematically pushes us away from independent judgment. It's the measurement trap I wrote about [before](https://github.com/k1monfared/notes/blob/main/blog/20251023_from_measurement_to_intention.md). We use popularity as a proxy for quality, then optimize for the proxy, then forget it was a proxy.
+This is, incidentally, why I distrust recommendation algorithms so much. Every "Top 40" chart, every "Customers Also Bought" widget, every view count is a form of social influence that systematically pushes us away from independent judgment. It's the measurement trap I wrote about [before](https://k1monfared.github.io/notes/blog/20251023-from-measurement-to-intention/). We use popularity as a proxy for quality, then optimize for the proxy, then forget it was a proxy.
 
 ### If we replayed history, would we get the same canon?
 
