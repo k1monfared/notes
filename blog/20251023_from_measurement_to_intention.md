@@ -4,10 +4,10 @@ tags: philosophy, observation
 # The Measurement Trap and the Path to Intentionalism
 I've been writing a series of thoughts recently in order to clarify a point of view of mine. These are the original posts:
 
-1. [We Must Know, We Will Know](https://k1monfared.github.io/notes/blog/20250902-we-must-know-we-will-know/)
-2. [Foundation or Competition, That Is The Question](https://k1monfared.github.io/notes/blog/20250913-foundation-or-competition/)
-3. [Idiocratic Much?](https://k1monfared.github.io/notes/blog/20250915-idiocratic-much/)
-4. [On Intentionalism](https://k1monfared.github.io/notes/blog/20251018-intentionalism/)
+1. [We Must Know, We Will Know](https://k1monfared.com/notes/blog/20250902-we-must-know-we-will-know/)
+2. [Foundation or Competition, That Is The Question](https://k1monfared.com/notes/blog/20250913-foundation-or-competition/)
+3. [Idiocratic Much?](https://k1monfared.com/notes/blog/20250915-idiocratic-much/)
+4. [On Intentionalism](https://k1monfared.com/notes/blog/20251018-intentionalism/)
 
 The goal of this post is to put them all together and talk about how they connect to each other. These posts argue that we've trapped ourselves in a destructive feedback loop where we use crude measurements as shortcuts for what we actually care about, then forget they're just proxies and optimize for the metrics themselves. This happens everywhere—individuals reducing people to numbers, companies chasing competitive signals instead of solving real problems, markets rewarding manipulation over genuine value. The mechanism works through a lag between company behavior and our perception: companies initially succeed by solving real problems (early Google prioritizing search quality, early Apple revolutionizing interfaces), building trust and market power through genuine innovation. But once established, they gradually transition toward extraction—optimizing for revenue, removing features to sell accessories, making products harder to repair, building walled gardens. We don't update our beliefs as fast as companies shift their priorities. We formed opinions like "Apple makes great products" or "Google is the best search" during the innovation phase, and carry those beliefs forward even as the companies pivot toward extraction.
 

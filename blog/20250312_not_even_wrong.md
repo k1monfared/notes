@@ -2,7 +2,7 @@
 tags: philosophy, observation
 ---
 # "Not Even Wrong": What We Believe And Why
-[disclaimenr: the content below is written with the help of Claude-3.5]
+[disclaimenr: the content below is written with the help of Claude-sonnet-3.5]
 
 In a world flooded with information and competing claims, we like to think we evaluate ideas based on evidence and reasoned analysis. But beneath our conscious reasoning lie powerful psychological forces that shape what we find persuasive - forces tied to our investments, both financial and emotional, and our sense of identity and belonging.
 

@@ -9,7 +9,7 @@ Reading was the easy part. Translating reading into anything I could actually us
 
 ## What it is
 
-[Marginalia](https://k1monfared.github.io/marginalia/) is a personal library where each book I read produces two artifacts: a conceptual outline of the book, and a set of discrete, actionable skills extracted from it. The outline tells me what's in the book. The skills tell me what to do.
+[Marginalia](https://k1monfared.com/marginalia/) is a personal library where each book I read produces two artifacts: a conceptual outline of the book, and a set of discrete, actionable skills extracted from it. The outline tells me what's in the book. The skills tell me what to do.
 
 A skill is a small file with a fixed shape. It names the situation in which it should fire, the move (numbered steps), what success looks like, the failure mode it prevents, a worked example from the book itself, and the source. About 200 to 400 words each. Each one is supposed to be a thing I can reach for and apply, not a thing I read once and nod at.
 
@@ -45,7 +45,7 @@ I'd like to do this for the other books too. Saunders has reflection-shaped prom
 
 ## Why this connects to the rest
 
-I've been [writing](https://k1monfared.github.io/notes/blog/20251023-from-measurement-to-intention/) about how we substitute proxies for the things we actually care about, and then optimize for the proxy until we forget the original goal. Reading is one of those proxies. We measure ourselves by books finished. We talk about which ones we've read. We make Goodreads lists. We forget that the point was the change in us, not the count. I re-read "thanks for the feedback" every few years, even though it is a very dense and heavy book. 
+I've been [writing](https://k1monfared.com/notes/blog/20251023-from-measurement-to-intention/) about how we substitute proxies for the things we actually care about, and then optimize for the proxy until we forget the original goal. Reading is one of those proxies. We measure ourselves by books finished. We talk about which ones we've read. We make Goodreads lists. We forget that the point was the change in us, not the count. I re-read "thanks for the feedback" every few years, even though it is a very dense and heavy book. 
 
 A reading list full of titles tells you nothing about whether any of those books rewired how you act. A library of extracted moves at least tries to. I'm not claiming this catches everything: a lot of what books do is happen to you slowly over years, and you can't extract that. But the parts that are *teachable* deserve the dignity of being written down as teachable. AND this is not supposed to be a substitute for reading those books, this is more for a review, a personal notes after I read the books. So if you're interested, I'd highly recommend reading those books.
 

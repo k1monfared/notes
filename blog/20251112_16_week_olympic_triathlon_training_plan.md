@@ -14,6 +14,6 @@ The plan is a single self-contained HTML page with some nice features:
 - Toggle between color and black & white for printing
 - Includes an intensity guide and terminology reference
 
-Check it out here: [16-Week Olympic Triathlon Training Plan](https://k1monfared.github.io/triathlon-training-plan/)
+Check it out here: [16-Week Olympic Triathlon Training Plan](https://k1monfared.com/triathlon-training-plan/)
 
 Source code on [GitHub](https://github.com/k1monfared/triathlon-training-plan).

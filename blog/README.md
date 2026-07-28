@@ -1,6 +1,6 @@
 # Blog
 
-[https://k1monfared.github.io/notes/](https://k1monfared.github.io/notes/)
+[https://k1monfared.com/notes/](https://k1monfared.com/notes/)
 
 Markdown posts that auto-build to a static site on push.
 
@@ -36,7 +36,7 @@ python build.py --local  # local preview (serve _site/ with any HTTP server)
 
 A Progressive Web App for writing and publishing posts from your phone. Lives in `blog-writer/` at the repo root.
 
-**Live URL:** [https://k1monfared.github.io/notes/blog-writer/](https://k1monfared.github.io/notes/blog-writer/)
+**Live URL:** [https://k1monfared.com/notes/blog-writer/](https://k1monfared.com/notes/blog-writer/)
 
 ### Setup
 

@@ -3,7 +3,7 @@ tags: philosophy, observation
 ---
 # Idiocratic Much?
 
-After writing about [how companies get distracted by competitive dynamics](https://k1monfared.github.io/notes/blog/20250913-foundation-or-competition/), I got some great feedback that helped me work through some deeper thoughts.
+After writing about [how companies get distracted by competitive dynamics](https://k1monfared.com/notes/blog/20250913-foundation-or-competition/), I got some great feedback that helped me work through some deeper thoughts.
 
 ## Cherry-Picking and What It Reveals
 
