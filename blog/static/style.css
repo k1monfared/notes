@@ -148,6 +148,48 @@ article .post-meta {
   margin-bottom: 0.4em;
 }
 
+/* Two-image side-by-side grid */
+.image-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.image-grid-2 figure {
+  margin: 0;
+  text-align: center;
+}
+.image-grid-2 img {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  background: #000;
+}
+.image-grid-2 figcaption {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+  line-height: 1.35;
+}
+
+/* Note / source boxes */
+.note {
+  margin: 1.5rem 0;
+  padding: 0.75em 1.1em;
+  border-left: 4px solid var(--blockquote-border);
+  background: var(--code-bg);
+  border-radius: 0 4px 4px 0;
+}
+.note p {
+  margin: 0.4em 0;
+}
+.note p:first-child {
+  margin-top: 0;
+}
+.note p:last-child {
+  margin-bottom: 0;
+}
+
 .comment-date {
   color: var(--text-muted);
   font-size: 0.85rem;
