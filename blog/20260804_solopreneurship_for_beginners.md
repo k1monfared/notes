@@ -5,7 +5,7 @@ title: Solopreneurship for beginners
 
 # Making your tech career layoff-proof
 
-I sat through a talk by [Clair Sullivan](https://www.clairsullivan.com/) about making a tech career layoff-proof by going solopreneur. I am still deciding how much of it I actually believe.
+I sat through a talk by [Clair Sullivan](https://www.clairsullivan.com/) about making a tech career layoff-proof by going solopreneur. I am still deciding how much of it I actually believe. This is my notes from that talk.
 
 The talk opened with a story that is doing a lot of the persuasive work. Clair was a director of data science at her last corporate job. On a Friday in December she went into a 9am meeting with her boss and came out of it without a job. She had been applying for a while already and getting nothing back, not even a call. She is the solo breadwinner for her family, based in Colorado. Out of that, she announced a generative AI consultancy on LinkedIn, and by the end of the week she had enough clients to replace her corporate salary.
 
