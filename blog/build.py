@@ -108,7 +108,8 @@ def parse_frontmatter(text):
 
 
 def extract_title(text):
-    """Extract title from first heading (ATX or Setext). Strips bold markers."""
+    """Extract title from first heading (ATX or Setext). Strips bold markers
+    and markdown attribute-list suffixes like {#anchor-id}."""
     lines = text.strip().splitlines()
     for i, line in enumerate(lines):
         stripped = line.strip()
@@ -117,6 +118,7 @@ def extract_title(text):
         if atx:
             title = atx.group(1).strip()
             title = re.sub(r"\*\*(.+?)\*\*", r"\1", title)
+            title = re.sub(r"\s*\{#[^}]*\}\s*$", "", title).strip()
             remaining = "\n".join(lines[:i] + lines[i + 1 :])
             return title, remaining
         # Setext heading (next line is -- or ==)
@@ -124,6 +126,7 @@ def extract_title(text):
             next_line = lines[i + 1].strip()
             if stripped and re.match(r"^[=-]+$", next_line):
                 title = re.sub(r"\*\*(.+?)\*\*", r"\1", stripped)
+                title = re.sub(r"\s*\{#[^}]*\}\s*$", "", title).strip()
                 remaining = "\n".join(lines[:i] + lines[i + 2 :])
                 return title, remaining
     return "Untitled", text
@@ -254,6 +257,17 @@ def add_target_blank(html_text):
             return tag
         return tag[:-1] + ' target="_blank" rel="noopener">'
     return re.sub(r'<a\s+((?:(?!target=)[^>])*)>', _repl, html_text)
+
+
+def fix_fragment_links(html_text, url_slug):
+    """Prefix bare in-page fragment links (href='#anchor') with the post's URL slug.
+
+    The pages use <base href> to resolve relative assets, which also makes a bare
+    '#anchor' href resolve to the site root instead of the current post. Prefixing
+    with the post slug keeps fragment navigation on the post page itself."""
+    def _repl(match):
+        return f'href="{url_slug}/#{match.group(1)}"'
+    return re.sub(r'href="#([^"]+)"', _repl, html_text)
 
 
 def generate_pygments_css():
@@ -467,6 +481,7 @@ def build(local=False, force=False, cdn=None):
                 all_assets.add(f"files/{match.group(1)}")
 
             body_html = add_target_blank(render_markdown(content))
+            body_html = fix_fragment_links(body_html, url_slug)
             comments_html = load_comments(url_slug)
 
             tag_chips_html = ""
