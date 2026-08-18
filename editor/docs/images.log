@@ -1,0 +1,50 @@
+- Image pass #images
+    - Purpose
+        - Every image must do a job the text cannot do as well
+        - An image with no job is decoration, and decoration in an essay is noise
+    - Step 1: Find candidate spots #scout
+        - Where does the text describe a flow, a structure, or a relationship in prose
+        - Where does the text lean on an object the reader cannot see
+        - Where does the reader need to hold more than three moving parts at once
+        - Where does a long stretch of argument need a place to rest
+    - Step 2: Assign a job per candidate #job
+        - State the job in one sentence: what does the reader get from the image that the paragraph does not give
+        - If no job can be stated, the candidate is rejected
+    - Step 3: Source or create #source
+        - Source: screenshot, slide, photo, scan, with provenance noted
+        - Create: diagram, chart, illustration, following house rules
+            - Charts start value axis at zero
+            - No emojis, text labels or SVG icons only
+        - Check permissions and attribution at this step, not later
+    - Step 4: Verify the image is correct #verify
+        - Open it and look at it
+        - Does it show what step 2 said it shows
+        - Is it readable at the size it will render
+        - Is the provenance real
+    - Step 5: Verify the image does its job #abtest
+        - Read the section with the image, then without it
+        - Ask: did the with-image read deliver the job from step 2
+        - If the difference is not felt, cut the image
+    - Step 6: Global audit #audit
+        - Too many images: does the piece read as a galler, when it come to images less is more, it is perfectly normal to have an essay with zero images
+        - Too few: are there long imageless deserts where a visual would carry weight
+        - Consistency: sizing, caption style, border or treatment, tone
+        - Consistency is a default, not a law: a deliberate break is allowed if it means something
+        - Placement: does each image sit right after the text that motivates it
+
+- Worked example: Tao pipeline diagram #example
+    - Spot: section "Tao's pipeline" in notes/blog/20260806_
+        - The text walks a refinement chain in prose: solve, verify, exposition, acceptance, canonicalization
+        - That is five moving parts, the reader must hold the whole chain
+    - Job: let the reader see the flow as a network, so the refinement steps read as additions to a diagram instead of a list to memorize
+    - Source: Terence Tao's ICM 2026 lecture slides, files/20260806/Tao_slides.pdf
+        - Page 43, "Goal (final attempt?)", contains the full flow
+        - Open problems, proof generation, unverified solutions, proof verification, verified solutions, proof exposition, well-written solutions, proof publication, accepted solutions, proof digestion, proof canonicalization, definitive solutions
+        - Extracted with: pdftoppm -f 43 -l 43 -png -r 90 Tao_slides.pdf tao_p43
+        - Verified visually 2026-08-07: the diagram matches the text's description
+    - Alternatives considered
+        - Page 37 (fourth attempt): missing canonicalization and digestion
+        - Pages 24-43 as a sequence: too many images for one section
+        - Redrawing the diagram ourselves: cleaner style, but the original slide carries provenance and authority, and the post already links the deck
+    - Permission: conference slides, attributed in caption, link to the deck already in the post
+    - Status: [x] spot found [x] job stated [x] source identified [x] verified correct [] placed in text [] A/B read [] global audit

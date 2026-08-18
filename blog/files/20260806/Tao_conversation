@@ -1,0 +1,24 @@
+claude: 
+    Contextualized talk relevance to user's mathematical interests
+
+    This is Tao's ICM 2026 public lecture, and its structure is telling: he deliberately sidesteps the capability debate. He conditions on a "Working Hypothesis" (AI will reasonably soon do a reasonable fraction of research math reasonably well) and asks the orthogonal question instead — what are the actual goals of the mathematical community, explicit and implicit?
+
+    The core argument runs through Goodhart's law. Historically, math's many goals (solving problems, building theory, training people, creating aesthetic works) were correlated enough that one or two could proxy for the rest. AI-driven optimization decouples them. His case study iterates the goal "solve as many problems as possible" through five refinements — add verification, then exposition, then community acceptance, then canonicalization into the definitive theory of the field — and at each stage AI helps less. Canonicalization, the slowest and least AI-optimizable stage, is what he calls the most valuable. The punchline framing: math is moving from proof scarcity to proof abundance, and the bottleneck shifts to "proof digestion" — verification, refereeing, and consensus, work currently treated as low-prestige.
+
+    A few concrete anchors: the First Proof challenge (7/10 novel research problems solved at publication quality in May 2026, $10–1000 per problem), Erdős problems accumulating AI proofs nobody has vouched for, and the Leiden Declaration recommendations — his own rule of thumb being that if authors can't give a clear expert-level talk on their result, it shouldn't be published.
+
+    It maps almost exactly onto the metric-optimization vs. foundational-value framework you've been writing about — Tao is essentially arguing the math community needs to make its objective function explicit before an optimizer arrives that will exploit the gap between proxy and target. Also a nice touch: "All em-dashes in these slides were human-generated."
+
+    Anything you want to dig into — the digestion bottleneck, the Goodhart framing, or how this compares to your own writing on the topic?
+
+me:
+    One possibly scenario could be mathematics becoming more of a social media and influencer networks, since the review, expose, digest and incorporate into literature would also eventually be automated by AI under the working hypothesis.
+
+claude:
+    Interrogated attention markets' role in reshaping mathematical knowledge validation systems
+
+    That follows pretty directly from Tao's own logic, and I don't think he'd have a clean rebuttal. His argument rests on community acceptance being "ultimately an external process that cannot be optimized purely by the authors and their AI tools" — but that's a statement about who controls it, not about what it is. If verification, exposition, and even digestion get automated, the only genuinely scarce resource left is human attention, and markets for scarce attention reliably develop influencer structure: a small set of taste-makers whose endorsement functions as canonization, engagement dynamics determining which results get "witnessed," and prestige flowing to curation rather than production. Tao's rule of thumb — you must be able to give a clear expert-level talk on your result — is already halfway there. It converts publication into a performance credential. In a proof-abundant world, the talk is the product.
+
+    The uncomfortable part is that this maps onto your canon-contingency argument almost perfectly. If citation networks made the pre-AI canon path-dependent, an attention-mediated canon would be worse: the selection pressure shifts from "what did nearby researchers find useful" to "what is legible, narratable, and aligned with a curator's brand." Survivorship dynamics in cultural markets — winner-take-most, quality only weakly coupled to prominence — would apply to theorems. And there's a Goodhart recursion Tao doesn't reach: once attention becomes the metric, AI tools optimize for attention — results chosen and framed for virality among mathematicians, proofs of statements that make good talks. The community's last non-automatable function becomes the new proxy target.
+
+    The counterweight, maybe, is that math has an unusual property: ground truth is checkable, so influencer consensus can't fully detach from correctness the way it can in film criticism or nutrition. But correctness was never the binding constraint on canonization — importance was, and importance is exactly the kind of ungrounded judgment that attention markets capture. The honest version of your scenario isn't "mathematics degrades into social media" but "the importance-assignment function, which was always social, loses its cover story of being organic."

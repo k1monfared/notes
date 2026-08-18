@@ -4,6 +4,9 @@
 # Ignore log files in blog folder
 blog/**/*.log
 
+# Per-post editing workspaces (agent notes, never published)
+blog/files/*/_editing/
+
 # Blog build system
 blog/_site/
 blog/__pycache__/

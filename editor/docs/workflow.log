@@ -1,0 +1,109 @@
+- Blog editing workflow #workflow
+    - Status: [🔴 POC] | Mode: [🔀 Hybrid] | Updated: 2026-08-07
+    - Purpose
+        - A repeatable, multi-pass workflow for editing long-form blog posts
+        - Being developed live on notes/blog/20260806_ ("What is mathematics")
+        - Will eventually become a set of skills and agents, see agents.log
+    - The ordering principle #principle
+        - Passes run big to small, cheap to change before expensive
+        - Cut or move paragraphs before polishing sentences
+        - Fact check before line editing
+        - Validate links after the reorder, so dead text is not validated
+        - Breaking this order wastes hours
+
+- Phase 0: Setup #phase0
+    - The brief has three parts: reader, promise, success criteria
+    - Reader: standing profile, set once for the blog, not per piece
+        - Interested in the topic, general audience
+        - Will sit through technical detail but is not there to learn it
+        - Here for the argument and the conversation
+        - Lives in brief.log
+    - Promise: inferred from the text, not declared up front
+        - An agent reads the whole draft and infers the promise in one sentence
+        - The human confirms or corrects the inference
+        - Rationale: the writer often does not know what the piece promises until it exists
+    - Success criteria: derived from the promise plus the standing aim
+        - Standing aim for this blog: raise a question rather than answer it
+        - The piece should make the reader wonder
+        - Multiple perspectives, leaning toward the conflicting ones
+        - Standards still apply: correct, fact checked, flowing, supported
+        - But it is a blog post, not an analytical report: nothing here enables an executive decision
+    - Output: the brief, stored in brief.log, every later pass uses it as the yardstick
+
+- Phase 1: Inventory #phase1
+    - Main points: what is the claim
+    - Supporting points: what carries the claim
+    - Side points: flavor, edge, human detail, what makes this piece this writer's
+    - Missing points: main, supporting, or side points that should exist but do not
+    - Output: the point map
+
+- Phase 2: Paragraph clarity #phase2
+    - What point does each paragraph deliver
+    - Flag back-and-forth between points (two threads braided without signaling)
+    - Flag rambling: sentences or paragraphs that promise a payoff and never deliver
+    - Output: the clarity report
+
+- Phase 3: Spine decision #phase3
+    - Human decision, not a pass
+    - Which point is the spine, which points are warmup, engine, support
+    - Everything after this is downstream of the decision
+    - For 20260806_: spine is C (importance is social), B (process is the product) is warmup and emotional engine
+
+- Phase 4: Structure #phase4
+    - Hook: opens a conversation, not a paper abstract
+    - Conversational roadmap: tells the reader where we are going in a talking voice
+    - Reorder: narrative order, human flow, no sales pitch, no dangling promises
+    - Payoff ledger: every hook has a payoff, every payoff has a setup
+    - Transitions: sections hand off, they do not just stack
+    - Title and headers audit: does the title's promise get paid, do headers guide
+    - Conclusion: lands the spine, calls back to the opening
+    - Output: the structure proposal and the ledger
+
+- Phase 5: Argument integrity #phase5
+    - Fact check: every dated, numbered, or named claim (including what specific people said, did, felt, or believed), with sources; a verified claim with no link in the draft is a finding
+    - Quote verification: exact wording against the source, for quotation marks and for reported speech without marks (He asked, He wrote, He quotes)
+    - Fairness pass: people critiqued are steelmanned first
+    - Adversarial pass: strongest counterargument to the spine, answered or conceded
+    - Link validation: external URLs, local files, images
+    - Provenance labels: firsthand anecdote vs documented fact vs opinion
+    - Output: the integrity report
+
+- Phase 6: Line level #phase6
+    - Tone consistency pass (editor's eye)
+    - Writer voice pass (protect the edge, do not flatten it)
+    - Line edit: passive voice, filler, weak verbs
+    - Repetition audit: words, phrases, sentence shapes, aphorism budget
+    - Jargon audit against the defined reader: explain, earn, or cut
+    - Rhythm pass and read-aloud
+    - Mechanics: typos, contractions, number style, markdown
+    - Output: the line edit
+
+- Phase 7: Reader facing #phase7
+    - Unanswered questions section at the end of the draft, removed before publication
+    - Cold skeleton read: first line of each paragraph only, does the piece still make sense
+    - Accessibility: alt text, meaningful link text, heading hierarchy
+    - Takeaway read: a no-context target-audience reader reads the near-final piece and states in 2 to 3 sentences what they got
+        - Appended to the draft after a --- separator at the very end, labeled: what I think a general reader would think about this piece
+        - This is the gate before publication
+        - Removed before publication, same lifecycle as the unanswered-questions section
+    - Output: the reader report
+
+- Phase 8: Images #phase8
+    - See images.log for the full pass
+    - Summary: candidate spots, job per image, source or create, verify, global audit
+    - Output: the image plan
+
+- Phase 9: Publication #phase9
+    - Metadata: frontmatter, tags, description, slug, filename
+    - Permissions: third-party screenshots and figures, attribution or anonymization
+    - Build and preview: renders, images load, LaTeX renders
+    - Final rendered read, top to bottom in the rendered page
+    - Distillation: mine the workspace for durable lessons
+        - Zero to three lines that would be true for a post not yet written
+        - Append to the global brief.log or workflow.log
+        - Raw debates and findings stay in the workspace, never re-read mid-edit
+    - Output: the published piece
+
+- Distilled from 20260806_ "What is mathematics" #distillation
+    - When the editing agent cannot open images, verify a proposed diagram by text-extracting its source PDF with pdftotext and confirming the page content before embedding. A slide's text can confirm the diagram without a visual check.
+    - Reader pass: a proper noun the standing reader may not know is a reader hole even when it carries a link. A one-clause gloss is a low-severity direct fix, not an escalation.

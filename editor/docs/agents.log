@@ -1,0 +1,133 @@
+- Multi-agent editing structure #agents
+    - Status: [🔴 POC] | Mode: [🔀 Hybrid] | Updated: 2026-08-07
+    - Purpose
+        - A structure of agents that run the workflow in workflow.log
+        - Not built yet, this doc is the design we are exploring
+    - Design rules #rules
+        - Agents that judge never touch the draft, agents that touch the draft never judge
+        - Critique and response are separate roles, no agent argues with itself
+        - Every pass receives the phase 0 brief and the spine decision
+        - Every edit carries a rationale: which pass, which finding, why
+        - The human owns the spine, the voice, and the final read
+
+- Tier 1: Orchestrator #orchestrator
+    - Name: managing editor
+    - Job: runs the phases in order, big to small
+    - Owns the brief, the spine decision, the payoff ledger, the changelog
+    - Dispatches passes, collects reports, decides when a phase is done
+    - Never edits text itself
+    - Escalates to the human: spine decision, voice disputes, rejected critiques the writer insists on
+
+- Tier 2: Whole-piece readers #readers
+    - Promise analyst
+        - Reads the whole draft, infers the promise in one sentence
+        - Drafts success criteria from the promise plus the standing aim in brief.log
+        - The human confirms or corrects before any other pass uses them
+    - Structural editor
+        - Runs phase 4: hook, roadmap, reorder, payoff ledger, transitions, conclusion
+        - Produces the structure proposal, human approves before any move
+    - Argument critic (adversarial reader)
+        - Attacks the spine, steelmans the people the piece critiques
+        - Writes critiques as numbered objections, each with severity
+        - Does not fix, only objects
+    - Response writer
+        - Takes each numbered objection, responds: accept, rebut, or concede
+        - Accepts go to the fix queue, rebuts go to the human for a ruling
+    - Fact checker
+        - Every dated, numbered, named, quoted, or reported claim gets a source or a flag; verified but unsourced in the draft is a finding
+        - Quote verification against the actual source text, including reported speech without quotation marks (He asked, He wrote, He quotes)
+        - Link validation, external and local
+    - Reader advocate
+        - Cold read, no context
+        - Writes the takeaway read: 2 to 3 sentences on what they got, appended to the draft after a --- separator, labeled "what I think a general reader would think about this piece"
+        - Writes the unanswered-questions section
+        - Distinguishes open questions the piece raises on purpose from holes the piece forgot to fill, only the holes are findings
+        - Flags where the defined reader would stop reading
+    - Image editor
+        - Runs the pass in images.log
+        - Leads the image sub-team, see the image sub-team section
+        - Rules on keep-or-cut disputes, owns the global audit
+        - Escalates only to the managing editor, never to the human directly
+
+- Tier 3: Paragraph-level workers #paragraph
+    - Paragraph analyst
+        - What point does this paragraph deliver, is it on-spine
+        - Flags back-and-forth, rambling, missing payoff
+    - Transition writer
+        - Writes or repairs the first and last sentence of sections
+        - Works only from the approved structure proposal
+    - Clarity editor
+        - Paragraph-internal logic, pronoun references, paragraph length
+
+- Tier 4: Sentence-level workers #sentence
+    - Line editor
+        - Passive voice, filler, weak verbs, nominalizations
+    - Repetition auditor
+        - Repeated words, phrases, sentence shapes, aphorism density
+    - Jargon auditor
+        - Flags terms the defined reader will not know
+        - Each flag resolves one of three ways: explain, earn, cut
+    - Tone keeper
+        - Consistency within the piece, flags register jumps
+    - Voice keeper
+        - The counterweight to the tone keeper
+        - Flags edits that flatten the writer's edge, argues to keep deliberate breaks
+        - Knows the standing aim: provocation is deliberate, open endings are deliberate, neither is a defect to fix
+
+- Tier 5: Mechanics #mechanics
+    - Grammar and typos
+    - Style sheet enforcement: number style, contractions, markdown, house rules
+    - Accessibility: alt text, link text, heading hierarchy
+    - Build checker: renders, images load, LaTeX renders, links resolve
+
+- Image sub-team #imageteam
+    - Scout: finds candidate spots, states the job per candidate in one sentence
+    - Sourcer: finds or commissions the asset, records provenance and permissions
+    - Verifier: opens the asset, confirms it shows what the job requires, readable at render size
+    - A/B reader: reads the section with and without the image, reports the difference as evidence, takes no side
+    - Advocate: argues to keep, the case for what the image adds
+    - Critic: argues to cut, the case that the text alone carries it
+    - Image editor: rules on the dispute, never argues a side itself
+    - Rule: the critic and the decider are always different agents
+
+- Convergence protocol #convergence
+    - Applies to every writer-reader pair, not just images
+    - Round structure
+        - Writer produces or revises, hands to the reader with a one-line intent
+        - Reader critiques as numbered findings, each with severity (high, medium, low)
+        - Writer responds per finding: accept and change, or defend with a reason
+    - Stop conditions
+        - Converged: no high findings remain and both sides agree no further change is needed
+        - Round cap: 2 to 3 rounds, never more
+        - No new information: a round that adds no new findings ends the loop
+    - Escalation
+        - If the cap passes without convergence, escalate one level up, not to the human
+        - Image disputes go to the image editor, then the managing editor
+        - Text disputes go to the managing editor
+        - Only spine, voice, and publish-or-not reach the human
+    - Escalation packet, what goes up
+        - The disputed change in one sentence
+        - Both positions, steelmanned, two sentences each
+        - The round history as verdicts, not transcripts
+        - A recommendation from each side
+        - The editor rules, the ruling lands in the changelog with a reason
+    - Severity discipline
+        - Low findings never escalate, the writer's call stands
+        - Escalation volume is a health metric, many escalations means the pass above is under-specified
+    - Anti-collapse rules
+        - The critic reads before seeing the writer's defense, no anchoring
+        - Disagreement is the critic's assigned job, not rudeness
+        - Evidence agents (A/B reader, fact checker) never take sides
+
+- Data flow #flow
+    - The brief flows down: every tier gets reader, promise, success criteria, spine
+    - Reports flow up: findings, objections, proposals
+    - Edits flow sideways only through the changelog, never silently
+    - Disputes flow up one level at a time, as packets, never as transcripts
+    - The human sees: structure proposal, adversarial objections and responses, the changelog, the final rendered read
+
+- Mapping to skills, later #roadmap
+    - Each tier 2 reader is a plausible standalone skill
+    - Tier 3 and 4 workers are probably one line-edit skill with sub-passes
+    - The orchestrator is the last thing to build, after the passes prove themselves by hand
+    - Do not build the orchestrator first, we do not know the real order yet

@@ -1,0 +1,65 @@
+- Per-post editing workspace #workspace
+    - Status: [🔴 POC] | Mode: [🔀 Hybrid] | Updated: 2026-08-07
+    - Purpose
+        - Agents communicate through written files, not chat
+        - Everything documented, nothing leaks into the published blog
+    - Location
+        - One workspace per post: notes/blog/files/<date>/_editing/
+        - Example: notes/blog/files/20260806/_editing/
+        - Underscore prefix sorts first and reads as "not content"
+    - Safety, two independent layers
+        - Gitignored: pattern blog/files/*/_editing/ in notes/.gitignore
+        - Never published: build.py only copies assets referenced in post content, an unreferenced folder cannot reach _site
+    - What lives where
+        - Global, reusable, in blog_editor/: workflow.log, agents.log, images.log, brief.log (standing profile and aim)
+        - Per-post, in the workspace: everything specific to one piece
+
+- Workspace layout #layout
+    - brief.log: the confirmed promise, success criteria, spine for this post
+    - points.log: phase 1 inventory, the point map
+    - clarity.log: phase 2 findings
+    - structure.log: phase 4 proposal, payoff ledger, reorder plan
+    - integrity.log: phase 5 fact checks, quote verifications, link checks, each with source and verdict
+    - lineedit.log: phase 6 findings
+    - reader.log: phase 7 reader advocate output, unanswered questions section
+    - images.log: phase 8 candidates, jobs, verdicts, global audit
+    - debates/: one file per writer-reader disagreement, see protocol below
+    - escalations/: one file per escalation packet
+    - changelog.log: append-only, every edit to the draft, the single source of truth for what changed and why
+
+- Communication rules #rules
+    - Fixed paths: each pass reads and writes named artifacts, agents never search for context
+    - Findings get ids: F01, F02, ... so debates, escalations, and changelog entries can reference them
+    - Artifacts carry a status line: draft, final, superseded
+    - Append-only: agents never rewrite another agent's entries, corrections are new entries marked superseded
+    - One writer at a time: only the reviser touches the post draft, and only with a changelog entry per edit
+    - No side channels: if it is not in the workspace, it did not happen
+
+- Debate file protocol #debates
+    - One file per dispute: debates/NNN-short-slug.log
+    - Header: the finding id, the disputed text, the agents involved
+    - Rounds: each round is a dated entry naming the agent, the position, the reason
+        - Round 1: critic attacks, writer defends or accepts
+        - Round 2 and 3: only if new information appears
+    - Footer: the outcome, one of
+        - Converged: the agreed text or the agreed no-change
+        - Escalated: pointer to escalations/NNN-short-slug.log
+    - Capped at 3 rounds per the convergence protocol in agents.log
+
+- Escalation packet format #escalations
+    - The disputed change in one sentence
+    - Both positions steelmanned, two sentences each
+    - The round history as verdicts, not transcripts
+    - A recommendation from each side
+    - Space for the ruling and its reason, written by the ruling editor
+
+- Changelog entry format #changelog
+    - Date, pass, finding id, one-line edit summary, rationale, decided-by
+    - decided-by is one of: writer, editor ruling (packet id), human
+    - Example
+        - 2026-08-07 | phase 5 integrity | F00 | added GPS spatial-memory citations | claim needed support | writer
+
+- Decisions #decisions
+    - Retention: keep workspaces after publication, the human may need them later (decided 2026-08-07)
+    - Clean room per post: agents start each post with only the global docs plus the fresh draft, old workspaces are never read mid-edit (decided 2026-08-07)
+    - Distillation: after a post ships, durable lessons are distilled one line at a time into the global brief.log or workflow.log, raw debates stay per-post and unread (decided 2026-08-07)

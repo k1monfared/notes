@@ -1,0 +1,42 @@
+- Reader panel #panel
+    - Status: [🔴 POC] | Mode: [🔀 Hybrid] | Updated: 2026-08-08
+    - Purpose
+        - A panel of whole-piece readers who each bring one stance toward the draft
+        - Each reader is a Tier 2 role in agents.log, designed but not previously built
+        - The panel runs before publication, after the line pass, as an extra gate
+        - The panel does not edit. It files findings. Triage decides.
+    - The four readers #readers
+        - Patience reader
+            - Job: read the whole piece as a general reader whose attention is scarce
+            - Checks: where it gets boring, claims too much, is hyped for no reason, is too long, loses the reader and where, goes on a tangent for no good reason and where
+            - Also checks (the etc): repetition of the same idea in different clothes, a paragraph that circles without advancing, a section where the emotional stakes die, monotonous sentence rhythm across a long stretch, a hook that pays off too late, a setup with no payoff, a stretch where the reader asks "why am I still reading", too many abstract claims in a row with no concrete anchor
+            - Output: numbered findings with severity (high, medium, low) and section references
+        - Skeptic
+            - Job: does not believe the premise, and the text must at least try to convince them without changing the topic
+            - Stance: importance is partly objective, math tracks real structure, the influencer-economy framing is overdrawn, the deciding may not be up for grabs
+            - Checks: where the piece asserts instead of argues, where its own examples work against its spine, where a concession is not answered, what would actually have convinced them
+            - Output: the strongest objections, numbered, each with "what would have convinced me"
+        - Enthusiast
+            - Job: agrees with the premise and wants the piece to be more of itself
+            - Checks: where it ended too soon, which images want a second beat, which arguments want more development, what a willing reader would add
+            - Constraint: additions must earn their length; the enthusiast is the reader most likely to bloat, so triage weighs each ask against the length budget
+            - Output: numbered "wants more" findings with the specific gap each fills
+        - Angle-shifter
+            - Job: look at the whole piece from a different angle and push toward tangents
+            - Checks: what framing is missing entirely, what a different reader (economist, teacher, historian, philosopher, working mathematician outside the elite) would ask, which tangent would illuminate the spine and which is a dead end
+            - Output: numbered angle findings, each marked productive-reframe or tangent-to-note
+    - Triage mechanism #triage
+        - Gather: each reader files findings into workspace readers/NN-slug.log, or one combined panel.log
+        - Classify: the managing editor assigns every finding one of three dispositions
+            - APPLY: change the text, with how
+            - ANSWER: a good answer already exists, no text change, with the answer stated
+            - IGNORE: irrelevant, off-spine, or a different essay, with the reason
+        - Rule: the human rules on disputed classifications and on any APPLY that touches the spine, voice, or structure
+        - Converged: no new findings in round two, or all findings triaged
+        - Escalation: only spine, voice, and publish-or-not reach the human, per agents.log
+    - Lifecycle #lifecycle
+        - Runs on the near-final draft, after phase 7 reader, before phase 9 publish
+        - Findings live in the workspace, never in the draft
+        - Applied changes go through the changelog with decided-by: human or editor ruling
+    - Worked example: 20260806_ "What is mathematics" #example
+        - See workspace files/20260806/_editing/readers/ for the panel run

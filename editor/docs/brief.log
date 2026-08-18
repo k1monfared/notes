@@ -1,0 +1,37 @@
+- The brief #brief
+    - Standing reader profile #reader
+        - Interested in the topic, general audience
+        - Tolerates technical detail without needing to learn it
+        - Here for the argument and the conversation
+        - Set once for the blog, reused for every piece, changed only by the human
+    - Standing aim #aim
+        - Raise questions rather than answer them
+        - Make the reader wonder
+        - Offer multiple perspectives, lean toward the conflicting ones
+        - Provocation is part of the writer's voice
+        - Titles may be more provocative than the text, by design, these are blog posts not reports
+        - Standards: correct, fact checked, flowing, supported
+    - Note for all agents
+        - A title that outspices the text is not a tone violation, do not flag it
+        - An ending that opens a question is not an unfinished conclusion, do not flag it
+
+- Worked example: 20260806_ "What is mathematics" #example
+    - Inferred promise
+        - A tour of what happens to mathematics when proof production gets cheap, drawing the field as the author sees it, ending in a question rather than an answer
+    - Success criteria
+        - The reader leaves wondering what mathematics is, not reciting an answer
+        - The conflicting perspectives (the professor, Tao, Moradifam, the author) each get a fair hearing
+        - The author's own picture of the field is visible among them
+    - Spine decision
+        - C is the spine: importance is a social judgment, and AI exposes it
+        - B is warmup and emotional engine: the process of thinking is the product
+    - Recorded findings #findings
+        - Final paragraph over-answers: "The process of thinking we refuse to outsource" closes a question the piece means to open
+        - Route to structure phase: the ending should land on the question, not a thesis
+        - Candidate direction, not decided: end on the woodworking middle, or on the professor, and let the title's question stay open
+    - Status
+        - [x] reader profile set
+        - [x] promise inferred
+        - [] human confirms or corrects the promise
+        - [x] spine locked
+        - [] findings routed to phase 4

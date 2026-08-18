@@ -245,12 +245,15 @@ def render_markdown(text):
 
 
 def add_target_blank(html_text):
-    """Add target='_blank' rel='noopener' to <a> tags that don't already have a target."""
-    return re.sub(
-        r'<a\s+((?:(?!target=)[^>])*)>',
-        r'<a \1 target="_blank" rel="noopener">',
-        html_text,
-    )
+    """Add target='_blank' rel='noopener' to external <a> tags.
+    In-page anchors (hrefs containing '#') stay in the same tab."""
+    def _repl(match):
+        tag = match.group(0)
+        href = re.search(r'href=(["\'])(.*?)\1', tag)
+        if href and "#" in href.group(2):
+            return tag
+        return tag[:-1] + ' target="_blank" rel="noopener">'
+    return re.sub(r'<a\s+((?:(?!target=)[^>])*)>', _repl, html_text)
 
 
 def generate_pygments_css():
