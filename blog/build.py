@@ -46,7 +46,7 @@ MD_EXTENSION_CONFIGS = {
 }
 
 GITHUB_LINK_RE = re.compile(
-    r"https://github\.com/k1monfared/notes/blob/main/blog/(\d{8}_[^)\"'\s]+\.md)"
+    r"https://github\.com/k1monfared/notes/blob/main/blog/(?:posts/\d{4}/)?(\d{8}_[^)\"'\s]+\.md)"
 )
 
 # Blog images are stored as regular committed files (no Git LFS), so raw.githubusercontent
@@ -161,7 +161,7 @@ def find_referenced_assets(text):
 def build_slug_map(posts):
     """Build a map of original markdown filenames to blog URL slugs."""
     slug_map = {}
-    for filename, _date, _slug, url_slug in posts:
+    for _relpath, filename, _date, _slug, url_slug in posts:
         slug_map[filename] = url_slug
     return slug_map
 
@@ -368,14 +368,15 @@ def build(local=False, force=False, cdn=None):
     # Don't wipe _site/ — keep existing files for incremental builds
     SITE_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Collect all post files
-    md_files = sorted(BLOG_DIR.glob("*.md"))
+    # Collect all post files (posts/YYYY/YYYYMMDD_slug.md)
+    md_files = sorted(BLOG_DIR.glob("posts/*/*.md"))
     posts = []
     for f in md_files:
         date, slug, url_slug = parse_filename(f.name)
         if date is None:
             continue
-        posts.append((f.name, date, slug, url_slug))
+        relpath = f.relative_to(BLOG_DIR)
+        posts.append((relpath, f.name, date, slug, url_slug))
 
     # Sort newest first
     posts.sort(key=lambda p: p[1], reverse=True)
@@ -407,8 +408,8 @@ def build(local=False, force=False, cdn=None):
     rendered_count = 0
     cached_count = 0
 
-    for filename, date, slug, url_slug in posts:
-        filepath = BLOG_DIR / filename
+    for relpath, filename, date, slug, url_slug in posts:
+        filepath = BLOG_DIR / relpath
         raw = filepath.read_text(encoding="utf-8")
         raw_hash = content_hash(raw)
 

@@ -27,6 +27,20 @@ export async function listFiles(path) {
   return request(`/repos/${repo}/contents/${path}`);
 }
 
+// List all files recursively under blog/ via the Git Trees API
+export async function listBlogTree() {
+  const repo = getRepo();
+  const data = await request(`/repos/${repo}/git/trees/main?recursive=1`);
+  return (data.tree || [])
+    .filter(t => t.type === 'blob' && t.path.startsWith('blog/posts/'))
+    .map(t => ({
+      type: 'file',
+      name: t.path.split('/').pop(),
+      path: t.path,
+      sha: t.sha,
+    }));
+}
+
 // Get a single file's content (decodes base64)
 export async function getFile(path) {
   const repo = getRepo();

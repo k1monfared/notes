@@ -26,7 +26,7 @@ def get_images(path):
 
 
 def main():
-    photo_posts = sorted(BLOG_DIR.glob("*_photo.md"))
+    photo_posts = sorted(BLOG_DIR.glob("posts/*/*_photo.md"))
     print(f"Checking {len(photo_posts)} photoblog posts for duplicates...\n")
 
     # Group by original URL

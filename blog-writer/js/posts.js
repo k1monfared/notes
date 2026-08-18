@@ -1,10 +1,15 @@
 // Post management: list, create, edit, publish
 
-import { listFiles, getFile, createCommit, renameFile } from './github.js';
+import { getFile, createCommit, renameFile, listBlogTree } from './github.js';
 import { parseFilename, displayDate, generateFilename, formatDate, imageDir } from './naming.js';
 import { buildPostContent, extractFromContent } from './frontmatter.js';
 import { getStoredImages } from './images.js';
 import { setCache, getCache } from './storage.js';
+
+// Build the GitHub path for a post file: blog/posts/YYYY/YYYYMMDD_slug.md
+export function postPath(filename) {
+  return `blog/posts/${filename.slice(0, 4)}/${filename}`;
+}
 
 export async function fetchPostList(forceRefresh = false) {
   if (!forceRefresh) {
@@ -12,7 +17,7 @@ export async function fetchPostList(forceRefresh = false) {
     if (cached) return cached;
   }
 
-  const files = await listFiles('blog');
+  const files = await listBlogTree();
   const posts = files
     .filter(f => f.type === 'file' && /^\d{8}_/.test(f.name) && /\.(md|draft)$/.test(f.name))
     .map(f => {
@@ -48,7 +53,7 @@ export async function publishPost({ title, tags, body, date, images, isDraft = f
   const content = buildPostContent(title, tags, body);
 
   const files = [
-    { path: `blog/${filename}`, content, encoding: 'utf-8' },
+    { path: postPath(filename), content, encoding: 'utf-8' },
   ];
 
   // Add images
@@ -71,7 +76,7 @@ export async function updatePost({ originalPath, title, tags, body, date, newIma
   const dateStr = formatDate(date);
   const filename = generateFilename(date, title, isDraft);
   const content = buildPostContent(title, tags, body);
-  const newPath = `blog/${filename}`;
+  const newPath = postPath(filename);
 
   const imageFiles = [];
   if (newImages && newImages.length > 0) {
@@ -100,13 +105,13 @@ export async function updatePost({ originalPath, title, tags, body, date, newIma
 export async function publishDraft(draftPath, title, tags, body, date) {
   const content = buildPostContent(title, tags, body);
   const filename = generateFilename(date, title, false);
-  const newPath = `blog/${filename}`;
+  const newPath = postPath(filename);
   return renameFile(draftPath, newPath, content, `Publish draft: ${title}`);
 }
 
 export async function unpublishPost(publishedPath, title, tags, body, date) {
   const content = buildPostContent(title, tags, body);
   const filename = generateFilename(date, title, true);
-  const newPath = `blog/${filename}`;
+  const newPath = postPath(filename);
   return renameFile(publishedPath, newPath, content, `Unpublish: ${title}`);
 }

@@ -57,7 +57,7 @@ fi
 
 # --- Blog post auto-tagging ---
 # Auto-tag staged blog posts that lack tags, then re-stage them
-BLOG_POSTS=$(git diff --cached --name-only --diff-filter=AM | grep '^blog/[0-9].*\.md$' || true)
+BLOG_POSTS=$(git diff --cached --name-only --diff-filter=AM | grep '^blog/posts/[0-9][0-9][0-9][0-9]/[0-9].*\.md$' || true)
 if [ -n "$BLOG_POSTS" ]; then
     AUTO_TAG_SCRIPT="blog/scripts/auto_tag.py"
     NEEDS_TAG=""

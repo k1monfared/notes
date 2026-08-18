@@ -6,7 +6,7 @@ Markdown posts that auto-build to a static site on push.
 
 ## Writing
 
-Create a file named `YYYYMMDD_slug.md` in this folder. The title is taken from the first heading. Date is parsed from the filename.
+Create a file named `posts/YYYY/YYYYMMDD_slug.md` (YYYY is the post's year) in this folder. The title is taken from the first heading. Date is parsed from the filename.
 
 Optional YAML frontmatter (`---` delimited) can override the title:
 
@@ -117,7 +117,7 @@ The index page loads 10 posts initially and reveals 10 more as the user scrolls 
 
 | Path | Purpose |
 |------|---------|
-| `*.md` | Blog post files |
+| `posts/` | Blog post files, organized by year (`posts/YYYY/YYYYMMDD_slug.md`) |
 | `build.py` | Static site builder |
 | `templates/` | HTML templates |
 | `static/` | CSS, JS, static assets |

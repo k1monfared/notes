@@ -83,7 +83,7 @@ TAG_KEYWORDS = {
 def get_existing_tags():
     """Get frequency map of all tags currently used across posts."""
     tag_freq = {}
-    for f in BLOG_DIR.glob("*.md"):
+    for f in BLOG_DIR.glob("posts/*/*.md"):
         if not re.match(r"^\d{8}_", f.name):
             continue
         raw = f.read_text(encoding="utf-8")
@@ -175,13 +175,13 @@ def main():
     args = parser.parse_args()
 
     if args.all:
-        files = sorted(f for f in BLOG_DIR.glob("*.md") if re.match(r"^\d{8}_", f.name))
+        files = sorted(f for f in BLOG_DIR.glob("posts/*/*.md") if re.match(r"^\d{8}_", f.name))
     elif args.files:
         files = [Path(f) for f in args.files if Path(f).exists()]
     else:
         # Default: find untagged posts
         files = [
-            f for f in sorted(BLOG_DIR.glob("*.md"))
+            f for f in sorted(BLOG_DIR.glob("posts/*/*.md"))
             if re.match(r"^\d{8}_", f.name) and not has_tags(f)
         ]
 

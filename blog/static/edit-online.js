@@ -71,6 +71,46 @@
     return ghRequest('/repos/' + REPO + '/contents/' + path);
   }
 
+  // List all post files recursively under blog/posts/ via the Git Trees API
+  function listBlogTree() {
+    var branch = 'main';
+    var ghToken = getToken();
+    return fetch(API + '/repos/' + REPO + '/git/trees/' + branch + '?recursive=1', {
+      headers: {
+        'Authorization': 'Bearer ' + ghToken,
+        'Accept': 'application/vnd.github.v3+json',
+      },
+    })
+      .then(function (res) {
+        if (res.status === 401) {
+          clearToken();
+          document.body.classList.remove('edit-mode');
+          showToast('Token expired. Please log in again.', 'error');
+          throw new Error('Token expired');
+        }
+        if (!res.ok) {
+          return res.json().then(function (data) {
+            throw new Error(data.message || 'GitHub API ' + res.status);
+          });
+        }
+        return res.json();
+      })
+      .then(function (data) {
+        return (data.tree || [])
+          .filter(function (t) {
+            return t.type === 'blob' && t.path.indexOf('blog/posts/') === 0;
+          })
+          .map(function (t) {
+            return {
+              type: 'file',
+              name: t.path.split('/').pop(),
+              path: t.path,
+              sha: t.sha,
+            };
+          });
+      });
+  }
+
   function getFile(path) {
     return ghRequest('/repos/' + REPO + '/contents/' + path).then(function (data) {
       var raw = atob(data.content.replace(/\n/g, ''));
@@ -673,7 +713,7 @@
     loading.textContent = 'Loading drafts...';
     postList.parentNode.insertBefore(loading, postList);
 
-    listFiles('blog')
+    listBlogTree()
       .then(function (files) {
         var drafts = files.filter(function (f) {
           return f.type === 'file' && f.name.endsWith('.draft') && /^\d{8}_/.test(f.name);
@@ -961,7 +1001,7 @@
 
       var content = buildPostContent(title, tags, body);
       var filename = generateFilename(date, title, asDraft);
-      var newPath = 'blog/' + filename;
+      var newPath = 'blog/posts/' + filename.slice(0, 4) + '/' + filename;
 
       var imageFiles = pendingImages.map(function (img) {
         return {
@@ -1009,7 +1049,7 @@
       var date = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
       var content = buildPostContent(title, tags, body);
       var filename = generateFilename(date, title, true);
-      var newPath = 'blog/' + filename;
+      var newPath = 'blog/posts/' + filename.slice(0, 4) + '/' + filename;
       var message = 'Unpublish: ' + title;
 
       enqueueCommit(function () {
@@ -1175,7 +1215,7 @@
       var urlSlug = getUrlSlug();
       var stem = urlSlugToFileStem(urlSlug);
       if (!stem) { showToast('Cannot determine file for this post', 'error'); return; }
-      openEditor({ path: 'blog/' + stem + '.md', isDraft: false });
+      openEditor({ path: 'blog/posts/' + stem.slice(0, 4) + '/' + stem + '.md', isDraft: false });
     });
     h1.appendChild(editBtn);
   }
@@ -1215,7 +1255,7 @@
         var slug = href.replace(/\/$/, '').split('/').pop();
         var stem = urlSlugToFileStem(slug);
         if (!stem) { showToast('Cannot determine file path', 'error'); return; }
-        openEditor({ path: 'blog/' + stem + '.md', isDraft: false });
+        openEditor({ path: 'blog/posts/' + stem.slice(0, 4) + '/' + stem + '.md', isDraft: false });
       });
 
       var titleSpan = li.querySelector('.post-title');

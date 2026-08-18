@@ -32,7 +32,7 @@ def get_post_content(path):
 
 def main():
     # Find all photoblog posts
-    photo_posts = sorted(BLOG_DIR.glob("*_photo.md"))
+    photo_posts = sorted(BLOG_DIR.glob("posts/*/*_photo.md"))
 
     # Group by date prefix (YYYYMMDD) + base slug
     # Pattern: YYYYMMDD_slug_photo.md vs YYYYMMDD_slug_N_photo.md

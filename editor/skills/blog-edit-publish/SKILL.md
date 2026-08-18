@@ -21,7 +21,7 @@ Ship it, then learn from it.
 
 ## Worked example
 
-Candidate distillation from notes/blog/20260806_: "endings on this blog open the question, they do not answer it." (Already covered by the standing aim, so it would not be re-added; a real example would be a lesson the docs do not yet carry.)
+Candidate distillation from notes/blog/posts/2026/20260806_: "endings on this blog open the question, they do not answer it." (Already covered by the standing aim, so it would not be re-added; a real example would be a lesson the docs do not yet carry.)
 
 ## Edge cases
 

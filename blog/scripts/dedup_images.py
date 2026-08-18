@@ -29,7 +29,7 @@ def get_images(post_path):
 
 
 def main():
-    photo_posts = sorted(BLOG_DIR.glob("*_photo.md"))
+    photo_posts = sorted(BLOG_DIR.glob("posts/*/*_photo.md"))
     print(f"Checking {len(photo_posts)} photoblog posts for image duplicates...\n")
 
     # Build hash -> first post mapping

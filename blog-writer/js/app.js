@@ -366,7 +366,8 @@ async function doPublish(isDraft) {
 
   // Show confirmation
   const dateStr = formatDate(date);
-  const fileList = [`blog/${dateStr}_${title.toLowerCase().replace(/\s+/g, '_').replace(/[^\w_]/g, '')}.${isDraft ? 'draft' : 'md'}`];
+  const filename = `${dateStr}_${title.toLowerCase().replace(/\s+/g, '_').replace(/[^\w_]/g, '')}.${isDraft ? 'draft' : 'md'}`;
+  const fileList = [`blog/posts/${dateStr.slice(0, 4)}/${filename}`];
   for (const img of attachedImages) {
     fileList.push(`blog/files/${dateStr}/${img.name}`);
   }

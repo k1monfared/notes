@@ -5,7 +5,7 @@ tags: math, philosophy, observation
 
 Last night Ehssan sent me a post from a math professor that has been making the rounds. The professor loves research and hates grading. Who doesn't? But lately, he wrote, his research has started to feel like grading the proofs of a very clever student who is desperate to get an A and doesn't mind lying to do so. A lot of people shared that feeling. Not only in mathematics, but also in (open source) software, in creative writing, and other areas. 
 
-![The post that started all this](files/20260806/OBryant_post.jpg)
+![The post that started all this](files/20260806/OBryant_post.jpg){: width="55%" }
 
 For a long time I had a confident answer to the question in the title, the kind you give outsiders and then stop thinking about. 
 > Mathematics is the discipline of finding patterns where claims can be proven. 
@@ -18,9 +18,9 @@ The summer of 2026 things happened that warranted another take on this question.
 
 Let's start with the facts that broke the old answer into two.
 
-First Proof, an independent group, ran a standardized test[*](https://github.com/k1monfared/notes/blob/main/blog/20260806_what_is_mathematics.md#appendix-the-facts-in-full) of AI at research mathematics in late May 2026: four leading systems solved seven of ten unpublished problems to publication quality, for ten to a thousand dollars of compute each, and the one step they could not automate was choosing the problems, which is exactly the judgment this post is about.
+First Proof, an independent group, ran a standardized test[*](https://github.com/k1monfared/notes/blob/main/blog/posts/2026/20260806_what_is_mathematics.md#appendix-the-facts-in-full) of AI at research mathematics in late May 2026: four leading systems solved seven of ten unpublished problems to publication quality, for ten to a thousand dollars of compute each, and the one step they could not automate was choosing the problems, which is exactly the judgment this post is about.
 
-In early 2026, an AI system produced a machine-checked Lean proof of Erdős Problem #728, and in May 2026 an OpenAI model disproved the planar unit distance conjecture Erdős had posed in 1946[**](https://github.com/k1monfared/notes/blob/main/blog/20260806_what_is_mathematics.md#appendix-the-facts-in-full). In all cases human mathematicians verified the proofs and wrote human digestable versions of them.
+In early 2026, an AI system produced a machine-checked Lean proof of Erdős Problem #728, and in May 2026 an OpenAI model disproved the planar unit distance conjecture Erdős had posed in 1946[**](https://github.com/k1monfared/notes/blob/main/blog/posts/2026/20260806_what_is_mathematics.md#appendix-the-facts-in-full). In all cases human mathematicians verified the proofs and wrote human digestable versions of them.
 
 Notice the split here: The model produced the result, the humans checked it, digested it, and presented it. That split is a big part of the story. Under the old definition, mathematics was the production of correct statements, and while on the surface it seems that the typical mathematician is busy proving theorems they're building intuitioin and finding clues to find patterns. The production of proofs has been automated, or it will be, under Tao's working assumption. Seven out of ten novel research problems, solved to publication quality, for a few hundred to a few thousand dollars of compute. And notice what was not automated. The problems were still chosen by people and handed to the models one at a time. That which patterns were worth chasing, is still human, and the models prove what we want them to prove. Although they still might need a lot of handholding to do so. On the other hand, there are conjecture generators out there, and there have been for years, but they propose patterns, they do not decide which ones matter. So either mathematics is over, or the old definition was wrong.
 
