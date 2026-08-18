@@ -109,7 +109,9 @@ def parse_frontmatter(text):
 
 def extract_title(text):
     """Extract title from first heading (ATX or Setext). Strips bold markers
-    and markdown attribute-list suffixes like {#anchor-id}."""
+    and markdown attribute-list suffixes like {#anchor-id}.
+    Returns (title, remaining, anchor_id). anchor_id is None unless the
+    heading carried a {#anchor} attribute."""
     lines = text.strip().splitlines()
     for i, line in enumerate(lines):
         stripped = line.strip()
@@ -117,19 +119,27 @@ def extract_title(text):
         atx = re.match(r"^#{1,6}\s+(.+?)(?:\s*#*\s*)?$", stripped)
         if atx:
             title = atx.group(1).strip()
+            anchor = None
+            am = re.search(r"\{#([^}]*)\}\s*$", title)
+            if am:
+                anchor = am.group(1)
             title = re.sub(r"\*\*(.+?)\*\*", r"\1", title)
             title = re.sub(r"\s*\{#[^}]*\}\s*$", "", title).strip()
             remaining = "\n".join(lines[:i] + lines[i + 1 :])
-            return title, remaining
+            return title, remaining, anchor
         # Setext heading (next line is -- or ==)
         if i + 1 < len(lines):
             next_line = lines[i + 1].strip()
             if stripped and re.match(r"^[=-]+$", next_line):
                 title = re.sub(r"\*\*(.+?)\*\*", r"\1", stripped)
+                anchor = None
+                am = re.search(r"\{#([^}]*)\}\s*$", title)
+                if am:
+                    anchor = am.group(1)
                 title = re.sub(r"\s*\{#[^}]*\}\s*$", "", title).strip()
                 remaining = "\n".join(lines[:i] + lines[i + 2 :])
-                return title, remaining
-    return "Untitled", text
+                return title, remaining, anchor
+    return "Untitled", text, None
 
 
 def extract_excerpt(text, max_len=200):
@@ -432,10 +442,11 @@ def build(local=False, force=False, cdn=None):
 
         # Extract title (fast)
         title = meta.get("title")
+        title_anchor = None
         if title:
             content = body
         else:
-            title, content = extract_title(body)
+            title, content, title_anchor = extract_title(body)
 
         # Extract excerpt (fast)
         excerpt = extract_excerpt(content)
@@ -492,10 +503,12 @@ def build(local=False, force=False, cdn=None):
                 tag_chips_html = f'<span class="tag-chips">{chips}</span>'
 
             date_str_full = date.strftime("%B %d, %Y")
+            title_id_attr = f' id="{title_anchor}"' if title_anchor else ""
             post_html = render_template(
                 post_tmpl, title=title, date=date_str_full, body=body_html,
                 comments=comments_html, comment_endpoint=COMMENT_ENDPOINT,
                 post_slug=url_slug, tag_chips=tag_chips_html,
+                title_id_attr=title_id_attr,
             )
             rendered_count += 1
 
