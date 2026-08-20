@@ -3,8 +3,6 @@ tags: philosophy, observation, personal-finance, immigration
 title: What Do We Value When We Value Consistency?
 ---
 
-# What Do We Value When We Value Consistency?
-
 I'm often interested in understanding why people believe the things they believe and why they behave the way they behave. Usually the former is a reason for the latter. Pondering these, I've realized there is a word I keep reaching for when describing people's behavior that is vaguer than I'd like, and it doesn't let me build any structure around it. Worse, I attach a moral value to it: sometimes it's a compliment, sometimes an accusation. So I want to pin down what this concept actually means: consistency.
 
 The story that made me notice the problem is one my mom tells. Before the 1979 revolution in Iran, someone she knew wore mini skirts all the time. Right after the revolution she switched to chador and niqab. Others in the same circle dressed modestly before the revolution and dressed modestly after it, changing only slightly how much they covered.
