@@ -275,3 +275,21 @@ article .post-meta {
     font-size: 1.5rem;
   }
 }
+
+/* Interactive graph link chip (frontmatter: graph: files/.../*.html) */
+.graph-link {
+  display: inline-block;
+  font-size: 0.8rem;
+  padding: 0.12rem 0.6rem;
+  margin-left: 0.35rem;
+  border: 1px solid var(--link);
+  border-radius: 999px;
+  color: var(--link);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.graph-link:hover {
+  background: var(--link);
+  color: var(--bg);
+}
