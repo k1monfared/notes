@@ -1,6 +1,7 @@
 ---
 tags: philosophy, observation, personal-finance, immigration
 title: What Do We Value When We Value Consistency?
+graph: files/20260820/valuing_consistency.graph.html
 ---
 
 I'm often interested in understanding why people believe the things they believe and why they behave the way they behave. Usually the former is a reason for the latter. Pondering these, I've realized there is a word I keep reaching for when describing people's behavior that is vaguer than I'd like, and it doesn't let me build any structure around it. Worse, I attach a moral value to it: sometimes it's a compliment, sometimes an accusation. So I want to pin down what this concept actually means: consistency.

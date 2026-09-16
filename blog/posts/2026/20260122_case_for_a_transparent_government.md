@@ -1,5 +1,6 @@
 ---
 tags: politics, philosophy
+graph: files/20260122/case_for_a_transparent_government.graph.html
 ---
 # The Case for Complete Government Transparency
 

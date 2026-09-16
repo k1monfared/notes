@@ -1,5 +1,6 @@
 ---
 tags: life
+graph: files/20260716/empathy_vs_sympathy_vs_compassion_feature_matrix.graph.html
 ---
 # Empathy vs. sympathy vs. compassion: feature matrix
 

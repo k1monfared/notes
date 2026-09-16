@@ -1,5 +1,6 @@
 ---
 tags: simulation, statistics, philosophy, observation, python
+graph: files/20260326/manufacturing_taste.graph.html
 ---
 # Manufacturing Taste
 

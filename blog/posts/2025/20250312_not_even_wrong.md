@@ -1,5 +1,6 @@
 ---
 tags: philosophy, observation
+graph: files/20250312/not_even_wrong.graph.html
 ---
 # "Not Even Wrong": What We Believe And Why
 [disclaimenr: the content below is written with the help of Claude-sonnet-3.5]

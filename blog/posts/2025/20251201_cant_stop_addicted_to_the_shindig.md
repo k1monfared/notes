@@ -1,5 +1,6 @@
 ---
 tags: math, probability, combinatorics, python, statistics
+graph: files/20251201/cant_stop_addicted_to_the_shindig.graph.html
 ---
 # Can't Stop, Addicted To The Shindig
 

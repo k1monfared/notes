@@ -1,5 +1,6 @@
 ---
 tags: math, philosophy, observation
+graph: files/20260806/what_is_mathematics.graph.html
 ---
 # What is mathematics
 

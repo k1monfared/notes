@@ -1,5 +1,6 @@
 ---
 tags: life, finance
+graph: files/20250203/house_hunting_shenanigans.graph.html
 ---
 # House Hunting Shenanigans
 [This is not a typical blog post, hence the weird format, likely not good for reading on the phone. It is a representations of events happening and my thoughts on them.]

@@ -1,5 +1,6 @@
 ---
 tags: life, python, observation
+graph: files/20241207/finding_a_phone.graph.html
 ---
 Finding a phone
 --

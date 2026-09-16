@@ -1,5 +1,6 @@
 ---
 tags: privacy, computer science
+graph: files/20260201/lets_talk_privacy.graph.html
 ---
 # Let's Talk Privacy
 

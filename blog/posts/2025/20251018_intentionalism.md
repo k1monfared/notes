@@ -1,5 +1,6 @@
 ---
 tags: math, philosophy
+graph: files/20251018/intentionalism.graph.html
 ---
 # On Intentionalism
 
