@@ -6,11 +6,11 @@ tags: poem, hope, life
 
 آواز احمد عاشورپور
 
-![«امید» (ویدیو)](files/20261002/omid_aashoorpoor.mp4)
+![ ](files/20261002/omid_aashoorpoor.mp4)
 
 با صدای احسان طبری (شاعر)
 
-![«امید» (صدا)](files/20261002/omid_tabari.m4a)
+![ ](files/20261002/omid_tabari.m4a)
 
 شعر
 --
