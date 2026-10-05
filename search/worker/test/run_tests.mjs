@@ -135,6 +135,23 @@ check("semantic-only query finds the vector match",
   sem.json.results[0] && sem.json.results[0].t === "cooking pasta");
 check("vector-only hit is flagged semantic", sem.json.results[0].semantic === true);
 
+// Precision controls, tested directly against the exported retrieval fns.
+const lib = await import(join(outDir, "worker.js"));
+check("strict AND keeps only full matches",
+  JSON.stringify(lib.keywordTopK(DOCS, ["matrix", "theorem"], 50, 1)) === "[0]");
+const fb = lib.keywordTopK(DOCS, ["matrix", "theorem"], 50);
+check("AND fallback includes partial matches", fb.includes(0) && fb.includes(2));
+const art = { docs: DOCS, vecs: new Int8Array(ROWS.flat()),
+  scales: new Float32Array([1, 1, 1]), dim: DIM };
+check("floor drops weak vector hits",
+  lib.vectorTopK(art, [0, 0, 0, 1], 50).length === 0);
+check("strong vector hit survives the floor",
+  JSON.stringify(lib.vectorTopK(art, [1, 0, 0, 0], 50)) === "[0]");
+const many = Array.from({ length: 40 }, (_, i) => (
+  { ...DOCS[0], i: `x#${i}`, p: `x${i}`, t: `post ${i} zzz`, x: "zzz zzz" }));
+check("results capped at 30",
+  lib.fuse(many, many.map((_, i) => i), [], ["zzz"]).length === 30);
+
 // Manifest-only change (new prefix, same documents) must refresh.
 prefix = "INSTR2: ";
 await call("/search?q=matrix%20tree%20theorem&scope=blog");

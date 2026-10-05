@@ -52,6 +52,12 @@ type Artifacts = {
 const RRF_K = 60;
 const KW_WEIGHT = 1.0;
 const VEC_WEIGHT = 1.15;
+// Precision controls: AND needs at least this many chunk hits or the query
+// falls back to OR; vector hits below the cosine floor are dropped; the final
+// list is capped here.
+export const MIN_AND_RESULTS = 5;
+export const VECTOR_FLOOR = 0.7;
+export const RESULT_CAP = 30;
 const FIELD_BOOSTS: Array<[string, number]> = [
   ["t", 3],
   ["h", 2],
@@ -136,10 +142,13 @@ async function loadArtifacts(siteBase: string): Promise<{ manifest: Manifest; ar
 
 // --- Retrieval ---
 
-function keywordScores(docs: Doc[], terms: string[]): Map<number, number> {
-  const scores = new Map<number, number>();
+export function keywordTopK(
+  docs: Doc[], terms: string[], k: number, minAnd: number = MIN_AND_RESULTS
+): number[] {
+  const scored = new Map<number, { score: number; matched: Set<string> }>();
   docs.forEach((doc, idx) => {
     let score = 0;
+    const matched = new Set<string>();
     const fields: Record<string, string> = {
       t: doc.t || "",
       h: doc.h || "",
@@ -150,37 +159,51 @@ function keywordScores(docs: Doc[], terms: string[]): Map<number, number> {
       const tokens = tokenize(fields[field]);
       const tokenSet = new Set(tokens);
       for (const term of terms) {
-        if (tokenSet.has(term)) score += boost;
-        else if (tokens.some((tok) => tok.startsWith(term))) score += boost * 0.5;
+        if (tokenSet.has(term)) {
+          score += boost;
+          matched.add(term);
+        } else if (tokens.some((tok) => tok.startsWith(term))) {
+          score += boost * 0.5;
+          matched.add(term);
+        }
       }
     }
-    if (score > 0) scores.set(idx, score);
+    if (score > 0) scored.set(idx, { score, matched });
   });
-  return scores;
-}
-
-function topEntries(scores: Map<number, number>, k: number): number[] {
-  return [...scores.entries()]
-    .sort((a, b) => b[1] - a[1])
+  let pool = [...scored.entries()];
+  if (!terms.length) {
+    pool = [];
+  } else {
+    const anded = pool.filter(([, e]) => e.matched.size >= terms.length);
+    if (anded.length >= minAnd) pool = anded;
+  }
+  return pool
+    .sort((a, b) => b[1].score - a[1].score)
     .slice(0, k)
     .map(([idx]) => idx);
 }
 
-function vectorScores(art: Artifacts, qvec: number[]): Map<number, number> {
-  const scores = new Map<number, number>();
+export function vectorTopK(
+  art: Artifacts, qvec: number[], k: number, floor: number = VECTOR_FLOOR
+): number[] {
+  const scored: Array<[number, number]> = [];
   const { vecs, scales, dim } = art;
   for (let r = 0; r < art.docs.length; r++) {
     const base = r * dim;
     let dot = 0;
     for (let i = 0; i < dim; i++) dot += vecs[base + i] * qvec[i];
-    scores.set(r, scales[r] * dot);
+    const score = scales[r] * dot;
+    if (score >= floor) scored.push([r, score]);
   }
-  return scores;
+  return scored
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, k)
+    .map(([idx]) => idx);
 }
 
 type Fused = { doc: Doc; score: number; arms: Set<string>; semantic: boolean };
 
-function fuse(docs: Doc[], kwIdx: number[], vecIdx: number[], terms: string[]): Fused[] {
+export function fuse(docs: Doc[], kwIdx: number[], vecIdx: number[], terms: string[]): Fused[] {
   const map = new Map<string, Fused>();
   const add = (idx: number, rank: number, arm: string, weight: number) => {
     const doc = docs[idx];
@@ -217,7 +240,7 @@ function fuse(docs: Doc[], kwIdx: number[], vecIdx: number[], terms: string[]): 
     seen.add(e.doc.p);
     e.semantic = e.arms.has("vec") && !e.arms.has("kw");
     out.push(e);
-    if (out.length >= 25) break;
+    if (out.length >= RESULT_CAP) break;
   }
   return out;
 }
@@ -270,7 +293,7 @@ export default {
       const { manifest, artifacts: art } = await loadArtifacts(env.SITE_BASE);
       const terms = tokenize(q).filter((t) => t.length > 1);
 
-      const kwIdx = topEntries(keywordScores(art.docs, terms), 50);
+      const kwIdx = keywordTopK(art.docs, terms, 50);
 
       let vecIdx: number[] = [];
       if (art.dim > 0) {
@@ -279,7 +302,7 @@ export default {
         const raw = out.data;
         const norm = Math.sqrt(raw.reduce((s, v) => s + v * v, 0)) || 1;
         const qvec = raw.map((v) => v / norm);
-        vecIdx = topEntries(vectorScores(art, qvec), 50);
+        vecIdx = vectorTopK(art, qvec, 50);
       }
       const fused = fuse(art.docs, kwIdx, vecIdx, terms);
 

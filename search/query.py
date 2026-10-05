@@ -36,6 +36,9 @@ RRF_K = 60
 KW_WEIGHT = 1.0
 VEC_WEIGHT = 1.15
 FIELD_BOOSTS = (("t", 3.0), ("h", 2.0), ("g", 2.0), ("x", 1.0))
+MIN_AND_RESULTS = 5
+VECTOR_FLOOR = 0.7
+RESULT_CAP = 30
 
 
 def split_terms(text):
@@ -78,10 +81,11 @@ def load_index(index_dir):
     return docs, vecs, scales, dim
 
 
-def keyword_search(docs, terms, limit=50):
+def keyword_search(docs, terms, limit=50, min_and=MIN_AND_RESULTS):
     scored = []
     for idx, doc in enumerate(docs):
         score = 0.0
+        matched = set()
         fields = {
             "t": doc.get("t", ""),
             "h": doc.get("h", ""),
@@ -93,20 +97,32 @@ def keyword_search(docs, terms, limit=50):
             for term in terms:
                 if term in tokens:
                     score += boost
+                    matched.add(term)
                 elif any(tok.startswith(term) for tok in tokens):
                     score += boost * 0.5
+                    matched.add(term)
         if score > 0:
-            scored.append((idx, score))
-    scored.sort(key=lambda item: item[1], reverse=True)
-    return scored[:limit]
+            scored.append((idx, score, matched))
+    pool = scored
+    if terms:
+        anded = [item for item in scored if len(item[2]) >= len(terms)]
+        if len(anded) >= min_and:
+            pool = anded
+    else:
+        pool = []
+    pool.sort(key=lambda item: item[1], reverse=True)
+    return [(idx, score) for idx, score, _matched in pool[:limit]]
 
 
-def vector_search(vecs, scales, dim, query_vec, limit=50):
+def vector_search(vecs, scales, dim, query_vec, limit=50,
+                  floor=VECTOR_FLOOR):
     scores = []
     for row in range(len(scales)):
         base = row * dim
         dot = sum(vecs[base + i] * query_vec[i] for i in range(dim))
-        scores.append((row, scales[row] * dot))
+        sim = scales[row] * dot
+        if sim >= floor:
+            scores.append((row, sim))
     scores.sort(key=lambda item: item[1], reverse=True)
     return scores[:limit]
 
@@ -153,7 +169,7 @@ def fuse(docs, keyword, vector, terms):
         seen.add(post)
         entry["semantic"] = "vec" in entry["arms"] and "kw" not in entry["arms"]
         out.append((idx, entry))
-        if len(out) >= 25:
+        if len(out) >= RESULT_CAP:
             break
     return out
 

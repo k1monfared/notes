@@ -22,6 +22,9 @@
   var RRF_K = 60;
   var KW_WEIGHT = 1.0;
   var VEC_WEIGHT = 1.15;
+  var MIN_AND_RESULTS = 5;
+  var VECTOR_FLOOR = 0.7;
+  var RESULT_CAP = 30;
 
   var overlay, input, resultsEl, statusEl, semanticToggle;
   var mini = null;
@@ -324,7 +327,10 @@
     for (var j = 0; j < n; j++) order[j] = j;
     order.sort(function (a, b) { return scores[b] - scores[a]; });
     var out = [];
-    for (var t = 0; t < k && t < n; t++) out.push(docs[order[t]]);
+    for (var t = 0; t < k && t < n; t++) {
+      if (scores[order[t]] < VECTOR_FLOOR) break;
+      out.push(docs[order[t]]);
+    }
     return out;
   }
 
@@ -361,7 +367,7 @@
 
     var seen = {};
     var out = [];
-    for (var i = 0; i < list.length && out.length < 25; i++) {
+    for (var i = 0; i < list.length && out.length < RESULT_CAP; i++) {
       var e = list[i];
       if (seen[e.doc.p]) continue;
       seen[e.doc.p] = true;
@@ -419,8 +425,12 @@
     }
 
     var terms = queryTerms(q);
-    var keyword = mini.search(q, { combineWith: "OR" }).slice(0, 50);
-    var keywordPosts = dedupeByPost(keyword, 25);
+    // AND first for precision; fall back to OR when almost nothing matches.
+    var keyword = mini.search(q, { combineWith: "AND" }).slice(0, 50);
+    if (keyword.length < MIN_AND_RESULTS) {
+      keyword = mini.search(q, { combineWith: "OR" }).slice(0, 50);
+    }
+    var keywordPosts = dedupeByPost(keyword, RESULT_CAP);
 
     if (apiMode) {
       // Instant local keyword first, upgraded by the server hybrid when it
