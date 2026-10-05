@@ -78,6 +78,90 @@
       .filter(function (t) { return t && t.length > 1; });
   }
 
+  // Query operators: +must -not "exact phrase". Single-word quotes behave
+  // like +word (exact token); multi-word quotes require the words adjacently.
+  function dedupWords(words) {
+    var seen = {};
+    return words.filter(function (w) {
+      if (seen[w]) return false;
+      seen[w] = true;
+      return true;
+    });
+  }
+
+  function parseSearchQuery(q) {
+    var must = [], not = [], phrases = [], notPhrases = [], optional = [];
+    function pushWord(word, target) {
+      tokenize(word).forEach(function (t) {
+        var p = processTerm(t);
+        if (p) target.push(p);
+      });
+    }
+    var re = /([+-]?)"([^"]+)"|([+-]?)(\S+)/g, m;
+    while ((m = re.exec(q)) !== null) {
+      if (m[2] !== undefined) {
+        var joined = tokenize(m[2]).map(processTerm).filter(Boolean).join(" ");
+        if (!joined) continue;
+        if (m[1] === "-") {
+          if (joined.indexOf(" ") >= 0) notPhrases.push(joined);
+          else pushWord(joined, not);
+        } else {
+          if (joined.indexOf(" ") >= 0) phrases.push(joined);
+          else pushWord(joined, must);
+        }
+      } else if (m[3] === "+") {
+        pushWord(m[4], must);
+      } else if (m[3] === "-") {
+        pushWord(m[4], not);
+      } else {
+        pushWord(m[4], optional);
+      }
+    }
+    var phraseWords = [];
+    phrases.forEach(function (p) {
+      p.split(" ").forEach(function (w) { phraseWords.push(w); });
+    });
+    var engineTerms = dedupWords(must.concat(optional, phraseWords));
+    return {
+      must: dedupWords(must),
+      not: dedupWords(not),
+      phrases: dedupWords(phrases),
+      notPhrases: dedupWords(notPhrases),
+      positives: engineTerms.filter(function (t) { return t.length > 1; }),
+      engineTerms: engineTerms,
+      highlightTerms: engineTerms.filter(function (t) { return t.length > 1; }),
+      vectorText: dedupWords(must.concat(optional, phrases)).join(" ")
+    };
+  }
+
+  function chunkMatchesOps(doc, ops) {
+    var fields = [doc.t || "", doc.h || "", (doc.g || []).join(" "), doc.x || ""];
+    var tokens = {}, parts = [];
+    fields.forEach(function (f) {
+      var tks = tokenize(f).map(processTerm).filter(Boolean);
+      tks.forEach(function (t) { tokens[t] = true; });
+      parts.push(tks.join(" "));
+    });
+    var joined = parts.join(" ");
+    for (var i = 0; i < ops.must.length; i++) {
+      if (!tokens[ops.must[i]]) return false;
+    }
+    for (var j = 0; j < ops.not.length; j++) {
+      if (tokens[ops.not[j]]) return false;
+    }
+    for (var k = 0; k < ops.phrases.length; k++) {
+      if (joined.indexOf(ops.phrases[k]) < 0) return false;
+    }
+    for (var l = 0; l < ops.notPhrases.length; l++) {
+      if (joined.indexOf(ops.notPhrases[l]) >= 0) return false;
+    }
+    return true;
+  }
+
+  function filterOps(entries, ops) {
+    return entries.filter(function (e) { return chunkMatchesOps(e.doc, ops); });
+  }
+
   // --- Small helpers ---
 
   function escapeHtml(s) {
@@ -336,7 +420,7 @@
 
   // --- Fusion ---
 
-  function fuse(keyword, vec, terms) {
+  function fuse(keyword, vec, terms, ops) {
     var map = {};
     function add(doc, rank, arm, weight) {
       var e = map[doc.i];
@@ -365,10 +449,12 @@
 
     list.sort(function (a, b) { return b.score - a.score; });
 
+    var filtered = ops ? list.filter(function (e) { return chunkMatchesOps(e.doc, ops); }) : list;
+
     var seen = {};
     var out = [];
-    for (var i = 0; i < list.length && out.length < RESULT_CAP; i++) {
-      var e = list[i];
+    for (var i = 0; i < filtered.length && out.length < RESULT_CAP; i++) {
+      var e = filtered[i];
       if (seen[e.doc.p]) continue;
       seen[e.doc.p] = true;
       e.semantic = e.arms.vec && !e.arms.kw ? true : false;
@@ -379,14 +465,14 @@
 
   // --- Search + render ---
 
-  function dedupeByPost(list, max) {
+  function dedupeByPost(entries, max) {
     var seen = {};
     var out = [];
-    for (var i = 0; i < list.length && out.length < max; i++) {
-      var d = list[i];
+    for (var i = 0; i < entries.length && out.length < max; i++) {
+      var d = entries[i].doc || entries[i];
       if (seen[d.p]) continue;
       seen[d.p] = true;
-      out.push(d);
+      out.push(entries[i]);
     }
     return out;
   }
@@ -424,30 +510,40 @@
       return;
     }
 
-    var terms = queryTerms(q);
-    // AND first for precision; fall back to OR when almost nothing matches.
-    var keyword = mini.search(q, { combineWith: "AND" }).slice(0, 50);
-    if (keyword.length < MIN_AND_RESULTS) {
-      keyword = mini.search(q, { combineWith: "OR" }).slice(0, 50);
+    var pq = parseSearchQuery(q);
+    var terms = pq.highlightTerms;
+    if (!pq.engineTerms.length && !pq.phrases.length) {
+      renderEntries([], terms, q, false);
+      return;
     }
-    var keywordPosts = dedupeByPost(keyword, RESULT_CAP);
+    var engineQuery = pq.engineTerms.join(" ");
+    // AND first for precision; fall back to OR when almost nothing matches.
+    var keyword = mini.search(engineQuery, { combineWith: "AND" }).slice(0, 50);
+    if (keyword.length < MIN_AND_RESULTS) {
+      keyword = mini.search(engineQuery, { combineWith: "OR" }).slice(0, 50);
+    }
+    var keywordPosts = dedupeByPost(filterOps(keyword.map(function (d) {
+      return { doc: d };
+    }), pq), RESULT_CAP);
 
     if (apiMode) {
       // Instant local keyword first, upgraded by the server hybrid when it
       // lands. Offline or on error, the keyword list simply stays.
-      renderEntries(keywordPosts.map(function (d) { return { doc: d }; }), terms, q, false);
+      renderEntries(keywordPosts, terms, q, false);
       fetchApiResults(q, terms, seq);
       return;
     }
 
-    renderEntries(keywordPosts.map(function (d) { return { doc: d }; }), terms, q, semanticEnabled);
+    renderEntries(keywordPosts, terms, q, semanticEnabled);
 
-    if (semanticEnabled) {
-      embedQuery(q)
+    if (semanticEnabled && pq.vectorText) {
+      embedQuery(pq.vectorText)
         .then(function (qvec) {
           if (seq !== searchSeq) return;
           var vec = vectorSearch(qvec, 50);
-          if (vec.length) renderEntries(fuse(keyword, vec, terms), terms, q, true);
+          if (vec.length || keyword.length) {
+            renderEntries(fuse(keyword, vec, terms, pq), terms, q, true);
+          }
         })
         .catch(function (err) {
           if (seq !== searchSeq) return;

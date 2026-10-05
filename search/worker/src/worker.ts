@@ -89,6 +89,81 @@ function tokenize(text: string): string[] {
     .filter((t) => t.length > 0);
 }
 
+// --- Query operators: +must -not "exact phrase" ---
+
+export type QueryOps = {
+  must: string[]; // exact tokens the chunk must contain
+  not: string[]; // exact tokens the chunk must not contain
+  phrases: string[]; // multi-word spans (space-joined tokens) that must occur
+  notPhrases: string[]; // spans that must not occur
+  positives: string[]; // must + optional + phrase words, len > 1 (ranking)
+  engineTerms: string[]; // every positive word (retrieval)
+  vectorText: string; // operator-free text for the embedding
+};
+
+function dedup(words: string[]): string[] {
+  return [...new Set(words)];
+}
+
+export function parseSearchQuery(q: string): QueryOps {
+  const must: string[] = [];
+  const not: string[] = [];
+  const phrases: string[] = [];
+  const notPhrases: string[] = [];
+  const optional: string[] = [];
+  const pushWord = (word: string, target: string[]) => {
+    for (const t of tokenize(word)) target.push(t);
+  };
+
+  // ([+-]?)"phrase" takes precedence over bare words so +"a b" parses whole.
+  const re = /([+-]?)"([^"]+)"|([+-]?)(\S+)/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(q)) !== null) {
+    if (m[2] !== undefined) {
+      const joined = tokenize(m[2]).join(" ");
+      if (!joined) continue;
+      if (m[1] === "-") {
+        if (joined.includes(" ")) notPhrases.push(joined);
+        else pushWord(joined, not);
+      } else {
+        if (joined.includes(" ")) phrases.push(joined);
+        else pushWord(joined, must);
+      }
+    } else {
+      const pre = m[3];
+      if (pre === "+") pushWord(m[4], must);
+      else if (pre === "-") pushWord(m[4], not);
+      else pushWord(m[4], optional);
+    }
+  }
+
+  const phraseWords = phrases.flatMap((p) => p.split(" "));
+  const engineTerms = dedup([...must, ...optional, ...phraseWords]);
+  const positives = engineTerms.filter((t) => t.length > 1);
+  const vectorText = dedup([...must, ...optional, ...phrases]).join(" ");
+  return { must: dedup(must), not: dedup(not), phrases: dedup(phrases),
+    notPhrases: dedup(notPhrases), positives, engineTerms, vectorText };
+}
+
+export function chunkMatchesOps(
+  doc: Doc, ops: Pick<QueryOps, "must" | "not" | "phrases" | "notPhrases">
+): boolean {
+  const fields = [doc.t || "", doc.h || "", (doc.g || []).join(" "), doc.x || ""];
+  const tokens = new Set<string>();
+  const parts: string[] = [];
+  for (const f of fields) {
+    const tks = tokenize(f);
+    tks.forEach((t) => tokens.add(t));
+    parts.push(tks.join(" "));
+  }
+  const joined = parts.join(" ");
+  for (const word of ops.must) if (!tokens.has(word)) return false;
+  for (const word of ops.not) if (tokens.has(word)) return false;
+  for (const p of ops.phrases) if (!joined.includes(p)) return false;
+  for (const p of ops.notPhrases) if (joined.includes(p)) return false;
+  return true;
+}
+
 // --- Artifacts ---
 
 function parseVectors(buf: ArrayBuffer): { vecs: Int8Array; scales: Float32Array; dim: number } {
@@ -203,7 +278,10 @@ export function vectorTopK(
 
 type Fused = { doc: Doc; score: number; arms: Set<string>; semantic: boolean };
 
-export function fuse(docs: Doc[], kwIdx: number[], vecIdx: number[], terms: string[]): Fused[] {
+export function fuse(
+  docs: Doc[], kwIdx: number[], vecIdx: number[], terms: string[],
+  ops?: Pick<QueryOps, "must" | "not" | "phrases" | "notPhrases"> | null
+): Fused[] {
   const map = new Map<string, Fused>();
   const add = (idx: number, rank: number, arm: string, weight: number) => {
     const doc = docs[idx];
@@ -233,9 +311,11 @@ export function fuse(docs: Doc[], kwIdx: number[], vecIdx: number[], terms: stri
   }
   list.sort((a, b) => b.score - a.score);
 
+  const filtered = ops ? list.filter((e) => chunkMatchesOps(e.doc, ops)) : list;
+
   const seen = new Set<string>();
   const out: Fused[] = [];
-  for (const e of list) {
+  for (const e of filtered) {
     if (seen.has(e.doc.p)) continue;
     seen.add(e.doc.p);
     e.semantic = e.arms.has("vec") && !e.arms.has("kw");
@@ -291,20 +371,24 @@ export default {
     const started = Date.now();
     try {
       const { manifest, artifacts: art } = await loadArtifacts(env.SITE_BASE);
-      const terms = tokenize(q).filter((t) => t.length > 1);
+      const pq = parseSearchQuery(q);
+      if (!pq.engineTerms.length && !pq.phrases.length) {
+        return Response.json({ results: [], count: 0, took_ms: Date.now() - started },
+          { headers: cors(origin, env) });
+      }
 
-      const kwIdx = keywordTopK(art.docs, terms, 50);
+      const kwIdx = keywordTopK(art.docs, pq.engineTerms, 50);
 
       let vecIdx: number[] = [];
-      if (art.dim > 0) {
+      if (art.dim > 0 && pq.vectorText) {
         const prefix = manifest.model?.query_prefix || "";
-        const out = (await env.AI.run("@cf/baai/bge-m3", { text: prefix + q })) as { data: number[] };
+        const out = (await env.AI.run("@cf/baai/bge-m3", { text: prefix + pq.vectorText })) as { data: number[] };
         const raw = out.data;
         const norm = Math.sqrt(raw.reduce((s, v) => s + v * v, 0)) || 1;
         const qvec = raw.map((v) => v / norm);
         vecIdx = vectorTopK(art, qvec, 50);
       }
-      const fused = fuse(art.docs, kwIdx, vecIdx, terms);
+      const fused = fuse(art.docs, kwIdx, vecIdx, pq.positives, pq);
 
       return Response.json(
         {

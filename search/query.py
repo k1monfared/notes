@@ -16,6 +16,7 @@ vectors live in a different space.
 import argparse
 import json
 import math
+import re
 import struct
 import sys
 import unicodedata
@@ -127,7 +128,7 @@ def vector_search(vecs, scales, dim, query_vec, limit=50,
     return scores[:limit]
 
 
-def fuse(docs, keyword, vector, terms):
+def fuse(docs, keyword, vector, terms, ops=None):
     fused = {}
 
     def add(idx, rank, arm, weight):
@@ -160,6 +161,9 @@ def fuse(docs, keyword, vector, terms):
         ranked.append((idx, entry))
 
     ranked.sort(key=lambda item: item[1]["score"], reverse=True)
+    if ops is not None:
+        ranked = [(idx, entry) for idx, entry in ranked
+                  if chunk_matches_ops(docs[idx], ops)]
 
     seen, out = set(), []
     for idx, entry in ranked:
@@ -172,6 +176,75 @@ def fuse(docs, keyword, vector, terms):
         if len(out) >= RESULT_CAP:
             break
     return out
+
+
+def parse_query(text):
+    """Split a query into +must / -not / "exact phrase" / optional words.
+
+    Mirrors parseSearchQuery in search.js and the Worker.
+    """
+    must, not_, phrases, not_phrases, optional = [], [], [], [], []
+
+    def push_word(word, target):
+        target.extend(split_terms(word))
+
+    pattern = re.compile(r'([+-]?)"([^"]+)"|([+-]?)(\S+)')
+    for match in pattern.finditer(text):
+        if match.group(2) is not None:
+            joined = " ".join(split_terms(match.group(2)))
+            if not joined:
+                continue
+            if match.group(1) == "-":
+                if " " in joined:
+                    not_phrases.append(joined)
+                else:
+                    push_word(joined, not_)
+            elif " " in joined:
+                phrases.append(joined)
+            else:
+                push_word(joined, must)
+        elif match.group(3) == "+":
+            push_word(match.group(4), must)
+        elif match.group(3) == "-":
+            push_word(match.group(4), not_)
+        else:
+            push_word(match.group(4), optional)
+
+    def dedup(words):
+        return list(dict.fromkeys(words))
+
+    phrase_words = [w for p in phrases for w in p.split(" ")]
+    engine_terms = dedup(must + optional + phrase_words)
+    return {
+        "must": dedup(must),
+        "not": dedup(not_),
+        "phrases": dedup(phrases),
+        "not_phrases": dedup(not_phrases),
+        "positives": [t for t in engine_terms if len(t) > 1],
+        "engine_terms": engine_terms,
+        "vector_text": " ".join(dedup(must + optional + phrases)),
+    }
+
+
+def chunk_matches_ops(doc, ops):
+    fields = [doc.get("t", ""), doc.get("h", ""),
+              " ".join(doc.get("g", [])), doc.get("x", "")]
+    tokens = set()
+    parts = []
+    for field in fields:
+        tks = split_terms(field)
+        tokens.update(tks)
+        parts.append(" ".join(tks))
+    joined = " ".join(parts)
+    if any(m not in tokens for m in ops["must"]):
+        return False
+    if any(n in tokens for n in ops["not"]):
+        return False
+    if any(p not in joined for p in ops["phrases"]):
+        return False
+    if any(p in joined for p in ops["not_phrases"]):
+        return False
+    return True
 
 
 def main(argv=None):
@@ -189,29 +262,27 @@ def main(argv=None):
         REPO_ROOT / "blog" / "_site" / "search")
     docs, vecs, scales, dim = load_index(index_dir)
 
-    terms = [t for t in split_terms(args.query) if len(t) > 1]
-    keyword = keyword_search(docs, terms) if args.mode != "vector" else []
+    ops = parse_query(args.query)
+    terms = ops["positives"]
+    keyword = keyword_search(docs, ops["engine_terms"]) \
+        if args.mode != "vector" else []
 
     vector = []
-    if args.mode != "keyword":
+    if args.mode != "keyword" and ops["vector_text"]:
         if not embedder_available():
             print("local embedder unavailable; falling back to keyword",
                   file=sys.stderr)
         else:
             query_vec = _run_node_embedder(
-                [args.query], QUERY_PREFIX, MODEL_ID, MODEL_DTYPE)[0]
+                [ops["vector_text"]], QUERY_PREFIX, MODEL_ID, MODEL_DTYPE)[0]
             vector = vector_search(vecs, scales, dim, query_vec)
 
     if args.mode == "hybrid":
-        results = fuse(docs, keyword, vector, terms)
+        results = fuse(docs, keyword, vector, terms, ops)
     elif args.mode == "vector":
-        results = [(idx, {"score": s, "arms": {"vec"}, "semantic": True})
-                   for idx, s in vector]
-        results = fuse(docs, [], vector, terms)
+        results = fuse(docs, [], vector, terms, ops)
     else:
-        results = [(idx, {"score": s, "arms": {"kw"}, "semantic": False})
-                   for idx, s in keyword]
-        results = fuse(docs, keyword, [], terms)
+        results = fuse(docs, keyword, [], terms, ops)
 
     for n, (idx, entry) in enumerate(results[:args.top], 1):
         doc = docs[idx]

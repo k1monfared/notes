@@ -49,6 +49,32 @@ class TestVectorFloor(unittest.TestCase):
         self.assertEqual(hits, [])
 
 
+class TestOperators(unittest.TestCase):
+    def test_parse(self):
+        ops = Q.parse_query('+latex -book "tex editor" cooking')
+        self.assertEqual(ops["must"], ["latex"])
+        self.assertEqual(ops["not"], ["book"])
+        self.assertEqual(ops["phrases"], ["tex editor"])
+        self.assertIn("cooking", ops["engine_terms"])
+        self.assertNotIn("book", ops["vector_text"])
+
+    def test_must_excludes(self):
+        ops = Q.parse_query("+matrix -theorem")
+        kw = Q.keyword_search(DOCS, ops["engine_terms"], min_and=1)
+        out = Q.fuse(DOCS, kw, [], ops["positives"], ops)
+        self.assertEqual([DOCS[i]["p"] for i, _e in out], ["c"])
+
+    def test_phrase_requires_adjacency(self):
+        ops = Q.parse_query('"trees theorem"')
+        kw = Q.keyword_search(DOCS, ops["engine_terms"], min_and=1)
+        out = Q.fuse(DOCS, kw, [], ops["positives"], ops)
+        self.assertEqual(out, [])
+        ops2 = Q.parse_query('"tree theorem"')
+        kw2 = Q.keyword_search(DOCS, ops2["engine_terms"], min_and=1)
+        out2 = Q.fuse(DOCS, kw2, [], ops2["positives"], ops2)
+        self.assertEqual([DOCS[i]["p"] for i, _e in out2], ["a"])
+
+
 class TestCap(unittest.TestCase):
     def test_results_capped(self):
         docs = [dict(DOCS[0], i=f"x#{i}", p=f"x{i}", t=f"post {i} zzz",

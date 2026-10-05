@@ -152,6 +152,22 @@ const many = Array.from({ length: 40 }, (_, i) => (
 check("results capped at 30",
   lib.fuse(many, many.map((_, i) => i), [], ["zzz"]).length === 30);
 
+// Operators: parsing, required/excluded terms, exact phrases.
+const pq = lib.parseSearchQuery('+latex -book "tex editor" cooking');
+check("parse +must", JSON.stringify(pq.must) === '["latex"]');
+check("parse -not", JSON.stringify(pq.not) === '["book"]');
+check("parse quoted phrase", JSON.stringify(pq.phrases) === '["tex editor"]');
+check("vector text excludes negations", pq.vectorText.indexOf("book") < 0);
+
+const excl = await call("/search?q=" + encodeURIComponent("+matrix -theorem") + "&scope=blog");
+check("excluded term drops the hit",
+  excl.json.results.length === 1 && excl.json.results[0].t === "linear algebra notes");
+const adjMiss = await call("/search?q=" + encodeURIComponent('"trees graphs"') + "&scope=blog");
+check("non-adjacent words fail the phrase", adjMiss.json.count === 0);
+const adjHit = await call("/search?q=" + encodeURIComponent('"tree theorem"') + "&scope=blog");
+check("adjacent words satisfy the phrase",
+  adjHit.json.results.length > 0 && adjHit.json.results[0].t === "matrix tree theorem guide");
+
 // Manifest-only change (new prefix, same documents) must refresh.
 prefix = "INSTR2: ";
 await call("/search?q=matrix%20tree%20theorem&scope=blog");
