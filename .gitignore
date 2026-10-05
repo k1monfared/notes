@@ -19,3 +19,4 @@ search/adapters/__pycache__/
 search/node/node_modules/
 search/node/.models/
 search/worker/node_modules/
+search/tests/__pycache__/

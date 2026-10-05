@@ -52,6 +52,23 @@ jobs:
       - name: Install dependencies
         run: pip install -r blog/requirements.txt
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: search/worker/package-lock.json
+
+      - name: Install worker test deps
+        run: npm ci
+        working-directory: search/worker
+
+      # Pre-deploy gate: a red test fails the workflow before anything ships.
+      - name: Test search
+        run: |
+          python -m unittest discover -s search/tests
+          node search/worker/test/run_tests.mjs
+
       - name: Restore blog build cache
         id: blog-build-cache
         uses: actions/cache@v4

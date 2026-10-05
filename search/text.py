@@ -65,7 +65,7 @@ def strip_markdown(text):
     t = re.sub(r"\\\[(.*?)\\\]", r" \1 ", t, flags=re.DOTALL)
     t = re.sub(r"\$([^$\n]+?)\$", r" \1 ", t)
     t = re.sub(r"\\\((.*?)\\\)", r" \1 ", t, flags=re.DOTALL)
-    t = re.sub(r"\\[a-zA-Z]+", " ", t)
+    t = re.sub(r"\\([a-zA-Z]+)", r"\1", t)
     t = t.replace("{", " ").replace("}", " ").replace("\\", " ")
     # Emphasis and other markdown punctuation
     t = re.sub(r"[*_~>#]", " ", t)
