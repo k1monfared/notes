@@ -17,17 +17,20 @@ const here = dirname(fileURLToPath(import.meta.url));
 const workerDir = resolve(here, "..");
 const outDir = mkdtempSync(join(tmpdir(), "notes-search-test-"));
 
-const DIM = 4;
+const DIM = 5;
 const DOCS = [
   { i: "a#0", p: "a", u: "a/", t: "matrix tree theorem guide", d: "2024-01-01",
     g: ["math"], l: "en", h: "", a: "", x: "spanning trees of graphs and the matrix tree theorem proof" },
   { i: "b#0", p: "b", u: "b/", t: "cooking pasta", d: "2024-01-02",
     g: ["food"], l: "en", h: "", a: "", x: "boil water add salt and serve" },
   { i: "c#0", p: "c", u: "c/", t: "linear algebra notes", d: "2024-01-03",
-    g: ["math"], l: "en", h: "", a: "", x: "eigenvalues and eigenvectors of a matrix" },
+    g: ["math", "linear algebra"], l: "en", h: "", a: "", x: "eigenvalues and eigenvectors of a matrix" },
+  { i: "d#0", p: "d", u: "d/", t: "یک غزل بهاری", d: "2023-05-05",
+    g: ["poem"], l: "fa", h: "", a: "", x: "شعر درباره بهار و شکوفه" },
 ];
 // One-hot rows so the mock query embedding picks a deterministic winner.
-const ROWS = [[100, 0, 0, 0], [0, 100, 0, 0], [0, 0, 100, 0]];
+// The fifth dimension matches nothing, for testing the similarity floor.
+const ROWS = [[100, 0, 0, 0, 0], [0, 100, 0, 0, 0], [0, 0, 100, 0, 0], [0, 0, 0, 100, 0]];
 
 function vectorsBin() {
   const buf = new ArrayBuffer(16 + 4 * ROWS.length + DIM * ROWS.length);
@@ -53,7 +56,7 @@ function manifestDoc(prefix, withVectors = true) {
     counts: { posts: 3, chunks: 3 },
     model: { id: "test-model", dim: DIM, query_prefix: prefix, passage_prefix: "" },
     vectors: withVectors
-      ? { file: "vectors.bin", dtype: "int8", dim: DIM, count: 3,
+      ? { file: "vectors.bin", dtype: "int8", dim: DIM, count: 4,
           model: "test-model", backend: "test", api: "" }
       : null,
     fields: { indexed: ["t", "h", "g", "x"], stored: ["p"] },
@@ -83,7 +86,7 @@ const env = {
   AI: {
     run: async (_model, { text }) => {
       capturedQuery = text;
-      const row = queryVec[text.replace(prefix, "")] || [0, 0, 0, 1];
+      const row = queryVec[text.replace(prefix, "")] || [0, 0, 0, 0, 1];
       const norm = Math.hypot(...row) || 1;
       return { data: row.map((v) => v / norm) };
     },
@@ -142,11 +145,11 @@ check("strict AND keeps only full matches",
 const fb = lib.keywordTopK(DOCS, ["matrix", "theorem"], 50);
 check("AND fallback includes partial matches", fb.includes(0) && fb.includes(2));
 const art = { docs: DOCS, vecs: new Int8Array(ROWS.flat()),
-  scales: new Float32Array([1, 1, 1]), dim: DIM };
+  scales: new Float32Array([1, 1, 1, 1]), dim: DIM };
 check("floor drops weak vector hits",
-  lib.vectorTopK(art, [0, 0, 0, 1], 50).length === 0);
+  lib.vectorTopK(art, [0, 0, 0, 0, 1], 50).length === 0);
 check("strong vector hit survives the floor",
-  JSON.stringify(lib.vectorTopK(art, [1, 0, 0, 0], 50)) === "[0]");
+  JSON.stringify(lib.vectorTopK(art, [1, 0, 0, 0, 0], 50)) === "[0]");
 const many = Array.from({ length: 40 }, (_, i) => (
   { ...DOCS[0], i: `x#${i}`, p: `x${i}`, t: `post ${i} zzz`, x: "zzz zzz" }));
 check("results capped at 30",
@@ -167,6 +170,41 @@ check("non-adjacent words fail the phrase", adjMiss.json.count === 0);
 const adjHit = await call("/search?q=" + encodeURIComponent('"tree theorem"') + "&scope=blog");
 check("adjacent words satisfy the phrase",
   adjHit.json.results.length > 0 && adjHit.json.results[0].t === "matrix tree theorem guide");
+
+// Facets: parsing, tag/lang/date filtering, facet-only browsing.
+const fp = lib.parseSearchQuery('tag:math lang:FA after:2024 before:2025');
+check("parse tag facet", JSON.stringify(fp.tags) === '["math"]');
+check("parse lang facet lowercased", JSON.stringify(fp.langs) === '["fa"]');
+check("parse after date", fp.after === "2024-01-01");
+check("parse before date", fp.before === "2025-01-01");
+check("facets are not search words", fp.engineTerms.length === 0);
+const fq = lib.parseSearchQuery('tag:"linear algebra" -tag:food after:soon');
+check("parse quoted multi-word tag", JSON.stringify(fq.tags) === '["linear algebra"]');
+check("parse negated tag", JSON.stringify(fq.notTags) === '["food"]');
+check("invalid date degrades to words", fq.after === null && fq.engineTerms.includes("after"));
+
+async function titles(path) {
+  const r = await call(path);
+  return (r.json.results || []).map((d) => d.t).sort();
+}
+check("tag:math scopes to tagged posts",
+  JSON.stringify(await titles("/search?q=tag%3Amath&scope=blog")) ===
+  JSON.stringify(["linear algebra notes", "matrix tree theorem guide"]));
+check("quoted multi-word tag matches",
+  JSON.stringify(await titles("/search?q=tag%3A%22linear+algebra%22&scope=blog")) ===
+  JSON.stringify(["linear algebra notes"]));
+check("lang:fa scopes by language",
+  JSON.stringify(await titles("/search?q=lang%3Afa&scope=blog")) === JSON.stringify(["یک غزل بهاری"]));
+const afterTitles = await titles("/search?q=after%3A2024&scope=blog");
+check("after: filters old posts out",
+  afterTitles.length === 3 && !afterTitles.includes("یک غزل بهاری"));
+check("before: keeps only old posts",
+  JSON.stringify(await titles("/search?q=before%3A2024&scope=blog")) === JSON.stringify(["یک غزل بهاری"]));
+check("facets combine with terms",
+  JSON.stringify(await titles("/search?q=matrix+tag%3Amath&scope=blog")) ===
+  JSON.stringify(["linear algebra notes", "matrix tree theorem guide"]));
+check("negated facet browses the rest",
+  (await titles("/search?q=-tag%3Afood&scope=blog")).length === 3);
 
 // Manifest-only change (new prefix, same documents) must refresh.
 prefix = "INSTR2: ";

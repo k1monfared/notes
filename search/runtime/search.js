@@ -89,32 +89,66 @@
     });
   }
 
+  function normDate(value) {
+    var m = /^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?$/.exec(value);
+    if (!m) return null;
+    var mo = m[2] || "01", day = m[3] || "01";
+    if (+mo < 1 || +mo > 12 || +day < 1 || +day > 31) return null;
+    return m[1] + "-" + mo + "-" + day;
+  }
+
   function parseSearchQuery(q) {
     var must = [], not = [], phrases = [], notPhrases = [], optional = [];
+    var tags = [], notTags = [], langs = [], notLangs = [];
+    var after = null, before = null;
     function pushWord(word, target) {
       tokenize(word).forEach(function (t) {
         var p = processTerm(t);
         if (p) target.push(p);
       });
     }
-    var re = /([+-]?)"([^"]+)"|([+-]?)(\S+)/g, m;
+    function pushFacet(field, value, negated) {
+      if (field === "tag") {
+        var t = value.toLowerCase().trim();
+        if (!t) return false;
+        (negated ? notTags : tags).push(t);
+        return true;
+      }
+      if (field === "lang") {
+        var l = value.toLowerCase().trim();
+        if (!l) return false;
+        (negated ? notLangs : langs).push(l);
+        return true;
+      }
+      var iso = normDate(value.trim());
+      if (!iso) return false;
+      if (field === "after") after = !after || iso > after ? iso : after;
+      else before = !before || iso < before ? iso : before;
+      return true;
+    }
+    var re = /([+-]?)(tag|lang|after|before):(?:"([^"]+)"|(\S+))|([+-]?)"([^"]+)"|([+-]?)(\S+)/g, m;
     while ((m = re.exec(q)) !== null) {
       if (m[2] !== undefined) {
-        var joined = tokenize(m[2]).map(processTerm).filter(Boolean).join(" ");
+        var raw = (m[3] !== undefined ? m[3] : m[4] || "").trim();
+        if (raw && !pushFacet(m[2], raw, m[1] === "-")) pushWord(m[0], optional);
+        continue;
+      }
+      if (m[6] !== undefined) {
+        var joined = tokenize(m[6]).map(processTerm).filter(Boolean).join(" ");
         if (!joined) continue;
-        if (m[1] === "-") {
+        if (m[5] === "-") {
           if (joined.indexOf(" ") >= 0) notPhrases.push(joined);
           else pushWord(joined, not);
         } else {
           if (joined.indexOf(" ") >= 0) phrases.push(joined);
           else pushWord(joined, must);
         }
-      } else if (m[3] === "+") {
-        pushWord(m[4], must);
-      } else if (m[3] === "-") {
-        pushWord(m[4], not);
+      } else if (m[7] === "+") {
+        pushWord(m[8], must);
+      } else if (m[7] === "-") {
+        pushWord(m[8], not);
       } else {
-        pushWord(m[4], optional);
+        pushWord(m[8], optional);
       }
     }
     var phraseWords = [];
@@ -127,11 +161,22 @@
       not: dedupWords(not),
       phrases: dedupWords(phrases),
       notPhrases: dedupWords(notPhrases),
+      tags: dedupWords(tags),
+      notTags: dedupWords(notTags),
+      langs: dedupWords(langs),
+      notLangs: dedupWords(notLangs),
+      after: after,
+      before: before,
       positives: engineTerms.filter(function (t) { return t.length > 1; }),
       engineTerms: engineTerms,
       highlightTerms: engineTerms.filter(function (t) { return t.length > 1; }),
       vectorText: dedupWords(must.concat(optional, phrases)).join(" ")
     };
+  }
+
+  function hasFacets(pq) {
+    return pq.tags.length + pq.notTags.length + pq.langs.length +
+      pq.notLangs.length > 0 || pq.after !== null || pq.before !== null;
   }
 
   function chunkMatchesOps(doc, ops) {
@@ -155,6 +200,21 @@
     for (var l = 0; l < ops.notPhrases.length; l++) {
       if (joined.indexOf(ops.notPhrases[l]) >= 0) return false;
     }
+    var tags = (doc.g || []).map(function (g) { return String(g).toLowerCase(); });
+    for (var ti = 0; ti < (ops.tags || []).length; ti++) {
+      if (tags.indexOf(ops.tags[ti]) < 0) return false;
+    }
+    for (var tj = 0; tj < (ops.notTags || []).length; tj++) {
+      if (tags.indexOf(ops.notTags[tj]) >= 0) return false;
+    }
+    var lang = String(doc.l || "").toLowerCase();
+    if ((ops.langs || []).length && ops.langs.indexOf(lang) < 0) return false;
+    for (var lk = 0; lk < (ops.notLangs || []).length; lk++) {
+      if (lang === ops.notLangs[lk]) return false;
+    }
+    var date = doc.d || "";
+    if (ops.after && date < ops.after) return false;
+    if (ops.before && date >= ops.before) return false;
     return true;
   }
 
@@ -431,6 +491,13 @@
     keyword.forEach(function (d, i) { add(d, i, "kw", KW_WEIGHT); });
     vec.forEach(function (d, i) { add(d, i, "vec", VEC_WEIGHT); });
 
+    if (Object.keys(map).length === 0 && ops && hasFacets(ops)) {
+      // Facet-only browsing: every chunk is a candidate, newest first.
+      docs.forEach(function (doc) {
+        map[doc.i] = { doc: doc, score: 0, arms: {} };
+      });
+    }
+
     var list = Object.keys(map).map(function (k) { return map[k]; });
     list.forEach(function (e) {
       var d = e.doc;
@@ -512,15 +579,18 @@
 
     var pq = parseSearchQuery(q);
     var terms = pq.highlightTerms;
-    if (!pq.engineTerms.length && !pq.phrases.length) {
+    if (!pq.engineTerms.length && !pq.phrases.length && !hasFacets(pq)) {
       renderEntries([], terms, q, false);
       return;
     }
     var engineQuery = pq.engineTerms.join(" ");
     // AND first for precision; fall back to OR when almost nothing matches.
-    var keyword = mini.search(engineQuery, { combineWith: "AND" }).slice(0, 50);
-    if (keyword.length < MIN_AND_RESULTS) {
-      keyword = mini.search(engineQuery, { combineWith: "OR" }).slice(0, 50);
+    var keyword = [];
+    if (engineQuery) {
+      keyword = mini.search(engineQuery, { combineWith: "AND" }).slice(0, 50);
+      if (keyword.length < MIN_AND_RESULTS) {
+        keyword = mini.search(engineQuery, { combineWith: "OR" }).slice(0, 50);
+      }
     }
     var keywordPosts = dedupeByPost(filterOps(keyword.map(function (d) {
       return { doc: d };
@@ -541,7 +611,7 @@
         .then(function (qvec) {
           if (seq !== searchSeq) return;
           var vec = vectorSearch(qvec, 50);
-          if (vec.length || keyword.length) {
+          if (vec.length || keyword.length || hasFacets(pq)) {
             renderEntries(fuse(keyword, vec, terms, pq), terms, q, true);
           }
         })

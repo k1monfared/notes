@@ -160,6 +160,11 @@ def fuse(docs, keyword, vector, terms, ops=None):
             pass
         ranked.append((idx, entry))
 
+    if not ranked and ops is not None and has_facets(ops):
+        # Facet-only browsing: every chunk is a candidate, newest first.
+        for idx, _doc in enumerate(docs):
+            ranked.append((idx, {"score": 0.0, "arms": set()}))
+
     ranked.sort(key=lambda item: item[1]["score"], reverse=True)
     if ops is not None:
         ranked = [(idx, entry) for idx, entry in ranked
@@ -178,23 +183,67 @@ def fuse(docs, keyword, vector, terms, ops=None):
     return out
 
 
+def norm_date(value):
+    match = re.fullmatch(r"(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?", value or "")
+    if not match:
+        return None
+    month, day = match.group(2) or "01", match.group(3) or "01"
+    if not (1 <= int(month) <= 12 and 1 <= int(day) <= 31):
+        return None
+    return f"{match.group(1)}-{month}-{day}"
+
+
 def parse_query(text):
-    """Split a query into +must / -not / "exact phrase" / optional words.
+    """Split a query into +must / -not / "exact phrase" / tag: / lang: /
+    after: / before: / optional words.
 
     Mirrors parseSearchQuery in search.js and the Worker.
     """
     must, not_, phrases, not_phrases, optional = [], [], [], [], []
+    tags, not_tags, langs, not_langs = [], [], [], []
+    after, before = None, None
 
     def push_word(word, target):
         target.extend(split_terms(word))
 
-    pattern = re.compile(r'([+-]?)"([^"]+)"|([+-]?)(\S+)')
+    def push_facet(field, value, negated):
+        nonlocal after, before
+        if field == "tag":
+            value = value.lower().strip()
+            if not value:
+                return False
+            (not_tags if negated else tags).append(value)
+            return True
+        if field == "lang":
+            value = value.lower().strip()
+            if not value:
+                return False
+            (not_langs if negated else langs).append(value)
+            return True
+        iso = norm_date(value.strip())
+        if not iso:
+            return False
+        if field == "after":
+            after = iso if after is None or iso > after else after
+        else:
+            before = iso if before is None or iso < before else before
+        return True
+
+    pattern = re.compile(
+        r'([+-]?)(tag|lang|after|before):(?:"([^"]+)"|(\S+))'
+        r'|([+-]?)"([^"]+)"|([+-]?)(\S+)')
     for match in pattern.finditer(text):
         if match.group(2) is not None:
-            joined = " ".join(split_terms(match.group(2)))
+            raw = (match.group(3) or match.group(4) or "").strip()
+            if raw and not push_facet(match.group(2), raw,
+                                      match.group(1) == "-"):
+                push_word(match.group(0), optional)
+            continue
+        if match.group(6) is not None:
+            joined = " ".join(split_terms(match.group(6)))
             if not joined:
                 continue
-            if match.group(1) == "-":
+            if match.group(5) == "-":
                 if " " in joined:
                     not_phrases.append(joined)
                 else:
@@ -203,12 +252,12 @@ def parse_query(text):
                 phrases.append(joined)
             else:
                 push_word(joined, must)
-        elif match.group(3) == "+":
-            push_word(match.group(4), must)
-        elif match.group(3) == "-":
-            push_word(match.group(4), not_)
+        elif match.group(7) == "+":
+            push_word(match.group(8), must)
+        elif match.group(7) == "-":
+            push_word(match.group(8), not_)
         else:
-            push_word(match.group(4), optional)
+            push_word(match.group(8), optional)
 
     def dedup(words):
         return list(dict.fromkeys(words))
@@ -220,10 +269,21 @@ def parse_query(text):
         "not": dedup(not_),
         "phrases": dedup(phrases),
         "not_phrases": dedup(not_phrases),
+        "tags": dedup(tags),
+        "not_tags": dedup(not_tags),
+        "langs": dedup(langs),
+        "not_langs": dedup(not_langs),
+        "after": after,
+        "before": before,
         "positives": [t for t in engine_terms if len(t) > 1],
         "engine_terms": engine_terms,
         "vector_text": " ".join(dedup(must + optional + phrases)),
     }
+
+
+def has_facets(ops):
+    return bool(ops["tags"] or ops["not_tags"] or ops["langs"]
+                or ops["not_langs"] or ops["after"] or ops["before"])
 
 
 def chunk_matches_ops(doc, ops):
@@ -243,6 +303,21 @@ def chunk_matches_ops(doc, ops):
     if any(p not in joined for p in ops["phrases"]):
         return False
     if any(p in joined for p in ops["not_phrases"]):
+        return False
+    tags = [g.lower() for g in doc.get("g", [])]
+    if any(t not in tags for t in ops.get("tags", [])):
+        return False
+    if any(t in tags for t in ops.get("not_tags", [])):
+        return False
+    lang = (doc.get("l", "") or "").lower()
+    if ops.get("langs") and lang not in ops["langs"]:
+        return False
+    if lang and lang in ops.get("not_langs", []):
+        return False
+    date = doc.get("d", "") or ""
+    if ops.get("after") and date < ops["after"]:
+        return False
+    if ops.get("before") and date >= ops["before"]:
         return False
     return True
 
@@ -264,6 +339,13 @@ def main(argv=None):
 
     ops = parse_query(args.query)
     terms = ops["positives"]
+
+    if (not ops["engine_terms"] and not ops["phrases"]
+            and not has_facets(ops)):
+        print("query needs a positive term, phrase, or facet",
+              file=sys.stderr)
+        return 0
+
     keyword = keyword_search(docs, ops["engine_terms"]) \
         if args.mode != "vector" else []
 
@@ -274,7 +356,8 @@ def main(argv=None):
                   file=sys.stderr)
         else:
             query_vec = _run_node_embedder(
-                [ops["vector_text"]], QUERY_PREFIX, MODEL_ID, MODEL_DTYPE)[0]
+                [ops["vector_text"]], QUERY_PREFIX, MODEL_ID,
+                MODEL_DTYPE)[0]
             vector = vector_search(vecs, scales, dim, query_vec)
 
     if args.mode == "hybrid":

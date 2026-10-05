@@ -13,13 +13,16 @@ DOCS = [
      "d": "2024-01-02", "g": ["food"], "l": "en", "h": "", "a": "",
      "x": "boil water add salt"},
     {"i": "c#0", "p": "c", "u": "c/", "t": "linear algebra notes",
-     "d": "2024-01-03", "g": ["math"], "l": "en", "h": "", "a": "",
+     "d": "2024-01-03", "g": ["math", "linear algebra"], "l": "en", "h": "", "a": "",
      "x": "eigenvalues of a matrix"},
+    {"i": "d#0", "p": "d", "u": "d/", "t": "یک غزل بهاری",
+     "d": "2023-05-05", "g": ["poem"], "l": "fa", "h": "", "a": "",
+     "x": "شعر درباره بهار و شکوفه"},
 ]
 
-VECS = array("b", [100, 0, 0, 0, 0, 100, 0, 0, 0, 0, 100, 0])
-SCALES = (1.0, 1.0, 1.0)
-DIM = 4
+VECS = array("b", [100, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 100, 0])
+SCALES = (1.0, 1.0, 1.0, 1.0)
+DIM = 5
 
 
 class TestKeywordAnd(unittest.TestCase):
@@ -41,11 +44,11 @@ class TestKeywordAnd(unittest.TestCase):
 
 class TestVectorFloor(unittest.TestCase):
     def test_strong_hit_survives(self):
-        hits = Q.vector_search(VECS, SCALES, DIM, [1.0, 0.0, 0.0, 0.0])
+        hits = Q.vector_search(VECS, SCALES, DIM, [1.0, 0.0, 0.0, 0.0, 0.0])
         self.assertEqual([idx for idx, _score in hits], [0])
 
     def test_weak_hits_dropped(self):
-        hits = Q.vector_search(VECS, SCALES, DIM, [0.0, 0.0, 0.0, 1.0])
+        hits = Q.vector_search(VECS, SCALES, DIM, [0.0, 0.0, 0.0, 0.0, 1.0])
         self.assertEqual(hits, [])
 
 
@@ -73,6 +76,53 @@ class TestOperators(unittest.TestCase):
         kw2 = Q.keyword_search(DOCS, ops2["engine_terms"], min_and=1)
         out2 = Q.fuse(DOCS, kw2, [], ops2["positives"], ops2)
         self.assertEqual([DOCS[i]["p"] for i, _e in out2], ["a"])
+
+
+class TestFacets(unittest.TestCase):
+    def test_parse_facets(self):
+        ops = Q.parse_query("tag:math lang:FA after:2024 before:2025")
+        self.assertEqual(ops["tags"], ["math"])
+        self.assertEqual(ops["langs"], ["fa"])
+        self.assertEqual(ops["after"], "2024-01-01")
+        self.assertEqual(ops["before"], "2025-01-01")
+        self.assertEqual(ops["engine_terms"], [])
+
+    def test_parse_quoted_tag_and_negation(self):
+        ops = Q.parse_query('tag:"linear algebra" -tag:food after:soon')
+        self.assertEqual(ops["tags"], ["linear algebra"])
+        self.assertEqual(ops["not_tags"], ["food"])
+        self.assertIsNone(ops["after"])
+        self.assertIn("after", ops["engine_terms"])
+
+    def _titles(self, query):
+        ops = Q.parse_query(query)
+        kw = Q.keyword_search(DOCS, ops["engine_terms"], min_and=1)
+        out = Q.fuse(DOCS, kw, [], ops["positives"], ops)
+        return sorted(DOCS[i]["t"] for i, _e in out)
+
+    def _browse(self, query):
+        ops = Q.parse_query(query)
+        out = Q.fuse(DOCS, [], [], ops["positives"], ops)
+        return sorted(DOCS[i]["t"] for i, _e in out)
+
+    def test_tag_scopes(self):
+        self.assertEqual(self._titles("tag:math"),
+                         ["linear algebra notes", "matrix tree theorem guide"])
+
+    def test_quoted_tag(self):
+        self.assertEqual(self._titles('tag:"linear algebra"'),
+                         ["linear algebra notes"])
+
+    def test_lang_scopes(self):
+        self.assertEqual(self._titles("lang:fa"), ["یک غزل بهاری"])
+
+    def test_dates(self):
+        self.assertEqual(len(self._browse("after:2024")), 3)
+        self.assertEqual(self._browse("before:2024"), ["یک غزل بهاری"])
+
+    def test_facet_with_terms(self):
+        self.assertEqual(self._titles("matrix tag:math"),
+                         ["linear algebra notes", "matrix tree theorem guide"])
 
 
 class TestCap(unittest.TestCase):

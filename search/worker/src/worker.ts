@@ -96,10 +96,27 @@ export type QueryOps = {
   not: string[]; // exact tokens the chunk must not contain
   phrases: string[]; // multi-word spans (space-joined tokens) that must occur
   notPhrases: string[]; // spans that must not occur
+  tags: string[]; // required tags (all must match)
+  notTags: string[]; // excluded tags
+  langs: string[]; // accepted languages (any may match)
+  notLangs: string[]; // excluded languages
+  after: string | null; // ISO date, inclusive lower bound
+  before: string | null; // ISO date, exclusive upper bound
   positives: string[]; // must + optional + phrase words, len > 1 (ranking)
   engineTerms: string[]; // every positive word (retrieval)
   vectorText: string; // operator-free text for the embedding
 };
+
+const FACET_FIELDS = new Set(["tag", "lang", "after", "before"]);
+
+function normDate(value: string): string | null {
+  const m = /^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?$/.exec(value);
+  if (!m) return null;
+  const mo = m[2] || "01";
+  const day = m[3] || "01";
+  if (+mo < 1 || +mo > 12 || +day < 1 || +day > 31) return null;
+  return `${m[1]}-${mo}-${day}`;
+}
 
 function dedup(words: string[]): string[] {
   return [...new Set(words)];
@@ -115,14 +132,50 @@ export function parseSearchQuery(q: string): QueryOps {
     for (const t of tokenize(word)) target.push(t);
   };
 
-  // ([+-]?)"phrase" takes precedence over bare words so +"a b" parses whole.
-  const re = /([+-]?)"([^"]+)"|([+-]?)(\S+)/g;
+  const tags: string[] = [];
+  const notTags: string[] = [];
+  const langs: string[] = [];
+  const notLangs: string[] = [];
+  let after: string | null = null;
+  let before: string | null = null;
+
+  const pushFacet = (field: string, value: string, negated: boolean): boolean => {
+    if (field === "tag") {
+      const v = value.toLowerCase().trim();
+      if (!v) return false;
+      (negated ? notTags : tags).push(v);
+      return true;
+    }
+    if (field === "lang") {
+      const v = value.toLowerCase().trim();
+      if (!v) return false;
+      (negated ? notLangs : langs).push(v);
+      return true;
+    }
+    const iso = normDate(value.trim());
+    if (!iso) return false;
+    if (field === "after") after = !after || iso > after ? iso : after;
+    else before = !before || iso < before ? iso : before;
+    return true;
+  };
+
+  // field:value (or field:"quoted value") first, then "phrase", then words.
+  const re = /([+-]?)(tag|lang|after|before):(?:"([^"]+)"|(\S+))|([+-]?)"([^"]+)"|([+-]?)(\S+)/g;
   let m: RegExpExecArray | null;
   while ((m = re.exec(q)) !== null) {
     if (m[2] !== undefined) {
-      const joined = tokenize(m[2]).join(" ");
+      const raw = (m[3] !== undefined ? m[3] : m[4] || "").trim();
+      const consumed = raw ? pushFacet(m[2], raw, m[1] === "-") : false;
+      if (!consumed && raw) {
+        // Not a valid facet (e.g. after:soon): degrade to plain words.
+        pushWord(m[0], optional);
+      }
+      continue;
+    }
+    if (m[6] !== undefined) {
+      const joined = tokenize(m[6]).join(" ");
       if (!joined) continue;
-      if (m[1] === "-") {
+      if (m[5] === "-") {
         if (joined.includes(" ")) notPhrases.push(joined);
         else pushWord(joined, not);
       } else {
@@ -130,10 +183,10 @@ export function parseSearchQuery(q: string): QueryOps {
         else pushWord(joined, must);
       }
     } else {
-      const pre = m[3];
-      if (pre === "+") pushWord(m[4], must);
-      else if (pre === "-") pushWord(m[4], not);
-      else pushWord(m[4], optional);
+      const pre = m[7];
+      if (pre === "+") pushWord(m[8], must);
+      else if (pre === "-") pushWord(m[8], not);
+      else pushWord(m[8], optional);
     }
   }
 
@@ -142,11 +195,22 @@ export function parseSearchQuery(q: string): QueryOps {
   const positives = engineTerms.filter((t) => t.length > 1);
   const vectorText = dedup([...must, ...optional, ...phrases]).join(" ");
   return { must: dedup(must), not: dedup(not), phrases: dedup(phrases),
-    notPhrases: dedup(notPhrases), positives, engineTerms, vectorText };
+    notPhrases: dedup(notPhrases), tags: dedup(tags), notTags: dedup(notTags),
+    langs: dedup(langs), notLangs: dedup(notLangs), after, before,
+    positives, engineTerms, vectorText };
+}
+
+export function hasFacets(
+  pq: Pick<QueryOps, "tags" | "notTags" | "langs" | "notLangs" | "after" | "before">
+): boolean {
+  return pq.tags.length + pq.notTags.length + pq.langs.length +
+    pq.notLangs.length > 0 || pq.after !== null || pq.before !== null;
 }
 
 export function chunkMatchesOps(
-  doc: Doc, ops: Pick<QueryOps, "must" | "not" | "phrases" | "notPhrases">
+  doc: Doc,
+  ops: Pick<QueryOps, "must" | "not" | "phrases" | "notPhrases" | "tags" |
+    "notTags" | "langs" | "notLangs" | "after" | "before">
 ): boolean {
   const fields = [doc.t || "", doc.h || "", (doc.g || []).join(" "), doc.x || ""];
   const tokens = new Set<string>();
@@ -161,6 +225,15 @@ export function chunkMatchesOps(
   for (const word of ops.not) if (tokens.has(word)) return false;
   for (const p of ops.phrases) if (!joined.includes(p)) return false;
   for (const p of ops.notPhrases) if (joined.includes(p)) return false;
+  const tags = (doc.g || []).map((g) => g.toLowerCase());
+  for (const t of ops.tags || []) if (!tags.includes(t)) return false;
+  for (const t of ops.notTags || []) if (tags.includes(t)) return false;
+  const lang = (doc.l || "").toLowerCase();
+  if ((ops.langs || []).length && !ops.langs.includes(lang)) return false;
+  for (const t of ops.notLangs || []) if (lang === t) return false;
+  const date = doc.d || "";
+  if (ops.after && date < ops.after) return false;
+  if (ops.before && date >= ops.before) return false;
   return true;
 }
 
@@ -278,9 +351,12 @@ export function vectorTopK(
 
 type Fused = { doc: Doc; score: number; arms: Set<string>; semantic: boolean };
 
+export type OpsFilter = Pick<QueryOps, "must" | "not" | "phrases" | "notPhrases" |
+  "tags" | "notTags" | "langs" | "notLangs" | "after" | "before">;
+
 export function fuse(
   docs: Doc[], kwIdx: number[], vecIdx: number[], terms: string[],
-  ops?: Pick<QueryOps, "must" | "not" | "phrases" | "notPhrases"> | null
+  ops?: OpsFilter | null
 ): Fused[] {
   const map = new Map<string, Fused>();
   const add = (idx: number, rank: number, arm: string, weight: number) => {
@@ -295,6 +371,14 @@ export function fuse(
   };
   kwIdx.forEach((idx, rank) => add(idx, rank, "kw", KW_WEIGHT));
   vecIdx.forEach((idx, rank) => add(idx, rank, "vec", VEC_WEIGHT));
+
+  if (!map.size && ops && hasFacets(ops)) {
+    // Facet-only browsing: every chunk is a candidate, newest first
+    // (documents arrive date-descending from the pipeline).
+    docs.forEach((doc) => {
+      map.set(doc.i, { doc, score: 0, arms: new Set(), semantic: false });
+    });
+  }
 
   const list = [...map.values()];
   const now = Date.now();
@@ -372,7 +456,7 @@ export default {
     try {
       const { manifest, artifacts: art } = await loadArtifacts(env.SITE_BASE);
       const pq = parseSearchQuery(q);
-      if (!pq.engineTerms.length && !pq.phrases.length) {
+      if (!pq.engineTerms.length && !pq.phrases.length && !hasFacets(pq)) {
         return Response.json({ results: [], count: 0, took_ms: Date.now() - started },
           { headers: cors(origin, env) });
       }
