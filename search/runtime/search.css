@@ -97,7 +97,12 @@
 
 .search-result.selected a,
 .search-result a:hover {
-  background: var(--card-bg, #fafbfc);
+  background: rgba(88, 166, 255, 0.12);
+}
+
+[data-theme="light"] .search-result.selected a,
+[data-theme="light"] .search-result a:hover {
+  background: rgba(3, 102, 214, 0.08);
 }
 
 .search-result.selected a {
