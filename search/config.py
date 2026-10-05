@@ -22,7 +22,8 @@ PASSAGE_PREFIX = "passage: "
 # Cloudflare backend: query and document embeddings both come from Workers AI,
 # so the model must be one it hosts. bge-m3 is multilingual (100+ languages).
 CF_MODEL_ID = "@cf/baai/bge-m3"
-CF_QUERY_PREFIX = ""
+# bge models expect an instruction on queries (documents stay unprefixed).
+CF_QUERY_PREFIX = "Represent this sentence for searching relevant passages: "
 CF_PASSAGE_PREFIX = ""
 
 # Chunking

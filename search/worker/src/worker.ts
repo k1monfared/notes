@@ -37,11 +37,12 @@ type Doc = {
 type Manifest = {
   generated?: string;
   content?: string;
+  model?: { id?: string; query_prefix?: string } | null;
   vectors?: { dim?: number; count?: number; model?: string } | null;
 };
 
 type Artifacts = {
-  content: string;
+  key: string;
   docs: Doc[];
   vecs: Int8Array;
   scales: Float32Array;
@@ -105,7 +106,10 @@ async function loadArtifacts(siteBase: string): Promise<{ manifest: Manifest; ar
   if (!manRes.ok) throw new Error("search manifest not found");
   const manifest = (await manRes.json()) as Manifest;
   const content = manifest.content || manifest.generated || "";
-  if (artifacts && artifacts.content === content) return { manifest, artifacts };
+  // Key on the model and query prefix too, so a manifest-only change (e.g. a
+  // new query instruction with identical documents) still refreshes.
+  const key = `${content}|${manifest.model?.id || ""}|${manifest.model?.query_prefix || ""}`;
+  if (artifacts && artifacts.key === key) return { manifest, artifacts };
 
   const docsRes = await fetch(siteBase + "docs.json", { cf: { cacheTtl: 300 } });
   if (!docsRes.ok) throw new Error("search index not found");
@@ -114,7 +118,7 @@ async function loadArtifacts(siteBase: string): Promise<{ manifest: Manifest; ar
   // Keyword-only indexes ship no vectors; the API still answers, lexically.
   if (!manifest.vectors) {
     artifacts = {
-      content,
+      key,
       docs,
       vecs: new Int8Array(0),
       scales: new Float32Array(0),
@@ -126,7 +130,7 @@ async function loadArtifacts(siteBase: string): Promise<{ manifest: Manifest; ar
   const vecRes = await fetch(siteBase + "vectors.bin", { cf: { cacheTtl: 300 } });
   if (!vecRes.ok) throw new Error("search vectors not found");
   const parsed = parseVectors(await vecRes.arrayBuffer());
-  artifacts = { content, docs, ...parsed };
+  artifacts = { key, docs, ...parsed };
   return { manifest, artifacts };
 }
 
@@ -196,7 +200,7 @@ function fuse(docs: Doc[], kwIdx: number[], vecIdx: number[], terms: string[]): 
   for (const e of list) {
     const title = tokenize(e.doc.t || "").join(" ");
     const hits = terms.filter((t) => title.includes(t)).length;
-    if (terms.length && hits === terms.length) e.score *= 1.6;
+    if (terms.length && hits === terms.length) e.score *= 3.0;
     else if (hits) e.score *= 1.2;
     const when = Date.parse(e.doc.d);
     if (!isNaN(when)) {
@@ -263,14 +267,15 @@ export default {
 
     const started = Date.now();
     try {
-      const { artifacts: art } = await loadArtifacts(env.SITE_BASE);
+      const { manifest, artifacts: art } = await loadArtifacts(env.SITE_BASE);
       const terms = tokenize(q).filter((t) => t.length > 1);
 
       const kwIdx = topEntries(keywordScores(art.docs, terms), 50);
 
       let vecIdx: number[] = [];
       if (art.dim > 0) {
-        const out = (await env.AI.run("@cf/baai/bge-m3", { text: q })) as { data: number[] };
+        const prefix = manifest.model?.query_prefix || "";
+        const out = (await env.AI.run("@cf/baai/bge-m3", { text: prefix + q })) as { data: number[] };
         const raw = out.data;
         const norm = Math.sqrt(raw.reduce((s, v) => s + v * v, 0)) || 1;
         const qvec = raw.map((v) => v / norm);

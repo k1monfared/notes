@@ -131,7 +131,7 @@ def fuse(docs, keyword, vector, terms):
         title = " ".join(split_terms(doc.get("t", "")))
         hits = sum(1 for t in terms if t in title)
         if terms and hits == len(terms):
-            entry["score"] *= 1.6
+            entry["score"] *= 3.0
         elif hits:
             entry["score"] *= 1.2
         try:

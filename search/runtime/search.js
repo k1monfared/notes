@@ -347,7 +347,7 @@
       var title = normalizeFa(d.t || "").toLowerCase();
       var inTitle = 0;
       terms.forEach(function (t) { if (title.indexOf(t) >= 0) inTitle++; });
-      if (terms.length && inTitle === terms.length) e.score *= 1.6;
+      if (terms.length && inTitle === terms.length) e.score *= 3.0;
       else if (inTitle) e.score *= 1.2;
 
       var when = Date.parse(d.d);
