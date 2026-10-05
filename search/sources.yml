@@ -6,7 +6,7 @@
 # when a source was built with the cloudflare backend. Update it after the
 # first `wrangler deploy` prints the URL.
 api:
-  search: ""
+  search: "https://notes-search.usraelwar.workers.dev/search"
 sources:
   blog:
     title: Blog
