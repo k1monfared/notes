@@ -139,10 +139,15 @@
 }
 
 .sr-snippet mark {
-  background: rgba(255, 213, 0, 0.45);
-  color: inherit;
-  border-radius: 2px;
+  background: #ffe9a8;
+  color: #5c4300;
+  border-radius: 3px;
   padding: 0 1px;
+}
+
+[data-theme="dark"] .sr-snippet mark {
+  background: rgba(255, 200, 60, 0.16);
+  color: #ffd970;
 }
 
 .sr-tags {
