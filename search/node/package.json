@@ -1,0 +1,13 @@
+{
+  "name": "notes-search-embed",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Build-time embedding step for the notes search engine.",
+  "bin": {
+    "notes-search-embed": "./embed.mjs"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^3.0.0"
+  }
+}

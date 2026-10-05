@@ -1,0 +1,17 @@
+# Registry of search sources. Each source is built independently into its own
+# `out` directory. Adding a new content type means adding an entry here plus an
+# adapter module in search/adapters/.
+#
+# `api.search` is the deployed search Worker endpoint consumed by the browser
+# when a source was built with the cloudflare backend. Update it after the
+# first `wrangler deploy` prints the URL.
+api:
+  search: ""
+sources:
+  blog:
+    title: Blog
+    adapter: blog
+    out: blog/_site/search
+    config:
+      posts_dir: blog/posts
+      url_base: /notes/blog/

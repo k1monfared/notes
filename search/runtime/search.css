@@ -1,0 +1,226 @@
+/* Static search UI. Reuses site_kit CSS variables where available. */
+
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 8vh 1rem 1rem;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+}
+
+.search-overlay[hidden] {
+  display: none;
+}
+
+.search-dialog {
+  width: 100%;
+  max-width: 640px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg, #fff);
+  color: var(--text, #222);
+  border: 1px solid var(--border, #e1e4e8);
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.search-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border, #e1e4e8);
+}
+
+.search-input-row .search-icon {
+  flex: none;
+  color: var(--text-muted, #666);
+}
+
+.search-input-row input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text, #222);
+  font-size: 1.05rem;
+  font-family: inherit;
+}
+
+.search-close {
+  flex: none;
+  border: 1px solid var(--border, #e1e4e8);
+  background: transparent;
+  color: var(--text-muted, #666);
+  border-radius: 6px;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.search-status {
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  color: var(--text-muted, #666);
+  border-bottom: 1px solid var(--border, #e1e4e8);
+}
+
+.search-status:empty {
+  display: none;
+}
+
+.search-results {
+  list-style: none;
+  margin: 0;
+  padding: 0.35rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.search-result {
+  border-radius: 8px;
+}
+
+.search-result a {
+  display: block;
+  padding: 0.65rem 0.75rem;
+  color: var(--text, #222);
+  text-decoration: none;
+}
+
+.search-result.selected a,
+.search-result a:hover {
+  background: var(--card-bg, #fafbfc);
+}
+
+.search-result.selected a {
+  outline: 1px solid var(--link, #0366d6);
+}
+
+.sr-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.sr-date {
+  margin-left: auto;
+}
+
+.sr-title {
+  font-weight: 600;
+  color: var(--link, #0366d6);
+}
+
+.sr-date {
+  flex: none;
+  font-size: 0.75rem;
+  color: var(--text-muted, #666);
+}
+
+.sr-heading {
+  font-size: 0.78rem;
+  color: var(--text-muted, #666);
+  margin-top: 0.1rem;
+}
+
+.sr-snippet {
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text, #222);
+}
+
+.sr-snippet mark {
+  background: rgba(255, 213, 0, 0.45);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+.sr-tags {
+  margin-top: 0.35rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.sr-tag {
+  font-size: 0.7rem;
+  color: var(--text-muted, #666);
+  border: 1px solid var(--border, #e1e4e8);
+  border-radius: 10px;
+  padding: 0.05rem 0.45rem;
+}
+
+.search-hint {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.72rem;
+  color: var(--text-muted, #666);
+  border-top: 1px solid var(--border, #e1e4e8);
+}
+
+.search-semantic-toggle {
+  flex: none;
+  border: 1px solid var(--border, #e1e4e8);
+  background: transparent;
+  color: var(--text-muted, #666);
+  border-radius: 10px;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+
+.search-semantic-toggle:hover {
+  border-color: var(--link, #0366d6);
+  color: var(--link, #0366d6);
+}
+
+.search-semantic-toggle.on {
+  border-color: var(--link, #0366d6);
+  color: var(--link, #0366d6);
+}
+
+.sr-badge {
+  flex: none;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--link, #0366d6);
+  border: 1px solid var(--link, #0366d6);
+  border-radius: 4px;
+  padding: 0.02rem 0.25rem;
+}
+
+.search-empty {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  color: var(--text-muted, #666);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .search-overlay {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .search-dialog {
+    max-width: none;
+    max-height: none;
+    height: 100%;
+    border-radius: 0;
+    border: none;
+  }
+}

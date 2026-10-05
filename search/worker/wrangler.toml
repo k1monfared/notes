@@ -1,0 +1,13 @@
+name = "notes-search"
+main = "src/worker.ts"
+compatibility_date = "2025-01-01"
+
+# Workers AI binding for query embeddings (multilingual bge-m3).
+[ai]
+binding = "AI"
+
+# Non-secret config. SITE_BASE must end with a slash and point at the
+# directory holding manifest.json / docs.json / vectors.bin.
+[vars]
+ALLOWED_ORIGINS = "https://k1monfared.github.io"
+SITE_BASE = "https://k1monfared.github.io/notes/blog/search/"

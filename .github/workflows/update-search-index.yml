@@ -1,24 +1,14 @@
-name: Deploy Blog
+name: Update Search Index
+
+# Runs after Deploy Blog succeeds. Embeds new/changed posts through Workers AI
+# and redeploys, so embedding work never delays the post going live. Nothing
+# here needs a local computer: it all runs on GitHub Actions and Cloudflare.
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Deploy Blog"]
+    types: [completed]
     branches: [main]
-    paths:
-      - 'index.html'
-      - 'blog/**'
-      - 'shared/**'
-      - 'movies/**'
-      - 'books/**'
-      - 'people/**'
-      - 'places/**'
-      - 'podcasts/**'
-      - 'products/**'
-      - 'shopping/**'
-      - '*.log'
-      - 'search/**'
-      - 'blog-writer/**'
-      - 'movie-writer/**'
-      - '.github/workflows/deploy-blog.yml'
   workflow_dispatch:
 
 permissions:
@@ -31,16 +21,33 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  update-search:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main')
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout
+      - name: Checkout deployed commit
         uses: actions/checkout@v4
         with:
           lfs: false
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Check Cloudflare credentials
+        run: |
+          if [ -z "${{ secrets.CLOUDFLARE_API_TOKEN }}" ] || [ -z "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" ]; then
+            echo "CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID not configured; skipping embedding update (keyword search stays live)."
+            exit 0
+          fi
+          echo "CLOUDFLARE_CONFIGURED=true" >> "$GITHUB_ENV"
+
+      - name: Stop if not configured
+        if: env.CLOUDFLARE_CONFIGURED != 'true'
+        run: exit 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -61,7 +68,6 @@ jobs:
             blog/.build_cache.json
             blog/.build_tools_hash
             search/.cache
-            search/node/.models
           key: blog-build-${{ hashFiles('blog/build.py', 'blog/templates/**', 'blog/static/**', 'search/*.py', 'search/adapters/*.py', 'search/runtime/*', 'search/node/*.mjs', 'search/node/package.json', 'search/node/package-lock.json', 'search/sources.yml') }}-${{ hashFiles('blog/**/*.md') }}
           restore-keys: |
             blog-build-${{ hashFiles('blog/build.py', 'blog/templates/**', 'blog/static/**', 'search/*.py', 'search/adapters/*.py', 'search/runtime/*', 'search/node/*.mjs', 'search/node/package.json', 'search/node/package-lock.json', 'search/sources.yml') }}-
@@ -78,12 +84,12 @@ jobs:
           fi
           echo "$TOOLS_HASH" > blog/.build_tools_hash
 
-      # Fast path: the post goes live with keyword-only search. Embeddings are
-      # built separately by update-search-index.yml so they never delay this.
-      - name: Build blog
+      - name: Build blog with search embeddings
         run: python blog/build.py --cdn
         env:
-          SEARCH_NO_EMBED: "1"
+          SEARCH_BACKEND: cloudflare
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

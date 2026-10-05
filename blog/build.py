@@ -4,8 +4,10 @@
 import argparse
 import hashlib
 import json
+import os
 import re
 import shutil
+import sys
 import html
 import xml.etree.ElementTree as ET
 from datetime import datetime
@@ -892,6 +894,24 @@ def build(local=False, force=False, cdn=None):
 
     # Save build cache
     save_cache(new_cache)
+
+    # Build the static search index and copy the browser runtime (best-effort,
+    # so a search failure never blocks the blog build).
+    # SEARCH_BACKEND=local (default) embeds with the on-device ONNX model.
+    # SEARCH_BACKEND=cloudflare embeds through Workers AI (needs Cloudflare
+    # credentials). SEARCH_NO_EMBED=1 builds a keyword-only index.
+    try:
+        sys.path.insert(0, str(BLOG_DIR.parent))
+        from search.pipeline import build_source, copy_runtime
+        build_source(
+            "blog",
+            out_dir=SITE_DIR / "search",
+            embed=os.environ.get("SEARCH_NO_EMBED", "") != "1",
+            backend=os.environ.get("SEARCH_BACKEND", "local"),
+        )
+        copy_runtime(SITE_DIR / "search")
+    except Exception as exc:  # noqa: BLE001
+        print(f"Search index skipped: {exc}")
 
     print(f"Built {len(posts_data)} posts to {SITE_DIR.relative_to(BLOG_DIR)} ({rendered_count} rendered, {cached_count} cached, {written_count} written, {skipped_count} skipped)")
     print(f"Copied {copied_assets} referenced assets")

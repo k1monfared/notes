@@ -11,3 +11,11 @@ blog/files/*/_editing/
 blog/_site/
 blog/__pycache__/
 blog/.build_cache.json
+
+# Search engine
+search/.cache/
+search/__pycache__/
+search/adapters/__pycache__/
+search/node/node_modules/
+search/node/.models/
+search/worker/node_modules/

@@ -113,6 +113,25 @@ The comment form is hidden until `COMMENT_ENDPOINT` is set in `build.py` to a se
 
 The index page loads 10 posts initially and reveals 10 more as the user scrolls down (infinite scroll via IntersectionObserver).
 
+## Search
+
+Static, serverless search over all published posts. Press `Ctrl+K` (or `Cmd+K`) or the magnifier in the nav. No query ever leaves the browser.
+
+Two retrieval arms are fused with Reciprocal Rank Fusion, plus light title/tag/recency boosts:
+
+- **Keyword (BM25-ish):** MiniSearch, built in the browser from `docs.json`. Works instantly, no download.
+- **Semantic:** int8 document vectors from `vectors.bin`, compared against a query embedding computed in the browser with Transformers.js running the same model the build used (`Xenova/multilingual-e5-small`). This is cross-lingual, so an English query can surface Persian posts.
+
+Two serving modes share one engine. Local previews embed on-device and are fully private. Production serves hybrid search through a Cloudflare Worker so visitors download nothing.
+
+- **Engine:** the source-agnostic package at the repo root, `search/`. Each content type is an adapter that yields documents. The blog adapter reads `posts/`. The same engine is meant to serve movies, books, and the rest later, either per source or combined with a scope filter.
+- **Pipeline:** `search/pipeline.py` extracts, cleans, normalizes (including Persian/Arabic variants), chunks by heading, embeds, and emits `docs.json`, `manifest.json`, and `vectors.bin` under `blog/_site/search/`. `blog/build.py` invokes it after each build and copies the browser runtime. Backends: `local` (default, e5-small via `search/node/embed.mjs`, works offline once the model is cached) and `cloudflare` (bge-m3 via the Workers AI REST API, needs `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`). Select with `--backend` or `SEARCH_BACKEND`. `SEARCH_NO_EMBED=1` builds keyword-only.
+- **Incremental:** chunks are cached in `search/.cache/blog.json` and embeddings in `search/.cache/embed-*.json`, keyed by content hash and the pipeline fingerprint. Only new or changed posts are reprocessed, so a new post never waits on old ones.
+- **Two-step publishing:** pushing a post triggers `deploy-blog.yml`, which goes live fast with keyword-only search. On success, `update-search-index.yml` embeds the new chunks through Workers AI and redeploys, upgrading search to full hybrid a few minutes later. No local computer needed; phone-published posts work the same.
+- **Worker API:** `search/worker/` is a thin Cloudflare Worker (same account and CORS pattern as news_reader's subscribe-proxy). It reads the public `docs.json`/`vectors.bin`, embeds the query with Workers AI, fuses keyword plus vector results, and returns JSON. The browser calls it when the manifest says `backend: cloudflare`, renders local keyword results instantly, then upgrades to the server hybrid. Offline or on error, keyword results stay. Deploy with `wrangler deploy` from `search/worker/`, then put the printed URL into `search/sources.yml` under `api.search`.
+- **Offline testing:** `python -m search.query --query "..."` runs the same fusion on this machine with no internet and no Cloudflare, for local previews and debugging.
+- **Manual build:** `python -m search.pipeline --source blog` (`--force` to ignore the cache, `--no-embed` to skip embeddings). First local embedder run needs `npm install` in `search/node/`.
+
 ## Directory Structure
 
 | Path | Purpose |
@@ -125,3 +144,5 @@ The index page loads 10 posts initially and reveals 10 more as the user scrolls 
 | `comments/` | Comment YAML files (per post) |
 | `tools/` | One-time migration scripts and WordPress export |
 | `_site/` | Build output (gitignored) |
+| `_site/search/` | Generated search index and browser runtime |
+| `../search/` | Shared search engine (adapters, pipeline, runtime) |
