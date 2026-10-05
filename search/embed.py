@@ -123,11 +123,15 @@ def _cf_embed(texts, model):
         result = payload["result"]
         data = result["data"]
         shape = result.get("shape", [])
-        if shape and len(shape) == 2:
+        if data and isinstance(data[0], list):
+            rows = data  # nested rows, e.g. shape [n, dim]
+        elif shape and len(shape) == 2:
             dim = shape[1]
             rows = [data[i * dim:(i + 1) * dim] for i in range(shape[0])]
+        elif data and isinstance(data[0], (int, float)):
+            rows = [data]
         else:
-            rows = [data] if data and isinstance(data[0], (int, float)) else data
+            raise EmbeddingUnavailable("unexpected Workers AI response shape")
         vectors.extend(_normalize_rows(rows))
     return vectors
 

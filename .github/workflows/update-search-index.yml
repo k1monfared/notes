@@ -84,10 +84,13 @@ jobs:
           fi
           echo "$TOOLS_HASH" > blog/.build_tools_hash
 
+      # SEARCH_REQUIRE_EMBED fails the job before deploy if embedding fails,
+      # so a bad run can never downgrade the live hybrid index to keyword-only.
       - name: Build blog with search embeddings
         run: python blog/build.py --cdn
         env:
           SEARCH_BACKEND: cloudflare
+          SEARCH_REQUIRE_EMBED: "1"
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 

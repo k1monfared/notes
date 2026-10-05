@@ -178,7 +178,9 @@ def build_source(name, out_dir=None, force=False, verbose=True, embed=True,
             write_vectors(out / "vectors.bin", embedded, dim)
             if verbose:
                 print(f"Embedded {len(embedded)} chunks with {model}")
-        except EmbeddingUnavailable as exc:
+        except Exception as exc:  # noqa: BLE001
+            # Never let an embedding failure take down the keyword index:
+            # docs.json and the manifest below are still written.
             vectors_meta = None
             if verbose:
                 print(f"Embeddings skipped: {exc}")

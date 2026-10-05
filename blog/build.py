@@ -903,15 +903,20 @@ def build(local=False, force=False, cdn=None):
     try:
         sys.path.insert(0, str(BLOG_DIR.parent))
         from search.pipeline import build_source, copy_runtime
-        build_source(
+        manifest = build_source(
             "blog",
             out_dir=SITE_DIR / "search",
             embed=os.environ.get("SEARCH_NO_EMBED", "") != "1",
             backend=os.environ.get("SEARCH_BACKEND", "local"),
         )
         copy_runtime(SITE_DIR / "search")
+        if (os.environ.get("SEARCH_REQUIRE_EMBED", "") == "1"
+                and not manifest.get("vectors")):
+            raise RuntimeError("search embeddings required but missing")
     except Exception as exc:  # noqa: BLE001
         print(f"Search index skipped: {exc}")
+        if os.environ.get("SEARCH_REQUIRE_EMBED", "") == "1":
+            raise
 
     print(f"Built {len(posts_data)} posts to {SITE_DIR.relative_to(BLOG_DIR)} ({rendered_count} rendered, {cached_count} cached, {written_count} written, {skipped_count} skipped)")
     print(f"Copied {copied_assets} referenced assets")
