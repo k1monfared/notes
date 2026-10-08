@@ -293,3 +293,196 @@ article .post-meta {
   background: var(--link);
   color: var(--bg);
 }
+
+/* Reverse-interview question table
+   Full-bleed on desktop, fixed column widths, sticky header, and a card
+   reflow on narrow screens so long cells stay readable on mobile. */
+.qtable-wrap {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  padding: 0 1rem;
+  margin-top: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.qtable {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  border: 1px solid var(--border);
+}
+
+.qtable col.c-id   { width: 5%; }
+.qtable col.c-q    { width: 33%; }
+.qtable col.c-sig  { width: 11%; }
+.qtable col.c-good { width: 25.5%; }
+.qtable col.c-weak { width: 25.5%; }
+
+.qtable th,
+.qtable td {
+  border: 0;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 0.55em 0.7em;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.qtable th:last-child,
+.qtable td:last-child { border-right: none; }
+.qtable tbody tr:last-child td { border-bottom: none; }
+
+.qtable thead th {
+  position: sticky;
+  top: 3.7rem;
+  z-index: 5;
+  background: var(--header-bg);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.qtable tr.group > th {
+  background: var(--code-bg);
+  font-size: 1rem;
+  color: var(--text);
+  border-right: none;
+}
+.qtable tr.cat > th {
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-right: none;
+  padding-top: 0.9em;
+}
+
+.qtable .sig {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.05em 0.5em;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+.qtable .sig-high { color: var(--text); border-color: var(--link); }
+.qtable .sig-med  { color: var(--text-muted); }
+.qtable .v {
+  display: inline-block;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.15em;
+}
+.qtable .fail {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 0 0.4em;
+  border-radius: 3px;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+@media (max-width: 760px) {
+  .qtable-wrap { padding: 0 0.75rem; }
+  .qtable {
+    display: block;
+    max-width: none;
+    border: none;
+    table-layout: auto;
+    font-size: 0.92rem;
+  }
+  .qtable colgroup,
+  .qtable thead { display: none; }
+  .qtable tbody { display: block; }
+
+  .qtable tr.group,
+  .qtable tr.cat {
+    display: block;
+    margin: 1.25rem 0 0.5rem;
+  }
+  .qtable tr.group > th {
+    display: block;
+    background: none;
+    border: none;
+    border-bottom: 2px solid var(--border);
+    padding: 0;
+    font-size: 1.1rem;
+  }
+  .qtable tr.cat > th {
+    display: block;
+    border: none;
+    padding: 0;
+  }
+
+  .qtable tr:not(.group):not(.cat) {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 0.85rem;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  .qtable td {
+    display: block;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 0.6em 0.8em;
+  }
+  .qtable td:last-child { border-bottom: none; }
+  .qtable td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 0.2em;
+  }
+}
+
+/* Foldable audience / category headings */
+.qtable th.toggle {
+  cursor: pointer;
+  user-select: none;
+}
+.qtable th.toggle:hover {
+  background: var(--border);
+}
+.qtable th.toggle:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: -2px;
+}
+.qtable .caret {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-right: 0.55em;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 6px solid currentColor;
+  transition: transform 0.15s ease;
+  vertical-align: middle;
+}
+.qtable tr.open > th .caret {
+  transform: rotate(90deg);
+}
+.qtable tr[hidden] {
+  display: none !important;
+}
