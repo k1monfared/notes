@@ -1,5 +1,5 @@
 ---
-tags: life, politics, finance, movie
+tags: work, philosophy, observation
 ---
 # Reverse Interview Questions
 
