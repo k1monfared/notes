@@ -1,0 +1,56 @@
+# Category for each live site on the notes page.
+#
+# Order of the keys below is the order the sections appear on the page.
+# Any live site not listed under any category falls into "Other".
+# Repo names must match the GitHub repo name exactly.
+#
+# Optional, per-site thumbnail: drop an image at shared/live-sites/<repo>.png
+# (or .jpg / .jpeg / .webp) and it is picked up automatically. To point at a
+# different file or an external URL, add it under "images" (example at bottom).
+
+Data science:
+  - ad_attribution
+  - artist_journey
+  - cohort_audience_recommender
+  - content_quality_evaluation_llm
+  - data_acquisition_simulation
+  - investment_strategy_analysis
+  - llm-params-performance
+  - LTV
+  - music_market_shifts
+  - novelty_effect_analysis
+  - outlier_handling_methods
+  - persian_music_abstraction
+  - seasonal_extrapolation
+  - star_rating_regression_analysis
+  - states_during_regime_change
+  - user_topic_interest_manager
+  - variance_reduction_methods
+
+Apps and tools:
+  - digestif
+  - exchange_rate
+  - gas_tracker
+  - imgedt
+  - license_explorer
+  - map_design
+  - mortgage_rate_tracker
+  - news_reader
+  - pitcher
+  - triathlon-training-plan
+
+Information:
+  - k1monfared.github.io
+  - large_dog_breeds
+  - literature
+  - marginalia
+  - masoud
+  - notes
+  - photoblog
+  - statistics
+
+# Optional thumbnail overrides. Uncomment and edit as needed.
+# images:
+#   gas_tracker: shared/live-sites/gas_tracker.png
+#   marginalia: https://k1monfared.com/images/projects/marginalia.png
+images: {}

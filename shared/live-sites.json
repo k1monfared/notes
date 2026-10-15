@@ -1,0 +1,301 @@
+{
+  "generated_at": "2026-10-15T00:06:00Z",
+  "count": 35,
+  "categories": [
+    {
+      "name": "Data science",
+      "sites": [
+        {
+          "name": "ad_attribution",
+          "title": "Ad Attribution",
+          "url": "https://k1monfared.com/ad_attribution/",
+          "description": "",
+          "category": "Data science",
+          "image": null
+        },
+        {
+          "name": "artist_journey",
+          "title": "Artist Journey",
+          "url": "https://k1monfared.com/artist_journey/",
+          "description": "",
+          "category": "Data science",
+          "image": null
+        },
+        {
+          "name": "cohort_audience_recommender",
+          "title": "Cohort Audience Recommender",
+          "url": "https://k1monfared.com/cohort_audience_recommender/",
+          "description": "",
+          "category": "Data science",
+          "image": null
+        },
+        {
+          "name": "content_quality_evaluation_llm",
+          "title": "Content Quality Evaluation LLM",
+          "url": "https://k1monfared.com/content_quality_evaluation_llm/",
+          "description": "",
+          "category": "Data science",
+          "image": null
+        },
+        {
+          "name": "data_acquisition_simulation",
+          "title": "Data Acquisition Simulation",
+          "url": "https://k1monfared.com/data_acquisition_simulation/",
+          "description": "",
+          "category": "Data science",
+          "image": null
+        },
+        {
+          "name": "investment_strategy_analysis",
+          "title": "Investment Strategy Analysis",
+          "url": "https://k1monfared.com/investment_strategy_analysis/",
+          "description": "Define investment strategies, backtest across US stocks/ETFs with confidence intervals, and publish an auto-growing static dashboard",
+          "category": "Data science",
+          "image": null
+        },
+        {
+          "name": "llm-params-performance",
+          "title": "LLM Params Performance",
+          "url": "https://k1monfared.com/llm-params-performance/",
+          "description": "",
+          "category": "Data science",
+          "image": null
+        },
+        {
+          "name": "LTV",
+          "title": "LTV",
+          "url": "https://k1monfared.com/LTV/",
+          "description": "",
+          "category": "Data science",
+          "image": null
+        },
+        {
+          "name": "music_market_shifts",
+          "title": "Music Market Shifts",
+          "url": "https://k1monfared.com/music_market_shifts/",
+          "description": "",
+          "category": "Data science",
+          "image": null
+        },
+        {
+          "name": "novelty_effect_analysis",
+          "title": "Novelty Effect Analysis",
+          "url": "https://k1monfared.com/novelty_effect_analysis/",
+          "description": "",
+          "category": "Data science",
+          "image": null
+        },
+        {
+          "name": "outlier_handling_methods",
+          "title": "Outlier Handling Methods",
+          "url": "https://k1monfared.com/outlier_handling_methods/",
+          "description": "",
+          "category": "Data science",
+          "image": null
+        },
+        {
+          "name": "persian_music_abstraction",
+          "title": "Persian Music Abstraction",
+          "url": "https://k1monfared.com/persian_music_abstraction/",
+          "description": "",
+          "category": "Data science",
+          "image": null
+        },
+        {
+          "name": "seasonal_extrapolation",
+          "title": "Seasonal Extrapolation",
+          "url": "https://k1monfared.com/seasonal_extrapolation/",
+          "description": "",
+          "category": "Data science",
+          "image": null
+        },
+        {
+          "name": "star_rating_regression_analysis",
+          "title": "Star Rating Regression Analysis",
+          "url": "https://k1monfared.com/star_rating_regression_analysis/",
+          "description": "",
+          "category": "Data science",
+          "image": null
+        },
+        {
+          "name": "states_during_regime_change",
+          "title": "States During Regime Change",
+          "url": "https://k1monfared.com/states_during_regime_change/",
+          "description": "",
+          "category": "Data science",
+          "image": null
+        },
+        {
+          "name": "user_topic_interest_manager",
+          "title": "User Topic Interest Manager",
+          "url": "https://k1monfared.com/user_topic_interest_manager/",
+          "description": "",
+          "category": "Data science",
+          "image": null
+        },
+        {
+          "name": "variance_reduction_methods",
+          "title": "Variance Reduction Methods",
+          "url": "https://k1monfared.com/variance_reduction_methods/",
+          "description": "",
+          "category": "Data science",
+          "image": null
+        }
+      ]
+    },
+    {
+      "name": "Apps and tools",
+      "sites": [
+        {
+          "name": "digestif",
+          "title": "Digestif",
+          "url": "https://k1monfared.com/digestif/",
+          "description": "Turn any text into a rooted, fully cited idea graph: a loglog outline and an interactive viewer, with the extraction driven through the agent CLI you already use",
+          "category": "Apps and tools",
+          "image": null
+        },
+        {
+          "name": "exchange_rate",
+          "title": "Exchange Rate",
+          "url": "https://k1monfared.com/exchange_rate/",
+          "description": "",
+          "category": "Apps and tools",
+          "image": null
+        },
+        {
+          "name": "gas_tracker",
+          "title": "Gas Tracker",
+          "url": "https://k1monfared.com/gas_tracker/",
+          "description": "",
+          "category": "Apps and tools",
+          "image": null
+        },
+        {
+          "name": "imgedt",
+          "title": "Imgedt",
+          "url": "https://k1monfared.com/imgedt/",
+          "description": "",
+          "category": "Apps and tools",
+          "image": null
+        },
+        {
+          "name": "license_explorer",
+          "title": "License Explorer",
+          "url": "https://k1monfared.com/license_explorer/",
+          "description": "",
+          "category": "Apps and tools",
+          "image": null
+        },
+        {
+          "name": "map_design",
+          "title": "Map Design",
+          "url": "https://k1monfared.com/map_design/",
+          "description": "",
+          "category": "Apps and tools",
+          "image": null
+        },
+        {
+          "name": "mortgage_rate_tracker",
+          "title": "Mortgage Rate Tracker",
+          "url": "https://k1monfared.com/mortgage_rate_tracker/",
+          "description": "",
+          "category": "Apps and tools",
+          "image": null
+        },
+        {
+          "name": "news_reader",
+          "title": "News Reader",
+          "url": "https://k1monfared.com/news_reader/",
+          "description": "",
+          "category": "Apps and tools",
+          "image": null
+        },
+        {
+          "name": "pitcher",
+          "title": "Pitcher",
+          "url": "https://k1monfared.com/pitcher/",
+          "description": "",
+          "category": "Apps and tools",
+          "image": null
+        },
+        {
+          "name": "triathlon-training-plan",
+          "title": "Triathlon Training Plan",
+          "url": "https://k1monfared.com/triathlon-training-plan/",
+          "description": "Interactive 16-week Olympic triathlon training plan with calendar export and PDF download",
+          "category": "Apps and tools",
+          "image": null
+        }
+      ]
+    },
+    {
+      "name": "Information",
+      "sites": [
+        {
+          "name": "large_dog_breeds",
+          "title": "Large Dog Breeds",
+          "url": "https://k1monfared.com/large_dog_breeds/",
+          "description": "",
+          "category": "Information",
+          "image": null
+        },
+        {
+          "name": "literature",
+          "title": "Literature",
+          "url": "https://k1monfared.com/literature/",
+          "description": "Bilingual (Farsi/English) literature site: poets and their books. Git-backed static site generated from text.md sources.",
+          "category": "Information",
+          "image": null
+        },
+        {
+          "name": "marginalia",
+          "title": "Marginalia",
+          "url": "https://k1monfared.com/marginalia/",
+          "description": "",
+          "category": "Information",
+          "image": null
+        },
+        {
+          "name": "masoud",
+          "title": "Masoud",
+          "url": "https://k1monfared.com/masoud/",
+          "description": "",
+          "category": "Information",
+          "image": null
+        },
+        {
+          "name": "notes",
+          "title": "Notes",
+          "url": "https://k1monfared.com/notes/",
+          "description": "Probably random notes that can be shared but they shouldn't!",
+          "category": "Information",
+          "image": null
+        },
+        {
+          "name": "k1monfared.github.io",
+          "title": "Personal site",
+          "url": "https://k1monfared.com/",
+          "description": "Keivan Hassani Monfared's webpage",
+          "category": "Information",
+          "image": null
+        },
+        {
+          "name": "photoblog",
+          "title": "Photoblog",
+          "url": "https://k1monfared.com/photoblog/",
+          "description": "Photoblog",
+          "category": "Information",
+          "image": null
+        },
+        {
+          "name": "statistics",
+          "title": "Statistics",
+          "url": "https://k1monfared.com/statistics/",
+          "description": "explorations on statistical themes",
+          "category": "Information",
+          "image": null
+        }
+      ]
+    }
+  ]
+}
