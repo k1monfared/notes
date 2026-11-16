@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-15T00:06:00Z",
-  "count": 35,
+  "generated_at": "2026-11-16T17:11:55Z",
+  "count": 34,
   "categories": [
     {
       "name": "Data science",
@@ -284,14 +284,6 @@
           "title": "Photoblog",
           "url": "https://k1monfared.com/photoblog/",
           "description": "Photoblog",
-          "category": "Information",
-          "image": null
-        },
-        {
-          "name": "statistics",
-          "title": "Statistics",
-          "url": "https://k1monfared.com/statistics/",
-          "description": "explorations on statistical themes",
           "category": "Information",
           "image": null
         }
